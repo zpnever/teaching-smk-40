@@ -1,12 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta
 			name="description"
 			content="Halaman interaktif untuk mempelajari layout HTML dengan tag semantik dan div."
-		/>
+		>
 		<title>LayoutLab — Belajar Layout HTML</title>
 		<style>
 			:root {
@@ -43,25 +43,11 @@
 				margin: 0;
 				color: var(--ink);
 				background:
-					radial-gradient(
-						circle at 8% 4%,
-						rgba(255, 189, 202, 0.35),
-						transparent 24rem
-					),
-					radial-gradient(
-						circle at 95% 18%,
-						rgba(122, 135, 242, 0.18),
-						transparent 30rem
-					),
+					radial-gradient(circle at 8% 4%, rgba(255, 189, 202, 0.35), transparent 24rem),
+					radial-gradient(circle at 95% 18%, rgba(122, 135, 242, 0.18), transparent 30rem),
 					var(--canvas);
 				font-family:
-					Inter,
-					ui-sans-serif,
-					system-ui,
-					-apple-system,
-					BlinkMacSystemFont,
-					"Segoe UI",
-					sans-serif;
+					Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 				line-height: 1.6;
 			}
 
@@ -285,11 +271,7 @@
 				padding: 28px;
 				background:
 					linear-gradient(rgba(104, 84, 217, 0.035) 1px, transparent 1px),
-					linear-gradient(
-						90deg,
-						rgba(104, 84, 217, 0.035) 1px,
-						transparent 1px
-					),
+					linear-gradient(90deg, rgba(104, 84, 217, 0.035) 1px, transparent 1px),
 					#faf9ff;
 				background-size: 24px 24px;
 				border-right: 1px solid var(--line);
@@ -546,27 +528,13 @@
 				border-radius: 3px;
 			}
 
-			.legend-header {
-				background: var(--header);
-			}
-			.legend-nav {
-				background: var(--nav);
-			}
-			.legend-main {
-				background: var(--main);
-			}
-			.legend-section {
-				background: var(--section);
-			}
-			.legend-article {
-				background: var(--article);
-			}
-			.legend-aside {
-				background: var(--aside);
-			}
-			.legend-footer {
-				background: var(--footer);
-			}
+			.legend-header { background: var(--header); }
+			.legend-nav { background: var(--nav); }
+			.legend-main { background: var(--main); }
+			.legend-section { background: var(--section); }
+			.legend-article { background: var(--article); }
+			.legend-aside { background: var(--aside); }
+			.legend-footer { background: var(--footer); }
 
 			.detail-pane {
 				padding: 30px;
@@ -1010,15 +978,12 @@
 					</div>
 					<div>
 						<p class="hero-copy">
-							Klik setiap bagian website contoh, pelajari fungsinya, lalu
-							bandingkan tag semantik dengan <code>&lt;div&gt;</code>.
+							Klik setiap bagian website contoh, pelajari fungsinya, lalu bandingkan tag semantik
+							dengan <code>&lt;div&gt;</code>.
 						</p>
 						<div class="instruction-card with-spacing">
 							<span class="instruction-number">1</span>
-							<p>
-								<strong>Pilih area berwarna</strong>Penjelasan dan kodenya akan
-								muncul di sebelahnya.
-							</p>
+							<p><strong>Pilih area berwarna</strong>Penjelasan dan kodenya akan muncul di sebelahnya.</p>
 						</div>
 					</div>
 				</div>
@@ -1032,26 +997,12 @@
 						<h2 id="playground-title">Playground Layout</h2>
 						<p>Strukturnya sama, cara menuliskannya berbeda.</p>
 					</div>
-					<div
-						class="mode-switch"
-						role="group"
-						aria-label="Pilih cara penulisan layout"
-					>
-						<button
-							class="mode-button"
-							type="button"
-							data-mode="div"
-							aria-pressed="false"
-						>
-							Div
-						</button>
-						<button
-							class="mode-button"
-							type="button"
-							data-mode="semantic"
-							aria-pressed="true"
-						>
+					<div class="mode-switch" role="group" aria-label="Pilih cara penulisan layout">
+						<button class="mode-button" type="button" data-mode="semantic" aria-pressed="true">
 							Tag Semantik
+						</button>
+						<button class="mode-button" type="button" data-mode="div" aria-pressed="false">
+							Div
 						</button>
 					</div>
 				</div>
@@ -1059,40 +1010,23 @@
 				<div class="workspace">
 					<div class="preview-pane">
 						<div class="preview-titlebar">
-							<div class="browser-dots" aria-hidden="true">
-								<span></span><span></span><span></span>
-							</div>
+							<div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
 							<p class="preview-hint">Klik label atau area untuk belajar</p>
 						</div>
 
-						<div
-							class="demo-site"
-							id="demo-site"
-							role="group"
-							aria-label="Diagram susunan sebuah website"
-						>
+						<div class="demo-site" id="demo-site" role="group" aria-label="Diagram susunan sebuah website">
 							<div class="demo-part demo-header" data-part="header">
 								<div class="demo-logo">
 									<span class="demo-logo-shape" aria-hidden="true"></span>
 									<span>KelasKita</span>
 								</div>
-								<button
-									class="part-selector"
-									type="button"
-									data-select="header"
-									aria-pressed="true"
-								>
+								<button class="part-selector" type="button" data-select="header" aria-pressed="true">
 									&lt;header&gt;
 								</button>
 							</div>
 
 							<div class="demo-part demo-nav" data-part="nav">
-								<button
-									class="part-selector"
-									type="button"
-									data-select="nav"
-									aria-pressed="false"
-								>
+								<button class="part-selector" type="button" data-select="nav" aria-pressed="false">
 									&lt;nav&gt;
 								</button>
 								<div class="demo-links" aria-hidden="true">
@@ -1101,60 +1035,32 @@
 							</div>
 
 							<div class="demo-part demo-main" data-part="main">
-								<button
-									class="part-selector"
-									type="button"
-									data-select="main"
-									aria-pressed="false"
-								>
+								<button class="part-selector" type="button" data-select="main" aria-pressed="false">
 									&lt;main&gt;
 								</button>
 
 								<div class="demo-part demo-section" data-part="section">
-									<button
-										class="part-selector"
-										type="button"
-										data-select="section"
-										aria-pressed="false"
-									>
+									<button class="part-selector" type="button" data-select="section" aria-pressed="false">
 										&lt;section&gt;
 									</button>
 
 									<div class="demo-part demo-article" data-part="article">
-										<button
-											class="part-selector"
-											type="button"
-											data-select="article"
-											aria-pressed="false"
-										>
+										<button class="part-selector" type="button" data-select="article" aria-pressed="false">
 											&lt;article&gt;
 										</button>
 										<h3>Mengenal HTML Semantik</h3>
-										<p>
-											Struktur yang bermakna membuat halaman lebih mudah
-											dipahami.
-										</p>
+										<p>Struktur yang bermakna membuat halaman lebih mudah dipahami.</p>
 									</div>
 
 									<div class="demo-part demo-article" data-part="article">
-										<span class="part-selector" aria-hidden="true"
-											>&lt;article&gt;</span
-										>
+										<span class="part-selector" aria-hidden="true">&lt;article&gt;</span>
 										<h3>Tips Menulis Kode Rapi</h3>
-										<p>
-											Pilih tag berdasarkan arti konten, bukan berdasarkan
-											tampilannya.
-										</p>
+										<p>Pilih tag berdasarkan arti konten, bukan berdasarkan tampilannya.</p>
 									</div>
 								</div>
 
 								<div class="demo-part demo-aside" data-part="aside">
-									<button
-										class="part-selector"
-										type="button"
-										data-select="aside"
-										aria-pressed="false"
-									>
+									<button class="part-selector" type="button" data-select="aside" aria-pressed="false">
 										&lt;aside&gt;
 									</button>
 									<h3>Artikel terkait</h3>
@@ -1169,12 +1075,7 @@
 
 							<div class="demo-part demo-footer" data-part="footer">
 								<p>© 2026 KelasKita</p>
-								<button
-									class="part-selector"
-									type="button"
-									data-select="footer"
-									aria-pressed="false"
-								>
+								<button class="part-selector" type="button" data-select="footer" aria-pressed="false">
 									&lt;footer&gt;
 								</button>
 							</div>
@@ -1194,13 +1095,7 @@
 					<aside class="detail-pane" aria-live="polite" aria-atomic="false">
 						<div class="detail-progress">
 							<span id="progress-label">1 dari 7</span>
-							<progress
-								class="progress-track"
-								id="progress-bar"
-								aria-label="Bagian layout yang sedang dipelajari"
-								value="1"
-								max="7"
-							></progress>
+							<progress class="progress-track" id="progress-bar" aria-label="Bagian layout yang sedang dipelajari" value="1" max="7"></progress>
 						</div>
 
 						<p class="eyebrow" id="detail-kicker">Bagian terpilih</p>
@@ -1226,25 +1121,14 @@
 						<div class="code-block">
 							<div class="code-toolbar">
 								<span id="code-label">Contoh HTML semantik</span>
-								<button class="copy-button" id="copy-button" type="button">
-									Salin kode
-								</button>
+								<button class="copy-button" id="copy-button" type="button">Salin kode</button>
 							</div>
 							<pre><code id="code-example"></code></pre>
 						</div>
 
 						<nav class="detail-navigation" aria-label="Navigasi materi layout">
-							<button
-								class="nav-button"
-								id="previous-button"
-								type="button"
-								disabled
-							>
-								← Sebelumnya
-							</button>
-							<button class="nav-button" id="next-button" type="button">
-								Berikutnya →
-							</button>
+							<button class="nav-button" id="previous-button" type="button" disabled>← Sebelumnya</button>
+							<button class="nav-button" id="next-button" type="button">Berikutnya →</button>
 						</nav>
 					</aside>
 				</div>
@@ -1254,19 +1138,13 @@
 				<div class="section-heading">
 					<p class="eyebrow">Apa bedanya?</p>
 					<h2 id="comparison-title">Tampilan sama, maknanya berbeda</h2>
-					<p>
-						Browser dapat menampilkan keduanya dengan bentuk yang sama.
-						Perbedaannya ada pada makna struktur di dalam kode.
-					</p>
+					<p>Browser dapat menampilkan keduanya dengan bentuk yang sama. Perbedaannya ada pada makna struktur di dalam kode.</p>
 				</div>
 
 				<div class="comparison-grid">
 					<article class="comparison-card semantic">
 						<h3>Tag semantik</h3>
-						<p>
-							<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, dan tag
-							sejenis langsung menjelaskan peran konten.
-						</p>
+						<p><code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, dan tag sejenis langsung menjelaskan peran konten.</p>
 						<ul class="check-list">
 							<li>Kode lebih mudah dibaca dan dipelihara</li>
 							<li>Membantu pembaca layar memahami struktur</li>
@@ -1276,10 +1154,7 @@
 
 					<article class="comparison-card div-card">
 						<h3>Tag div</h3>
-						<p>
-							<code>&lt;div&gt;</code> adalah wadah umum. Maknanya baru terlihat
-							jika kita membaca nama class atau id.
-						</p>
+						<p><code>&lt;div&gt;</code> adalah wadah umum. Maknanya baru terlihat jika kita membaca nama class atau id.</p>
 						<ul class="check-list">
 							<li>Tepat untuk pengelompokan yang tidak punya tag khusus</li>
 							<li>Berguna sebagai pembungkus untuk styling atau layout</li>
@@ -1291,18 +1166,15 @@
 				<div class="remember">
 					<span class="remember-icon" aria-hidden="true">💡</span>
 					<p>
-						<strong>Ingat:</strong> pilih tag berdasarkan arti kontennya, bukan
-						warna atau posisinya. CSS mengatur tampilan; HTML menjelaskan
-						struktur dan makna.
+						<strong>Ingat:</strong> pilih tag berdasarkan arti kontennya, bukan warna atau posisinya. CSS mengatur tampilan;
+						HTML menjelaskan struktur dan makna.
 					</p>
 				</div>
 			</section>
 		</main>
 
 		<footer class="page-footer">
-			<div class="page-shell">
-				Materi Pemrograman Web · Dibuat untuk pembelajaran kelas XI RPL
-			</div>
+			<div class="page-shell">Materi Pemrograman Web · Dibuat untuk pembelajaran kelas XI RPL</div>
 		</footer>
 
 		<div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1313,7 +1185,7 @@
 					title: "Header",
 					description:
 						"Bagian pembuka halaman atau suatu bagian. Biasanya berisi logo, nama website, judul, slogan, atau elemen pengantar.",
-					semanticTag: "<header>",
+					semanticTag: '<header>',
 					divTag: '<div class="header">',
 					semanticReason:
 						"Tag <header> memberi tahu browser bahwa isinya merupakan bagian pembuka. Satu halaman boleh memiliki beberapa header jika masing-masing menjadi pembuka untuk bagian yang berbeda.",
@@ -1332,7 +1204,7 @@
 					title: "Navigation",
 					description:
 						"Kumpulan tautan utama untuk membantu pengguna berpindah ke halaman atau bagian penting di dalam website.",
-					semanticTag: "<nav>",
+					semanticTag: '<nav>',
 					divTag: '<div class="nav">',
 					semanticReason:
 						"Tag <nav> menandai kelompok navigasi penting. Pembaca layar dapat langsung menemukan dan melewati bagian navigasi ini.",
@@ -1353,7 +1225,7 @@
 					title: "Main Content",
 					description:
 						"Wadah untuk isi utama yang menjadi fokus sebuah halaman. Kontennya sebaiknya unik dan tidak berulang di halaman lain.",
-					semanticTag: "<main>",
+					semanticTag: '<main>',
 					divTag: '<div class="main">',
 					semanticReason:
 						"Tag <main> menunjukkan pusat isi halaman. Umumnya hanya ada satu main yang terlihat sehingga pengguna teknologi bantu dapat langsung menuju konten utama.",
@@ -1372,7 +1244,7 @@
 					title: "Section",
 					description:
 						"Kelompok konten yang membahas satu tema tertentu. Sebuah section biasanya memiliki judul untuk menjelaskan topiknya.",
-					semanticTag: "<section>",
+					semanticTag: '<section>',
 					divTag: '<div class="section">',
 					semanticReason:
 						"Tag <section> membagi dokumen menjadi bagian tematik. Gunakan jika kumpulan konten tersebut pantas memiliki judul sendiri.",
@@ -1393,7 +1265,7 @@
 					title: "Article",
 					description:
 						"Konten mandiri yang tetap masuk akal saat dibaca atau dibagikan secara terpisah, seperti artikel, berita, posting, atau kartu produk.",
-					semanticTag: "<article>",
+					semanticTag: '<article>',
 					divTag: '<div class="article">',
 					semanticReason:
 						"Tag <article> menyatakan bahwa konten dapat berdiri sendiri. Article boleh memiliki header, section, atau footer-nya sendiri.",
@@ -1414,7 +1286,7 @@
 					title: "Aside",
 					description:
 						"Konten pendamping yang masih berkaitan dengan isi di sekitarnya, tetapi bukan bagian utama, misalnya sidebar atau tautan terkait.",
-					semanticTag: "<aside>",
+					semanticTag: '<aside>',
 					divTag: '<div class="aside">',
 					semanticReason:
 						"Tag <aside> menjelaskan bahwa isinya bersifat tambahan. Aside tidak harus berada di sisi kanan; posisinya tetap diatur oleh CSS.",
@@ -1437,7 +1309,7 @@
 					title: "Footer",
 					description:
 						"Bagian penutup halaman atau suatu bagian. Umumnya memuat hak cipta, informasi kontak, penulis, atau tautan tambahan.",
-					semanticTag: "<footer>",
+					semanticTag: '<footer>',
 					divTag: '<div class="footer">',
 					semanticReason:
 						"Tag <footer> memberi makna sebagai penutup. Seperti header, footer juga boleh digunakan di dalam section atau article.",
@@ -1485,20 +1357,14 @@
 
 				detailTitle.textContent = part.title;
 				detailDescription.textContent = part.description;
-				detailReason.textContent = isSemantic
-					? part.semanticReason
-					: part.divReason;
-				reasonTitle.textContent = isSemantic
-					? "Mengapa menggunakan tag ini?"
-					: "Apa yang berbeda pada versi div?";
+				detailReason.textContent = isSemantic ? part.semanticReason : part.divReason;
+				reasonTitle.textContent = isSemantic ? "Mengapa menggunakan tag ini?" : "Apa yang berbeda pada versi div?";
 				semanticTag.textContent = part.semanticTag;
 				divTag.textContent = part.divTag;
 				semanticBox.classList.toggle("is-current", isSemantic);
 				divBox.classList.toggle("is-current", !isSemantic);
 				codeExample.textContent = isSemantic ? part.semanticCode : part.divCode;
-				codeLabel.textContent = isSemantic
-					? "Contoh HTML semantik"
-					: "Contoh HTML dengan div";
+				codeLabel.textContent = isSemantic ? "Contoh HTML semantik" : "Contoh HTML dengan div";
 
 				progressLabel.textContent = `${partIndex + 1} dari ${partOrder.length}`;
 				progressBar.value = partIndex + 1;
@@ -1506,34 +1372,19 @@
 				nextButton.disabled = partIndex === partOrder.length - 1;
 
 				document.querySelectorAll("[data-part]").forEach((element) => {
-					element.classList.toggle(
-						"is-active",
-						element.dataset.part === activePart,
-					);
+					element.classList.toggle("is-active", element.dataset.part === activePart);
 				});
 
 				document.querySelectorAll("[data-select]").forEach((button) => {
-					button.setAttribute(
-						"aria-pressed",
-						String(button.dataset.select === activePart),
-					);
-					const tagName = isSemantic
-						? layoutParts[button.dataset.select].semanticTag
-						: layoutParts[button.dataset.select].divTag;
+					button.setAttribute("aria-pressed", String(button.dataset.select === activePart));
+					const tagName = isSemantic ? layoutParts[button.dataset.select].semanticTag : layoutParts[button.dataset.select].divTag;
 					button.textContent = tagName;
-					button.setAttribute(
-						"aria-label",
-						`Pelajari bagian ${layoutParts[button.dataset.select].title}: ${tagName}`,
-					);
+					button.setAttribute("aria-label", `Pelajari bagian ${layoutParts[button.dataset.select].title}: ${tagName}`);
 				});
 
-				document
-					.querySelectorAll(".demo-article .part-selector[aria-hidden='true']")
-					.forEach((label) => {
-						label.textContent = isSemantic
-							? layoutParts.article.semanticTag
-							: layoutParts.article.divTag;
-					});
+				document.querySelectorAll(".demo-article .part-selector[aria-hidden='true']").forEach((label) => {
+					label.textContent = isSemantic ? layoutParts.article.semanticTag : layoutParts.article.divTag;
+				});
 			}
 
 			function selectPart(partName) {
@@ -1557,10 +1408,7 @@
 				button.addEventListener("click", () => {
 					activeMode = button.dataset.mode;
 					modeButtons.forEach((modeButton) => {
-						modeButton.setAttribute(
-							"aria-pressed",
-							String(modeButton === button),
-						);
+						modeButton.setAttribute("aria-pressed", String(modeButton === button));
 					});
 					updateView();
 				});
@@ -1580,10 +1428,7 @@
 				window.clearTimeout(toastTimer);
 				toast.textContent = message;
 				toast.classList.add("is-visible");
-				toastTimer = window.setTimeout(
-					() => toast.classList.remove("is-visible"),
-					2400,
-				);
+				toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2400);
 			}
 
 			function fallbackCopy(text) {
