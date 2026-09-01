@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RamenYa - Authentic Japanese ramen restaurant. Experience bold flavors crafted with tradition and passion.">
+    <title>RamenYa — Authentic Japanese Ramen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #FDF6ED;
+            --color-cream: #FAF0E1;
+            --color-dark: #2C1810;
+            --color-maroon: #6B1D1D;
+            --color-red: #C83232;
+            --color-gold: #D4A017;
+            --color-amber: #E8A317;
+            --color-warm-yellow: #F5C542;
+            --color-orange: #E8742A;
+            --color-green: #2D5A27;
+            --color-white: #FFFFFF;
+            --color-light-gray: #F5F0E8;
+            --font-main: 'Outfit', sans-serif;
+            --font-display: 'Noto Serif JP', 'Outfit', serif;
+            --shadow-card: 0 4px 24px rgba(44, 24, 16, 0.08);
+            --shadow-hover: 0 8px 40px rgba(44, 24, 16, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 50%;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ===== HEADER / NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(253, 246, 237, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(44, 24, 16, 0.06);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            padding: 10px 48px;
+            box-shadow: 0 2px 20px rgba(44, 24, 16, 0.08);
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--color-maroon);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: var(--color-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-dark);
+            position: relative;
+            padding: 4px 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-maroon);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-maroon);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-search {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            border: 1.5px solid rgba(44, 24, 16, 0.15);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--color-dark);
+        }
+
+        .nav-search:hover {
+            background: var(--color-dark);
+            color: var(--color-white);
+            border-color: var(--color-dark);
+        }
+
+        .btn-order {
+            padding: 10px 24px;
+            background: var(--color-maroon);
+            color: var(--color-white);
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .btn-order:hover {
+            background: var(--color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(107, 29, 29, 0.3);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 120px 48px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(232, 116, 42, 0.08) 0%, transparent 70%);
+            border-radius: var(--radius-full);
+            pointer-events: none;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 7vw, 7rem);
+            font-weight: 900;
+            line-height: 0.95;
+            color: var(--color-dark);
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero-text h1 .highlight {
+            color: var(--color-maroon);
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-text h1 .stroke-text {
+            -webkit-text-stroke: 2px var(--color-dark);
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(44, 24, 16, 0.65);
+            max-width: 440px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-primary {
+            padding: 14px 36px;
+            background: var(--color-maroon);
+            color: var(--color-white);
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107, 29, 29, 0.25);
+        }
+
+        .btn-secondary {
+            padding: 14px 36px;
+            background: transparent;
+            color: var(--color-dark);
+            border: 2px solid rgba(44, 24, 16, 0.2);
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-dark);
+            background: var(--color-dark);
+            color: var(--color-white);
+            transform: translateY(-2px);
+        }
+
+        .hero-image {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            width: 85%;
+            max-width: 520px;
+            border-radius: var(--radius-xl);
+            object-fit: cover;
+            aspect-ratio: 3/4;
+            box-shadow: 0 20px 60px rgba(44, 24, 16, 0.18);
+            animation: heroFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .hero-badge {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: badgeSlide 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes badgeSlide {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-badge .badge-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--color-warm-yellow);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .hero-badge .badge-text span {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(44, 24, 16, 0.5);
+        }
+
+        .hero-badge .badge-text strong {
+            font-size: 1rem;
+            color: var(--color-dark);
+        }
+
+        /* ===== SECTION COMMON ===== */
+        .section {
+            padding: 80px 48px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-dark);
+            margin-bottom: 48px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--color-maroon);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        /* ===== MENU CATEGORIES ===== */
+        .categories {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: 60px 48px;
+            margin: 0 48px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .category-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-item:hover {
+            transform: translateY(-6px);
+        }
+
+        .category-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            border: 3px solid transparent;
+            transition: var(--transition);
+            background: var(--color-light-gray);
+        }
+
+        .category-item:hover .category-icon,
+        .category-item.active .category-icon {
+            border-color: var(--color-orange);
+            box-shadow: 0 4px 20px rgba(232, 116, 42, 0.25);
+        }
+
+        .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-item span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            text-align: center;
+        }
+
+        /* ===== MENU CARDS ===== */
+        .menu-section {
+            padding: 80px 48px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-card {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .menu-card-image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .menu-card:nth-child(1) .menu-card-image { background: linear-gradient(135deg, #E8742A22, #D4A01722); }
+        .menu-card:nth-child(2) .menu-card-image { background: linear-gradient(135deg, #C8323222, #E8742A22); }
+        .menu-card:nth-child(3) .menu-card-image { background: linear-gradient(135deg, #6B1D1D22, #D4A01722); }
+        .menu-card:nth-child(4) .menu-card-image { background: linear-gradient(135deg, #2D5A2722, #D4A01722); }
+        .menu-card:nth-child(5) .menu-card-image { background: linear-gradient(135deg, #D4A01722, #E8742A22); }
+        .menu-card:nth-child(6) .menu-card-image { background: linear-gradient(135deg, #C8323222, #6B1D1D22); }
+
+        .menu-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .menu-card:hover .menu-card-image img {
+            transform: scale(1.06);
+        }
+
+        .menu-card-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 14px;
+            background: var(--color-red);
+            color: var(--color-white);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-card-body {
+            padding: 20px 24px 24px;
+        }
+
+        .menu-card-name {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            margin-bottom: 6px;
+        }
+
+        .menu-card-desc {
+            font-size: 0.85rem;
+            color: rgba(44, 24, 16, 0.55);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .menu-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-card-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-maroon);
+        }
+
+        .menu-card-price .currency {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-buy {
+            padding: 10px 22px;
+            background: var(--color-orange);
+            color: var(--color-white);
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-buy:hover {
+            background: var(--color-maroon);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(232, 116, 42, 0.3);
+        }
+
+        /* ===== FEATURE GRID ===== */
+        .features {
+            padding: 40px 48px 80px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: scale(1.02);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .feature-card-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 28px;
+        }
+
+        .feature-card--chef {
+            grid-row: 1 / 3;
+        }
+
+        .feature-card--chef .feature-card-overlay {
+            background: linear-gradient(180deg, rgba(44, 24, 16, 0) 30%, rgba(44, 24, 16, 0.85) 100%);
+        }
+
+        .feature-card--chef img {
+            height: 100%;
+            min-height: 500px;
+        }
+
+        .feature-card--text-dark {
+            background: var(--color-maroon);
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-card--text-dark .feature-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .feature-card--text-dark .feature-inner img {
+            border-radius: var(--radius-md);
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .feature-card--text-dark .feature-text-content {
+            display: flex;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .feature-card--text-amber {
+            background: var(--color-amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            min-height: 220px;
+        }
+
+        .feature-card-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--color-white);
+            line-height: 1.15;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-card-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-top: 8px;
+        }
+
+        .feature-amber-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-dark);
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.15;
+            letter-spacing: 1px;
+        }
+
+        /* ===== PROMO BANNER ===== */
+        .promo {
+            padding: 0 48px 80px;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, var(--color-warm-yellow), var(--color-amber));
+            border-radius: var(--radius-xl);
+            padding: 48px 56px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::after {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            pointer-events: none;
+        }
+
+        .promo-text h2 {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--color-dark);
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .promo-deals {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .promo-deal {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(4px);
+        }
+
+        .promo-deal-tag {
+            padding: 4px 10px;
+            background: var(--color-maroon);
+            color: var(--color-white);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .promo-deal span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-dark);
+        }
+
+        .promo-image {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .promo-image img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 12px 40px rgba(44, 24, 16, 0.2);
+        }
+
+        .btn-explore {
+            padding: 14px 32px;
+            background: var(--color-maroon);
+            color: var(--color-white);
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-explore:hover {
+            background: var(--color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 24, 16, 0.2);
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta {
+            padding: 0 48px 80px;
+        }
+
+        .cta-banner {
+            background: var(--color-maroon);
+            border-radius: var(--radius-xl);
+            padding: 64px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            left: -120px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(232, 116, 42, 0.2) 0%, transparent 70%);
+            border-radius: var(--radius-full);
+            pointer-events: none;
+        }
+
+        .cta-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(212, 160, 23, 0.15) 0%, transparent 70%);
+            border-radius: var(--radius-full);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-content h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            color: var(--color-warm-yellow);
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .cta-content p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            line-height: 1.7;
+        }
+
+        .btn-cta {
+            padding: 16px 40px;
+            background: var(--color-warm-yellow);
+            color: var(--color-dark);
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-cta:hover {
+            background: var(--color-white);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245, 197, 66, 0.35);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--color-dark);
+            padding: 60px 48px 32px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            max-width: 1200px;
+            margin: 0 auto 48px;
+        }
+
+        .footer-brand .nav-logo {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .footer-brand .nav-logo span {
+            color: var(--color-warm-yellow);
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-col h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-white);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--color-warm-yellow);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== SCROLL REVEAL ANIMATIONS ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mobile-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--color-dark);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 140px 32px 60px;
+                gap: 40px;
+            }
+
+            .hero-subtitle {
+                margin: 0 auto 36px;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .hero-image img {
+                width: 60%;
+            }
+
+            .hero-badge {
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .navbar {
+                padding: 14px 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .section {
+                padding: 60px 24px;
+            }
+
+            .categories {
+                margin: 0 24px;
+                padding: 40px 24px;
+            }
+
+            .menu-section, .features, .promo, .cta {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card--chef {
+                grid-row: auto;
+            }
+
+            .feature-card--chef img {
+                min-height: 300px;
+            }
+
+            .promo-banner {
+                grid-template-columns: 1fr;
+                padding: 36px;
+            }
+
+            .cta-banner {
+                padding: 48px 32px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-text h1 {
+                font-size: 3rem;
+                letter-spacing: -1px;
+            }
+
+            .hero-image img {
+                width: 80%;
+            }
+
+            .category-grid {
+                gap: 20px;
+            }
+
+            .category-icon {
+                width: 72px;
+                height: 72px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card--text-dark .feature-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-text h2 {
+                font-size: 1.8rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">Ramen<span>Ya</span></a>
+        <ul class="nav-links">
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#categories">Kategori</a></li>
+            <li><a href="#features">Tentang</a></li>
+            <li><a href="#promo">Promo</a></li>
+            <li><a href="#contact">Kontak</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="nav-search" id="search-btn" aria-label="Search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
+            <button class="btn-order" id="order-btn">Order Now</button>
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-text">
+            <h1>
+                <span class="highlight">RASA</span><br>
+                YANG<br>
+                <span class="stroke-text">MENG</span><span class="highlight">GODA!</span>
+            </h1>
+            <p class="hero-subtitle">
+                Nikmati cita rasa ramen autentik Jepang dengan kuah kaldu yang dimasak hingga 18 jam. Setiap mangkuk adalah sebuah karya seni.
+            </p>
+            <div class="hero-actions">
+                <button class="btn-primary" id="hero-order-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    Pesan Sekarang
+                </button>
+                <button class="btn-secondary" id="explore-menu-btn">Lihat Menu</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="images/hero-person.jpg" alt="Menikmati ramen autentik Jepang" loading="eager" fetchpriority="high">
+            <div class="hero-badge">
+                <div class="badge-icon">🍜</div>
+                <div class="badge-text">
+                    <span>Rating Pelanggan</span>
+                    <strong>⭐ 4.9 / 5.0</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MENU CATEGORIES ===== -->
+    <section class="categories reveal" id="categories">
+        <h2 class="section-title">Menu Pilihan Hari Ini</h2>
+        <div class="category-grid">
+            <div class="category-item active" data-category="tonkotsu">
+                <div class="category-icon">
+                    <img src="images/tonkotsu-ramen.jpg" alt="Tonkotsu Ramen">
+                </div>
+                <span>Tonkotsu</span>
+            </div>
+            <div class="category-item" data-category="miso">
+                <div class="category-icon">
+                    <img src="images/miso-ramen.jpg" alt="Miso Ramen">
+                </div>
+                <span>Miso</span>
+            </div>
+            <div class="category-item" data-category="shoyu">
+                <div class="category-icon">
+                    <img src="images/shoyu-ramen.jpg" alt="Shoyu Ramen">
+                </div>
+                <span>Shoyu</span>
+            </div>
+            <div class="category-item" data-category="gyoza">
+                <div class="category-icon">
+                    <img src="images/gyoza.jpg" alt="Gyoza">
+                </div>
+                <span>Gyoza</span>
+            </div>
+            <div class="category-item" data-category="karaage">
+                <div class="category-icon">
+                    <img src="images/karaage.jpg" alt="Karaage">
+                </div>
+                <span>Karaage</span>
+            </div>
+            <div class="category-item" data-category="takoyaki">
+                <div class="category-icon">
+                    <img src="images/takoyaki.jpg" alt="Takoyaki">
+                </div>
+                <span>Takoyaki</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MENU CARDS ===== -->
+    <section class="menu-section" id="menu">
+        <h2 class="section-title reveal">Menu Favorit</h2>
+        <div class="menu-grid">
+            <!-- Card 1 -->
+            <div class="menu-card reveal" id="card-tonkotsu">
+                <div class="menu-card-image">
+                    <img src="images/tonkotsu-ramen.jpg" alt="Tonkotsu Ramen">
+                    <span class="menu-card-badge">Best Seller</span>
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Tonkotsu Ramen</h3>
+                    <p class="menu-card-desc">Kuah kaldu babi yang creamy dan kaya rasa, dimasak selama 18 jam dengan chashu, telur setengah matang, dan nori.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 65.000</span>
+                        <button class="btn-buy" id="buy-tonkotsu">Pesan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="menu-card reveal" id="card-miso">
+                <div class="menu-card-image">
+                    <img src="images/miso-ramen.jpg" alt="Spicy Miso Ramen">
+                    <span class="menu-card-badge">Spicy 🔥</span>
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Spicy Miso Ramen</h3>
+                    <p class="menu-card-desc">Miso ramen pedas dengan daging babi giling, jagung manis, mentega, dan tauge, disiram minyak cabai.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 62.000</span>
+                        <button class="btn-buy" id="buy-miso">Pesan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="menu-card reveal" id="card-shoyu">
+                <div class="menu-card-image">
+                    <img src="images/shoyu-ramen.jpg" alt="Shoyu Ramen">
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Shoyu Ramen</h3>
+                    <p class="menu-card-desc">Ramen klasik dengan kuah kecap asin yang jernih, irisan chashu, rebung, naruto, dan daun bawang.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 58.000</span>
+                        <button class="btn-buy" id="buy-shoyu">Pesan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="menu-card reveal" id="card-gyoza">
+                <div class="menu-card-image">
+                    <img src="images/gyoza.jpg" alt="Gyoza">
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Gyoza (6 pcs)</h3>
+                    <p class="menu-card-desc">Pangsit goreng renyah berisi daging babi dan sayuran, disajikan dengan saus kecap dan minyak wijen.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 35.000</span>
+                        <button class="btn-buy" id="buy-gyoza">Pesan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="menu-card reveal" id="card-karaage">
+                <div class="menu-card-image">
+                    <img src="images/karaage.jpg" alt="Chicken Karaage">
+                    <span class="menu-card-badge">Popular</span>
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Chicken Karaage</h3>
+                    <p class="menu-card-desc">Ayam goreng ala Jepang yang renyah di luar dan juicy di dalam, disajikan dengan irisan lemon dan mayones.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 38.000</span>
+                        <button class="btn-buy" id="buy-karaage">Pesan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 6 -->
+            <div class="menu-card reveal" id="card-takoyaki">
+                <div class="menu-card-image">
+                    <img src="images/takoyaki.jpg" alt="Takoyaki">
+                </div>
+                <div class="menu-card-body">
+                    <h3 class="menu-card-name">Takoyaki (8 pcs)</h3>
+                    <p class="menu-card-desc">Bola-bola gurita khas Osaka dengan saus takoyaki, mayones, katsuobushi, dan daun bawang.</p>
+                    <div class="menu-card-footer">
+                        <span class="menu-card-price"><span class="currency">Rp</span> 32.000</span>
+                        <button class="btn-buy" id="buy-takoyaki">Pesan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE GRID ===== -->
+    <section class="features reveal" id="features">
+        <div class="feature-grid">
+            <!-- Chef Card (tall, spans 2 rows) -->
+            <div class="feature-card feature-card--chef">
+                <img src="images/chef.jpg" alt="Chef ramen kami" loading="lazy">
+                <div class="feature-card-overlay">
+                    <h3 class="feature-card-title">Duduk, Nikmati, atau Pesan Cepat — Aturan Anda.</h3>
+                    <p class="feature-card-subtitle">Kunjungi restoran kami atau pesan langsung dari aplikasi — selalu segar, selalu lezat.</p>
+                </div>
+            </div>
+            <!-- Text Card with Image -->
+            <div class="feature-card feature-card--text-dark" style="padding: 0;">
+                <div class="feature-inner">
+                    <img src="images/ramen-spread.jpg" alt="Berbagai ramen" loading="lazy">
+                    <div class="feature-text-content">
+                        <h3 class="feature-card-title">Cita Rasa yang Dibangun untuk Menjadi Legenda</h3>
+                    </div>
+                </div>
+            </div>
+            <!-- Amber Text Card -->
+            <div class="feature-card feature-card--text-amber">
+                <h3 class="feature-amber-title">Rasa yang Teruji oleh Waktu, Dibuat dengan Tradisi</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROMO BANNER ===== -->
+    <section class="promo reveal" id="promo">
+        <div class="promo-banner">
+            <div class="promo-text">
+                <h2>Lebih Banyak Makan, Lebih Banyak Hemat!</h2>
+                <div class="promo-deals">
+                    <div class="promo-deal">
+                        <span class="promo-deal-tag">20% OFF</span>
+                        <span>Paket Ramen + Gyoza + Ocha</span>
+                    </div>
+                    <div class="promo-deal">
+                        <span class="promo-deal-tag">HAPPY HOUR</span>
+                        <span>Diskon 15% setiap 14:00 - 17:00</span>
+                    </div>
+                    <div class="promo-deal">
+                        <span class="promo-deal-tag">COMBO DEAL</span>
+                        <span>Beli 2 Ramen gratis Karaage</span>
+                    </div>
+                </div>
+                <button class="btn-explore" id="explore-promo-btn">Lihat Promo</button>
+            </div>
+            <div class="promo-image">
+                <img src="images/ramen-spread.jpg" alt="Promo ramen spesial" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta reveal" id="contact">
+        <div class="cta-banner">
+            <div class="cta-content">
+                <h2>Lapar? Kami Siap Melayani.</h2>
+                <p>Pesan meja atau order sekarang. Ramen segar buatan tangan sudah menunggu Anda.</p>
+                <button class="btn-cta" id="book-table-btn">Pesan Meja</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="nav-logo">Ramen<span>Ya</span></a>
+                <p>Restoran ramen autentik Jepang. Setiap mangkuk dibuat dengan hati dan tradisi yang diwariskan turun-temurun.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Menu</h4>
+                <ul>
+                    <li><a href="#menu">Tonkotsu Ramen</a></li>
+                    <li><a href="#menu">Miso Ramen</a></li>
+                    <li><a href="#menu">Shoyu Ramen</a></li>
+                    <li><a href="#menu">Side Dishes</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Info</h4>
+                <ul>
+                    <li><a href="#">Tentang Kami</a></li>
+                    <li><a href="#">Lokasi</a></li>
+                    <li><a href="#">Karir</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Jam Buka</h4>
+                <ul>
+                    <li><a href="#">Sen - Jum: 11:00 - 22:00</a></li>
+                    <li><a href="#">Sabtu: 10:00 - 23:00</a></li>
+                    <li><a href="#">Minggu: 10:00 - 21:00</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RamenYa. All rights reserved. Made with 🍜 in Jakarta.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== NAVBAR SCROLL EFFECT =====
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // ===== SCROLL REVEAL =====
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ===== CATEGORY ACTIVE STATE =====
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

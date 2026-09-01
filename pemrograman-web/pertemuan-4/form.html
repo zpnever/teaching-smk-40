@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Form Biodata Siswa</title>
+	</head>
+	<body>
+		<h2>Form Biodata Siswa</h2>
+
+		<form
+			id="form-login"
+			action="http://103.196.152.225:3003/submit"
+			method="get"
+		>
+			<label for="nama">Nama Lengkap:</label><br />
+			<input type="text" id="nama" name="nama" /><br /><br />
+
+			<label for="email">Email:</label>
+
+			<br />
+			<input type="email" id="email" name="email" /><br /><br />
+
+			<label for="password">Password:</label><br />
+			<input type="password" id="password" name="password" /><br /><br />
+
+			<button type="submit">Simpan</button>
+			<button type="reset">Reset</button>
+		</form>
+
+		<!-- <script>
+			const form = document.getElementById("form-login");
+
+			form.addEventListener("submit", (event) => {
+				event.preventDefault();
+
+				const nama = document.getElementById("nama").value;
+				const email = document.getElementById("email").value;
+				const password = document.getElementById("password").value;
+
+				alert(
+					`Nama : ${nama}
+Email : ${email}
+Password : ${password}
+                    `,
+				);
+			});
+		</script> -->
+	</body>
+</html>

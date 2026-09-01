@@ -1,0 +1,180 @@
+/* Warna dasar halaman */
+body {
+	color: #263238;
+}
+
+.site-header {
+	color: #0b3954;
+}
+
+.brand {
+	color: #e85d04;
+}
+
+.tagline {
+	color: #566573;
+}
+
+.main-navigation {
+	color: #264653;
+}
+
+.navigation-link {
+	color: #2a9d8f;
+}
+
+/* Warna bagian pembuka */
+#beranda {
+	color: #264653;
+}
+
+.hero-kicker {
+	color: #e76f51;
+}
+
+.hero-title {
+	color: #006d77;
+}
+
+.action-link {
+	color: #d62828;
+}
+
+/* Warna manfaat dan destinasi */
+.section-title {
+	color: #5a189a;
+}
+
+.benefit-card h3 {
+	color: #0077b6;
+}
+
+.benefit-card p {
+	color: #495057;
+}
+
+.destination-section > p {
+	color: #6c757d;
+}
+
+.destination-card h3 {
+	color: #2d6a4f;
+}
+
+.lake-destination h3 {
+	color: #0077b6;
+}
+
+.village-destination h3 {
+	color: #9c6644;
+}
+
+.island-destination h3 {
+	color: #7209b7;
+}
+
+.destination-card p {
+	color: #495057;
+}
+
+.detail-link {
+	color: #c1121f;
+}
+
+.detail-link:hover {
+	color: #ff8500;
+}
+
+/* Warna tabel paket */
+.package-table {
+	color: #343a40;
+}
+
+.table-caption {
+	color: #6a040f;
+}
+
+.package-table thead {
+	color: #005f73;
+}
+
+.package-table tbody {
+	color: #3a5a40;
+}
+
+.package-table tbody tr:nth-child(2) {
+	color: #7b2cbf;
+}
+
+.package-table tbody tr:nth-child(3) {
+	color: #9a3412;
+}
+
+/* Warna statistik dan testimoni */
+.statistic-section {
+	color: #386641;
+}
+
+.statistic-list li:nth-child(1) {
+	color: #0077b6;
+}
+
+.statistic-list li:nth-child(2) {
+	color: #e85d04;
+}
+
+.statistic-list li:nth-child(3) {
+	color: #6a4c93;
+}
+
+.statistic-list li:nth-child(4) {
+	color: #2a9d8f;
+}
+
+.testimonial p {
+	color: #6d597a;
+}
+
+.testimonial cite {
+	color: #bc4749;
+}
+
+/* Warna FAQ dan formulir */
+.faq-item summary {
+	color: #3c096c;
+}
+
+.faq-item p {
+	color: #606c38;
+}
+
+.booking-section > p {
+	color: #577590;
+}
+
+.form-label {
+	color: #9d0208;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+	color: #1d3557;
+}
+
+.submit-button {
+	color: #9d0208;
+}
+
+/* Warna footer */
+.site-footer {
+	color: #343a40;
+}
+
+.footer-title {
+	color: #f77f00;
+}
+
+.site-footer address {
+	color: #457b9d;
+}

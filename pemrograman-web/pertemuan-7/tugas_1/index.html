@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Dashboard data dummy TokoKita" />
+		<title>TokoKita - Data Produk</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<!--
+			Tujuan pembelajaran:
+			1. Menghubungkan HTML dengan external CSS.
+			2. Menggunakan universal selector (*), element selector,
+			   class selector (.), id selector (#), dan descendant selector.
+			3. Memahami specificity serta source order.
+
+			Petunjuk umum:
+			- Jangan menulis CSS di atribut style atau tag <style>.
+			- Kerjakan seluruh jawaban di file style.css.
+			- Jangan mengganti nama class dan id yang sudah tersedia.
+			- Buka file ini di browser setelah setiap beberapa perubahan
+			  untuk melihat pengaruh selector yang dibuat.
+			- Pada latihan ini, satu-satunya properti CSS yang boleh digunakan
+			  adalah color. Fokus penilaian adalah ketepatan selector.
+			============================================================
+		-->
+
+		<!-- SOAL 1: Gunakan universal selector (*) untuk mengubah warna teks
+			semua elemen menjadi gray. -->
+		<header class="site-header">
+			<!-- SOAL 2: Gunakan element selector body, h1, p, dan a dengan
+			warna wajib berikut:
+			- body: black
+			- h1: navy
+			- p: dimgray
+			- a: blue
+			Jangan menggunakan class atau id. -->
+			<h1 class="brand">TokoKita</h1>
+			<p class="tagline">Dashboard pengelolaan data toko online</p>
+
+			<nav class="main-nav" aria-label="Navigasi utama">
+				<ul class="nav-list">
+					<li><a class="nav-link" href="#beranda">Beranda</a></li>
+					<li><a class="nav-link" href="#ringkasan">Ringkasan</a></li>
+					<li><a class="nav-link" href="#produk">Data Produk</a></li>
+					<li><a class="nav-link" href="#pesanan">Pesanan</a></li>
+					<li><a class="nav-link" href="#kontak">Kontak</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main>
+			<!-- SOAL 3: Gunakan id selector (#beranda) untuk memberi warna
+			teks darkgreen pada bagian pembuka. -->
+			<section id="beranda" class="content-section hero-section">
+				<h2 class="section-title">Selamat datang, Admin</h2>
+				<p class="section-description">
+					Berikut adalah data dummy untuk memantau produk dan pesanan TokoKita.
+				</p>
+				<p class="update-info">
+					Terakhir diperbarui:
+					<time datetime="2026-08-17T09:30">17 Agustus 2026, 09.30 WIB</time>
+				</p>
+			</section>
+
+			<!-- SOAL 4: Gunakan class selector dengan warna wajib berikut:
+			- .content-section: green
+			- .section-title: purple
+			- .summary-number: orange
+			Fokus pada selector class dan -->
+			<section id="ringkasan" class="content-section summary-section">
+				<h2 class="section-title">Ringkasan Toko</h2>
+				<ul class="summary-list">
+					<li class="summary-item">
+						<strong class="summary-number">128</strong> Produk aktif
+					</li>
+					<li class="summary-item">
+						<strong class="summary-number">36</strong> Pesanan baru
+					</li>
+					<li class="summary-item">
+						<strong class="summary-number">12</strong> Produk hampir habis
+					</li>
+					<li class="summary-item">
+						<strong class="summary-number">Rp18.750.000</strong> Pendapatan
+						bulan ini
+					</li>
+				</ul>
+			</section>
+
+			<section id="produk" class="content-section data-section">
+				<h2 class="section-title">Data Produk</h2>
+				<p class="section-description">
+					Daftar produk yang tersedia di katalog TokoKita.
+				</p>
+
+				<!-- SOAL 5: Gunakan descendant selector dengan warna wajib:
+					#produk th: red
+					#produk td: black
+					Selector tersebut hanya boleh memengaruhi th dan td di dalam
+					#produk. -->
+				<table class="data-table product-table">
+					<caption>
+						Daftar produk TokoKita bulan Agustus 2026
+					</caption>
+					<thead>
+						<tr>
+							<th scope="col">No.</th>
+							<th scope="col">Kode Produk</th>
+							<th scope="col">Nama Produk</th>
+							<th scope="col">Kategori</th>
+							<th scope="col">Harga</th>
+							<th scope="col">Stok</th>
+							<th scope="col">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>TK-001</td>
+							<td>Kaos Polos Katun Premium</td>
+							<td>Fashion</td>
+							<td>Rp89.000</td>
+							<td>45</td>
+							<td class="status status-active">Aktif</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>TK-002</td>
+							<td>Tas Ransel Laptop 15 Inci</td>
+							<td>Aksesori</td>
+							<td>Rp249.000</td>
+							<td>18</td>
+							<td class="status status-active">Aktif</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>TK-003</td>
+							<td>Botol Minum Stainless 750 ml</td>
+							<td>Rumah Tangga</td>
+							<td>Rp125.000</td>
+							<td>32</td>
+							<td class="status status-active">Aktif</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>TK-004</td>
+							<td>Lampu Meja Belajar LED</td>
+							<td>Elektronik</td>
+							<td>Rp179.000</td>
+							<td>9</td>
+							<td class="status status-low">Hampir habis</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>TK-005</td>
+							<td>Buku Catatan A5 100 Lembar</td>
+							<td>Alat Tulis</td>
+							<td>Rp35.000</td>
+							<td>76</td>
+							<td class="status status-active">Aktif</td>
+						</tr>
+						<tr>
+							<td>6</td>
+							<td>TK-006</td>
+							<td>Keyboard Mechanical RGB</td>
+							<td>Elektronik</td>
+							<td>Rp459.000</td>
+							<td>14</td>
+							<td class="status status-active">Aktif</td>
+						</tr>
+						<tr>
+							<td>7</td>
+							<td>TK-007</td>
+							<td>Headphone Wireless Bass</td>
+							<td>Elektronik</td>
+							<td>Rp329.000</td>
+							<td>6</td>
+							<td class="status status-low">Hampir habis</td>
+						</tr>
+						<tr>
+							<td>8</td>
+							<td>TK-008</td>
+							<td>Sepatu Sneakers Casual</td>
+							<td>Fashion</td>
+							<td>Rp399.000</td>
+							<td>0</td>
+							<td id="status-habis" class="status status-out">Habis</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th scope="row" colspan="5">Total stok produk ditampilkan</th>
+							<th scope="row">200</th>
+							<td>Data dummy</td>
+						</tr>
+					</tfoot>
+				</table>
+			</section>
+
+			<!-- SOAL 6: Gunakan element selector dengan warna wajib:
+			- table: black
+			- caption: navy
+			- thead: blue
+			- tbody: black
+			- tfoot: green
+			-->
+			<section id="pesanan" class="content-section data-section">
+				<h2 class="section-title">Pesanan Terbaru</h2>
+				<table class="data-table order-table">
+					<caption>
+						Riwayat pesanan terbaru
+					</caption>
+					<thead>
+						<tr>
+							<th scope="col">ID Pesanan</th>
+							<th scope="col">Nama Pelanggan</th>
+							<th scope="col">Tanggal</th>
+							<th scope="col">Total</th>
+							<th scope="col">Metode Pembayaran</th>
+							<th scope="col">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ORD-1001</td>
+							<td>Andi Pratama</td>
+							<td><time datetime="2026-08-17">17 Agustus 2026</time></td>
+							<td>Rp249.000</td>
+							<td>Transfer bank</td>
+							<td class="order-status status-process">Diproses</td>
+						</tr>
+						<tr>
+							<td>ORD-1002</td>
+							<td>Siti Rahma</td>
+							<td><time datetime="2026-08-16">16 Agustus 2026</time></td>
+							<td>Rp364.000</td>
+							<td>E-wallet</td>
+							<td class="order-status status-shipped">Dikirim</td>
+						</tr>
+						<tr>
+							<td>ORD-1003</td>
+							<td>Bima Saputra</td>
+							<td><time datetime="2026-08-16">16 Agustus 2026</time></td>
+							<td>Rp89.000</td>
+							<td>Kartu debit</td>
+							<td class="order-status status-done">Selesai</td>
+						</tr>
+						<tr>
+							<td>ORD-1004</td>
+							<td>Nabila Putri</td>
+							<td><time datetime="2026-08-15">15 Agustus 2026</time></td>
+							<td>Rp459.000</td>
+							<td>Transfer bank</td>
+							<td class="order-status status-waiting">Menunggu pembayaran</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<!-- SOAL 7: Gunakan descendant selector dengan warna wajib:
+			- #kontak form label: purple
+			- #kontak form input: teal
+			- #kontak form select: orange
+			- #kontak form textarea: brown
+			Selector hanya boleh memengaruhi elemen form di dalam #kontak. -->
+			<section id="kontak" class="content-section form-section">
+				<h2 class="section-title">Tambah Produk Dummy</h2>
+				<form class="product-form" action="#" method="post">
+					<p>
+						<label class="form-label" for="nama-produk">Nama produk</label
+						><br />
+						<input
+							class="form-control"
+							type="text"
+							id="nama-produk"
+							name="nama_produk"
+							placeholder="Contoh: Mouse Wireless"
+							required
+						/>
+					</p>
+
+					<p>
+						<label class="form-label" for="kode-produk">Kode produk</label
+						><br />
+						<input
+							class="form-control"
+							type="text"
+							id="kode-produk"
+							name="kode_produk"
+							placeholder="Contoh: TK-009"
+							required
+						/>
+					</p>
+
+					<p>
+						<label class="form-label" for="kategori">Kategori</label><br />
+						<select class="form-control" id="kategori" name="kategori" required>
+							<option value="">Pilih kategori</option>
+							<option value="fashion">Fashion</option>
+							<option value="aksesori">Aksesori</option>
+							<option value="elektronik">Elektronik</option>
+							<option value="alat-tulis">Alat Tulis</option>
+							<option value="rumah-tangga">Rumah Tangga</option>
+						</select>
+					</p>
+
+					<p>
+						<label class="form-label" for="harga">Harga</label><br />
+						<input
+							class="form-control"
+							type="number"
+							id="harga"
+							name="harga"
+							min="0"
+							placeholder="100000"
+							required
+						/>
+					</p>
+
+					<p>
+						<label class="form-label" for="stok">Stok</label><br />
+						<input
+							class="form-control"
+							type="number"
+							id="stok"
+							name="stok"
+							min="0"
+							placeholder="25"
+							required
+						/>
+					</p>
+
+					<p>
+						<label class="form-label" for="deskripsi">Deskripsi produk</label
+						><br />
+						<textarea
+							class="form-control"
+							id="deskripsi"
+							name="deskripsi"
+							rows="4"
+							cols="40"
+							placeholder="Tulis deskripsi singkat produk"
+						></textarea>
+					</p>
+
+					<!-- SOAL 8: Gunakan class selector dengan warna wajib:
+							- .button: black
+							- #kontak .button-submit: red
+							-->
+					<button class="button button-submit" type="submit">
+						Simpan Produk
+					</button>
+					<button class="button button-reset" type="reset">Bersihkan</button>
+				</form>
+			</section>
+		</main>
+
+		<footer>
+			<p>
+				&copy; 2026 TokoKita. Semua data pada halaman ini adalah data dummy.
+			</p>
+			<address>
+				Email: <a href="mailto:admin@tokokita.example">admin@tokokita.example</a
+				><br />
+				Telepon: <a href="tel:+622155501234">+62 21 5550 1234</a>
+			</address>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,293 @@
+TUTORIAL &amp; SOAL PRAKTIK
+Membuat Web Portofolio Pribadi dengan HTML &amp; CSS
+
+Elemen Pemrograman Web – Fase F, Kelas XI RPL
+Mata Pelajaran Rekayasa Perangkat Lunak – Pemrograman Web
+Topik Web Portofolio Pribadi (Penerapan HTML Dasar, CSS Selector, CSS
+
+Color, CSS Background, CSS Box Model)
+
+Bagian Isi 1) Tutorial Langkah demi Langkah 2) Soal Praktik Mandiri &amp; Rubrik
+
+Penilaian
+
+BAGIAN 1 — TUTORIAL: MEMBUAT WEB PORTOFOLIO PRIBADI
+Ikuti langkah-langkah berikut untuk membuat halaman web portofolio sederhana. Contoh di bawah ini
+menggunakan data “Rangga Pratama” — gantilah dengan foto, nama, dan data kalian sendiri saat
+mengerjakan sendiri di rumah/lab.
+Langkah 1: Menyiapkan Struktur Folder Project
+Langkah kerja:
+1. Buat sebuah folder project baru, misalnya diberi nama: portofolio-nama-kalian.
+2. Di dalam folder tersebut, buat 2 file kosong: index.html dan style.css.
+3. Di dalam folder yang sama, buat 1 folder lagi bernama images/ untuk menyimpan foto profil dan gambar
+proyek.
+4. Buka folder project tersebut menggunakan Visual Studio Code.
+Catatan: CSS akan ditulis secara External (file terpisah dari HTML) agar tampilan dan struktur halaman lebih rapi
+dan mudah dirawat.
+Langkah 2: Membuat Kerangka Dasar HTML
+Langkah kerja:
+1. Buka file index.html.
+2. Ketik atau salin kode berikut ke dalamnya.
+3. Simpan file (Ctrl+S).
+index.html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Portofolio - Rangga Pratama&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+Baris &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt; inilah yang menghubungkan file HTML dengan file CSS
+eksternal kalian. Semua elemen lain akan kita tambahkan satu per satu di antara tag &lt;body&gt; dan
+&lt;/body&gt;.
+Langkah 3: Membuat &amp; Mendesain Navbar (Menu Navigasi)
+Langkah kerja:
+1. Buka index.html, lalu tambahkan kode navbar berikut di dalam &lt;body&gt;.
+2. Buka style.css, lalu tambahkan kode styling navbar berikut di bagian paling bawah.
+
+Tutorial &amp; Soal Praktik – Web Portofolio | Kelas XI RPL
+
+Halaman 2
+
+3. Simpan kedua file, lalu buka/refresh index.html di browser untuk melihat hasilnya.
+index.html
+&lt;header class=&quot;navbar&quot;&gt;
+&lt;span class=&quot;logo&quot;&gt;Rangga.&lt;/span&gt;
+&lt;a href=&quot;#beranda&quot;&gt;Beranda&lt;/a&gt;
+&lt;a href=&quot;#tentang&quot;&gt;Tentang&lt;/a&gt;
+&lt;a href=&quot;#skill&quot;&gt;Skill&lt;/a&gt;
+&lt;a href=&quot;#portofolio&quot;&gt;Portofolio&lt;/a&gt;
+&lt;a href=&quot;#kontak&quot;&gt;Kontak&lt;/a&gt;
+&lt;/header&gt;
+style.css
+.navbar {
+background-color: #1F3864;
+padding: 16px 40px;
+}
+.navbar .logo {
+color: #FFFFFF;
+margin-right: 40px;
+}
+.navbar a {
+color: #FFFFFF;
+margin-right: 20px;
+}
+.navbar a:hover {
+outline: 2px solid #FFD966;
+}
+Di sini kita memakai: Class Selector (.navbar, .logo), Descendant Selector (.navbar .logo dan .navbar a),
+warna format HEX (#1F3864), serta properti outline yang muncul saat tautan disentuh kursor (:hover).
+Hasilnya: sebuah navbar biru tua dengan menu berwarna putih akan tampil di bagian paling atas
+halaman.
+Langkah 4: Membuat &amp; Mendesain Bagian Beranda (Hero Section)
+Langkah kerja:
+1. Buka index.html, lalu tambahkan bagian Hero berikut tepat di bawah navbar (setelah tag &lt;/header&gt;).
+2. Buka style.css, lalu tambahkan kode styling Hero berikut di bagian paling bawah.
+3. Simpan kedua file, lalu refresh browser untuk melihat hasilnya.
+index.html
+&lt;section class=&quot;hero&quot; id=&quot;beranda&quot;&gt;
+&lt;img src=&quot;images/foto-profil.jpg&quot; alt=&quot;Foto Rangga&quot; class=&quot;foto-profil&quot;&gt;
+&lt;h1&gt;Halo, saya Rangga Pratama&lt;/h1&gt;
+&lt;p&gt;Calon Software Developer yang senang membangun tampilan web yang rapi.&lt;/p&gt;
+&lt;a href=&quot;#kontak&quot; class=&quot;btn&quot;&gt;Hubungi Saya&lt;/a&gt;
+&lt;/section&gt;
+style.css
+.hero {
+background-color: rgb(220, 230, 241);
+background-image: url(&quot;images/pola-titik.png&quot;);
+background-repeat: repeat;
+background-position: center;
+background-size: cover;
+background-attachment: scroll;
+
+Tutorial &amp; Soal Praktik – Web Portofolio | Kelas XI RPL
+
+Halaman 3
+
+padding: 60px 20px;
+text-align: center;
+}
+.hero .foto-profil {
+width: 150px;
+height: 150px;
+border: 4px solid #1F3864;
+border-radius: 50%;
+box-sizing: border-box;
+margin-bottom: 20px;
+}
+.hero .btn {
+background-color: hsl(210, 70%, 35%);
+color: #FFFFFF;
+padding: 12px 28px;
+margin-top: 16px;
+border: none;
+border-radius: 6px;
+}
+Bagian ini sengaja memuat banyak konsep sekaligus: warna format RGB (background hero) dan HSL
+(tombol), lengkap dengan properti Background (image, repeat, position, size, attachment), serta Box
+Model pada foto profil (width, height, border, box-sizing: border-box supaya border tidak menambah
+ukuran total elemen). Properti border-radius: 50% dipakai agar foto profil tampil bulat, dan border-radius:
+6px pada tombol membuat sudutnya sedikit melengkung.
+Langkah 5: Membuat &amp; Mendesain Bagian Tentang Saya
+Langkah kerja:
+1. Buka index.html, lalu tambahkan bagian Tentang Saya tepat di bawah section Hero.
+2. Buka style.css, lalu tambahkan kode styling berikut di bagian paling bawah.
+3. Simpan kedua file, lalu refresh browser untuk melihat hasilnya.
+index.html
+&lt;section class=&quot;tentang&quot; id=&quot;tentang&quot;&gt;
+&lt;h2&gt;Tentang Saya&lt;/h2&gt;
+&lt;p&gt;Saya adalah siswa SMK Jurusan RPL yang tertarik pada pengembangan web,
+mulai dari merancang tampilan hingga menghubungkannya dengan basis data.&lt;/p&gt;
+&lt;/section&gt;
+style.css
+#tentang {
+padding: 40px 60px;
+margin: 0;
+border-bottom: 1px solid #CCCCCC;
+}
+Perhatikan penggunaan Id Selector (#tentang) — dipakai karena bagian ini bersifat unik/hanya ada satu
+di halaman.
+Langkah 6: Membuat &amp; Mendesain Bagian Keahlian (Skill)
+Langkah kerja:
+1. Buka index.html, lalu tambahkan bagian Keahlian tepat di bawah section Tentang Saya.
+2. Buka style.css, lalu tambahkan kode styling berikut di bagian paling bawah.
+3. Simpan kedua file, lalu refresh browser untuk melihat hasilnya.
+index.html
+&lt;section class=&quot;skill&quot; id=&quot;skill&quot;&gt;
+
+Tutorial &amp; Soal Praktik – Web Portofolio | Kelas XI RPL
+
+Halaman 4
+
+&lt;h2&gt;Keahlian&lt;/h2&gt;
+&lt;span class=&quot;badge&quot;&gt;HTML&lt;/span&gt;
+&lt;span class=&quot;badge&quot;&gt;CSS&lt;/span&gt;
+&lt;span class=&quot;badge&quot;&gt;Basis Data&lt;/span&gt;
+&lt;span class=&quot;badge&quot;&gt;Pemrograman Mobile&lt;/span&gt;
+&lt;/section&gt;
+style.css
+.skill {
+padding: 40px 60px;
+background-color: #F2F2F2;
+}
+.skill .badge {
+background-color: rgba(31, 56, 100, 0.85);
+color: #FFFFFF;
+padding: 8px 16px;
+margin: 6px;
+border: 1px solid #1F3864;
+border-radius: 20px;
+box-sizing: border-box;
+}
+Format warna RGBA dipakai di sini agar transparansi warna badge bisa diatur. Setiap badge juga
+menerapkan padding, margin, border, dan border-radius: 20px sekaligus (agar berbentuk pil) — latihan
+Box Model yang lengkap.
+Langkah 7: Membuat &amp; Mendesain Bagian Portofolio/Proyek
+Langkah kerja:
+1. Buka index.html, lalu tambahkan bagian Portofolio tepat di bawah section Keahlian.
+2. Siapkan 2 gambar proyek (boleh sementara pakai gambar apa saja) dan simpan di folder images/
+dengan nama proyek1.jpg dan proyek2.jpg.
+3. Buka style.css, lalu tambahkan kode styling berikut di bagian paling bawah.
+4. Simpan semua file, lalu refresh browser untuk melihat hasilnya.
+index.html
+&lt;section class=&quot;portofolio&quot; id=&quot;portofolio&quot;&gt;
+&lt;h2&gt;Proyek Saya&lt;/h2&gt;
+&lt;div class=&quot;card-proyek&quot;&gt;
+&lt;img src=&quot;images/proyek1.jpg&quot; alt=&quot;Proyek 1&quot;&gt;
+&lt;h3&gt;Website Perpustakaan Sekolah&lt;/h3&gt;
+&lt;p&gt;Sistem manajemen buku berbasis web menggunakan Laravel.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card-proyek&quot;&gt;
+&lt;img src=&quot;images/proyek2.jpg&quot; alt=&quot;Proyek 2&quot;&gt;
+&lt;h3&gt;Toko Online Sederhana&lt;/h3&gt;
+&lt;p&gt;Landing page toko online dengan WordPress &amp; WooCommerce.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+style.css
+.card-proyek {
+border: 1px solid #CCCCCC;
+border-radius: 8px;
+padding: 20px;
+margin-bottom: 24px;
+box-sizing: border-box;
+}
+.card-proyek img {
+
+Tutorial &amp; Soal Praktik – Web Portofolio | Kelas XI RPL
+
+Halaman 5
+
+width: 100%;
+height: auto;
+border-radius: 6px;
+}
+Langkah 8: Membuat Bagian Kontak dan Footer
+Langkah kerja:
+1. Buka index.html, lalu tambahkan bagian Kontak dan Footer di bagian paling bawah, tepat sebelum tag
+&lt;/body&gt;.
+2. Buka style.css, lalu tambahkan kode styling berikut di bagian paling bawah.
+3. Simpan kedua file, lalu refresh browser untuk melihat hasil akhirnya.
+index.html
+&lt;section class=&quot;kontak&quot; id=&quot;kontak&quot;&gt;
+&lt;h2&gt;Hubungi Saya&lt;/h2&gt;
+&lt;p&gt;Email: rangga@email.com&lt;/p&gt;
+&lt;p&gt;Instagram: @rangga.dev&lt;/p&gt;
+&lt;/section&gt;
+&lt;footer&gt;
+&lt;p&gt;&amp;copy; 2026 Rangga Pratama. Semua hak dilindungi.&lt;/p&gt;
+&lt;/footer&gt;
+style.css
+footer {
+background-color: #1F3864;
+color: #FFFFFF;
+text-align: center;
+padding: 16px;
+}
+.hero, .kontak, .skill {
+text-align: center;
+}
+Selector footer memakai Element/Tag Selector, sedangkan .hero, .kontak, .skill { } memakai Group
+Selector — cara menulis satu aturan CSS untuk beberapa selector sekaligus.
+Langkah 9: Menguji dan Merapikan Tampilan Akhir
+Langkah kerja:
+• Buka file index.html di browser, cek satu per satu bagian dari Navbar sampai Footer.
+• Pastikan tidak ada elemen yang tumpang tindih akibat padding/margin yang keliru.
+• Perhatikan margin collapsing: margin antar section yang saling bersebelahan bisa “menyatu”, bukan
+berjumlah — sesuaikan bila jarak terasa kurang/lebih.
+• Cek kontras warna teks dan latar agar tetap mudah dibaca.
+Catatan: Kalian boleh menambah gaya lain (misalnya font-size atau text-align) untuk mempercantik tampilan,
+selama seluruh materi wajib (selector, color, background, box model) tetap terlihat jelas penerapannya.
+BAGIAN 2 — SOAL PRAKTIK MANDIRI
+Setelah mengikuti tutorial, buatlah web portofolio PRIBADI kalian sendiri (bukan menyalin persis contoh
+tutorial di atas) yang menerapkan seluruh materi yang telah dipelajari: HTML Dasar, CSS Dasar (cara
+penulisan &amp; selector), CSS Color, CSS Background, dan CSS Box Model.
+Ketentuan Wajib
+
+Tutorial &amp; Soal Praktik – Web Portofolio | Kelas XI RPL
+
+Halaman 6
+
+☐ Struktur halaman lengkap: Navbar, Beranda/Hero (foto + nama + deskripsi diri), Tentang Saya,
+Keahlian (minimal 4 skill), Portofolio/Proyek (minimal 2 proyek dengan gambar &amp; deskripsi), Kontak,
+dan Footer.
+☐ CSS ditulis secara External (file style.css terpisah dari index.html).
+☐ Menggunakan minimal 4 jenis CSS Selector yang berbeda (Element, Class, Id, Descendant,
+dan/atau Group Selector).
+☐ Menggunakan minimal 4 format penulisan warna yang berbeda (Named Color, HEX, RGB, RGBA,
+HSL).
+☐ Menerapkan CSS Background pada minimal 2 elemen berbeda; minimal satu di antaranya memakai
+background-image lengkap dengan background-repeat, background-position, dan background-size.
+☐ Menerapkan CSS Box Model secara sadar: tentukan box-sizing (content-box/border-box) beserta
+alasannya, atur padding &amp; margin konsisten antar bagian, gunakan properti border pada minimal 2
+elemen, terapkan border-radius pada minimal 2 elemen (mis. foto profil, tombol, atau kartu), dan
+terapkan outline pada elemen interaktif (tautan/tombol saat :hover atau :focus).
+☐ Melampirkan laporan singkat (maksimal 1 halaman) yang berisi: daftar selector yang dipakai beserta
+lokasinya, daftar format warna yang dipakai beserta lokasinya, dan alasan pemilihan box-sizing.
+Format Pengumpulan
+• Kumpulkan folder project (index.html, style.css, folder images/) dalam bentuk .zip, ATAU tautan
+repository (GitHub) / CodePen sesuai arahan guru.
+• Sertakan screenshot tampilan akhir halaman portofolio pada laporan.
+• Format nama file: NamaLengkap_Kelas_PortofolioPribadi.zip
