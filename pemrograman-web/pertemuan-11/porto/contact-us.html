@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Hubungi Pengembang Web Siswa SMK XI RPL - Formulir kontak interaktif dan informasi komunikasi untuk kolaborasi proyek.">
+    <title>Portofolio Pribadi | Hubungi Saya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER & NAVBAR ================= -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="nav-logo" id="nav-brand-logo">
+                <span class="nav-logo-icon">🌿</span>
+                <span>Danu.dev</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html" class="nav-link" id="nav-home">Home</a></li>
+                    <li><a href="project.html" class="nav-link" id="nav-project">Project</a></li>
+                    <li><a href="contact-us.html" class="nav-link active" id="nav-contact">Contact Us</a></li>
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <main>
+        <!-- ================= PAGE HEADER BANNER ================= -->
+        <section class="hero-wrapper" style="padding: 70px 0 80px;">
+            <svg class="hero-deco-leaf leaf-left" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+            <svg class="hero-deco-leaf leaf-right" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+
+            <div class="container text-center">
+                <div class="badge-tag light" style="margin-bottom: 16px;">
+                    <span>📬</span>
+                    <span>Buka Peluang Kolaborasi</span>
+                </div>
+                <h1 class="hero-title" style="font-size: clamp(2.2rem, 3.8vw, 3.2rem);">
+                    Mari Terhubung <span>& Berdiskusi</span>
+                </h1>
+                <p class="hero-desc" style="margin: 16px auto 0; max-width: 680px;">
+                    Punya pertanyaan seputar proyek, tawaran kolaborasi, atau ingin berdiskusi mengenai pemrograman web?
+                    Silakan kirim pesan melalui form di bawah ini.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= CONTACT SECTION ================= -->
+        <section class="section-padding container" style="margin-top: -30px;">
+            <div class="contact-grid">
+
+                <!-- Info Card (Kolom Kiri) -->
+                <div class="contact-info-card">
+                    <div>
+                        <span class="badge-tag light" style="margin-bottom: 12px;">Kontak Langsung</span>
+                        <h2 class="contact-info-title">Saluran Komunikasi</h2>
+                        <p class="contact-info-desc">
+                            Jangan ragu untuk menghubungi saya melalui kontak di bawah ini. Saya akan berusaha merespons
+                            sesegera mungkin.
+                        </p>
+                    </div>
+
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <div class="contact-icon-bubble">📧</div>
+                            <div>
+                                <span class="contact-item-label">Alamat Email</span>
+                                <p class="contact-item-val">student@sekolah.sch.id</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon-bubble">💬</div>
+                            <div>
+                                <span class="contact-item-label">WhatsApp / Telepon</span>
+                                <p class="contact-item-val">+62 812-3456-7890</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon-bubble">📍</div>
+                            <div>
+                                <span class="contact-item-label">Lokasi Kampus / Sekolah</span>
+                                <p class="contact-item-val">Lab Komputer RPL, SMK Negeri</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon-bubble">⏰</div>
+                            <div>
+                                <span class="contact-item-label">Jam Belajar & Aktif</span>
+                                <p class="contact-item-val">Senin - Jumat: 07.30 - 16.00 WIB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="contact-item-label" style="margin-bottom: 10px;">Media Sosial & Portofolio</p>
+                        <div class="social-badges">
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="social-badge-link">🐙 GitHub</a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                                class="social-badge-link">💼 LinkedIn</a>
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+                                class="social-badge-link">📸 Instagram</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card (Kolom Kanan) -->
+                <div class="contact-form-card">
+                    <h2 class="form-title">Kirimkan Pesan Anda</h2>
+                    <p class="form-subtitle">Lengkapi formulir di bawah ini dengan pesan atau penawaran kerja sama yang
+                        ingin Anda sampaikan.</p>
+
+                    <form action="#" method="POST" class="form-layout" id="contact-form"
+                        onsubmit="event.preventDefault(); alert('Terima kasih! Pesan Anda berhasil dikirim (Demo Form SMK XI RPL).');">
+
+                        <div class="form-group">
+                            <label for="full-name" class="form-label">Nama Lengkap *</label>
+                            <input type="text" id="full-name" name="name" class="form-input"
+                                placeholder="Misal: Budi Pratama" required autocomplete="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-address" class="form-label">Alamat Email *</label>
+                            <input type="email" id="email-address" name="email" class="form-input"
+                                placeholder="nama@email.com" required autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject-topic" class="form-label">Topik Keperluan</label>
+                            <select id="subject-topic" name="topic" class="form-select">
+                                <option value="kolaborasi">💡 Tawaran Kolaborasi Proyek</option>
+                                <option value="tanya-materi">📚 Diskusi Pembelajaran Pemrograman</option>
+                                <option value="freelance">💼 Peluang Magang / Freelance</option>
+                                <option value="lainnya">💬 Pesan & Sapaan Umum</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message-content" class="form-label">Isi Pesan *</label>
+                            <textarea id="message-content" name="message" class="form-textarea"
+                                placeholder="Tuliskan detail pesan, ide, atau pertanyaan Anda di sini..."
+                                required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="btn-submit-message"
+                            style="width: 100%; margin-top: 8px;">
+                            <span>Kirimkan Pesan Sekarang</span>
+                            <span>🚀</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="home.html" class="footer-logo">
+                        <span>🌿</span>
+                        <span>Danu.dev</span>
+                    </a>
+                    <p class="footer-desc">
+                        Website portofolio pribadi pengembang web siswa SMK XI RPL. Dibangun dengan HTML5 Semantik dan
+                        CSS Modern.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Navigasi Cepat</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="home.html" class="footer-link">Beranda (Home)</a></li>
+                        <li><a href="project.html" class="footer-link">Koleksi Proyek (Project)</a></li>
+                        <li><a href="contact-us.html" class="footer-link">Hubungi Saya (Contact Us)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Lokasi & Kontak</h4>
+                    <ul class="footer-links-list">
+                        <li class="footer-link">📍 Lab Komputer XI RPL</li>
+                        <li class="footer-link">📧 student@sekolah.sch.id</li>
+                        <li class="footer-link">💼 Terbuka untuk Kolaborasi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Danu.dev - Portofolio SMK XI RPL. Dibuat untuk Pembelajaran Pemrograman Web.</p>
+                <p>Dirancang dengan 🤎 menggunakan HTML5 & Vanilla CSS.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

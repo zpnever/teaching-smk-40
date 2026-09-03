@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Koleksi Proyek dan Karya Pemrograman Web Siswa SMK XI RPL - Menampilkan hasil praktikum, web slicing, dan aplikasi web interaktif.">
+    <title>Portofolio Pribadi | Koleksi Proyek</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER & NAVBAR ================= -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="nav-logo" id="nav-brand-logo">
+                <span class="nav-logo-icon">🌿</span>
+                <span>Danu.dev</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html" class="nav-link" id="nav-home">Home</a></li>
+                    <li><a href="project.html" class="nav-link active" id="nav-project">Project</a></li>
+                    <li><a href="contact-us.html" class="nav-link" id="nav-contact">Contact Us</a></li>
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <main>
+        <!-- ================= PAGE HEADER BANNER ================= -->
+        <section class="hero-wrapper" style="padding: 70px 0 80px;">
+            <svg class="hero-deco-leaf leaf-left" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+            <svg class="hero-deco-leaf leaf-right" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+
+            <div class="container text-center">
+                <div class="badge-tag light" style="margin-bottom: 16px;">
+                    <span>🎨</span>
+                    <span>Galeri Hasil Karya & Praktikum</span>
+                </div>
+                <h1 class="hero-title" style="font-size: clamp(2.2rem, 3.8vw, 3.2rem);">
+                    Koleksi Proyek <span>Eksplorasi Web</span>
+                </h1>
+                <p class="hero-desc" style="margin: 16px auto 0; max-width: 680px;">
+                    Kumpulan karya pengembangan website yang saya bangun selama pembelajaran pemrograman web di SMK XI
+                    RPL.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= FILTER PILLS ================= -->
+        <div class="container" style="margin-top: -20px;">
+            <div class="filter-wrapper" role="tablist" aria-label="Kategori Proyek">
+                <button class="filter-btn active" type="button">🌟 Semua Karya (6)</button>
+                <button class="filter-btn" type="button">📐 Web Slicing</button>
+                <button class="filter-btn" type="button">⚡ Aplikasi Web</button>
+                <button class="filter-btn" type="button">🧩 UI Component</button>
+            </div>
+        </div>
+
+        <!-- ================= PROJECT GRID ================= -->
+        <section class="section-padding container" style="padding-top: 20px;">
+            <div class="project-grid">
+
+                <!-- Project 1 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">Web Slicing</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">🌲 Jadewood Forest</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Landing Page Konservasi Alam</h2>
+                        <p class="project-desc">Penerapan slicing template landing page kampanye lingkungan berbasis
+                            Flexbox dan CSS Grid modern dengan tipografi berkarakter.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS Grid</span>
+                            <span class="tech-badge">Responsive Web</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">Aplikasi Web</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">📚 Portal Siswa RPL</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Website Portal Modul Belajar</h2>
+                        <p class="project-desc">Platform repositori materi praktikum pemrograman web untuk siswa SMK,
+                            dilengkapi navigasi materi terstruktur.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5 Semantik</span>
+                            <span class="tech-badge">CSS Flexbox</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">Aplikasi Web</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">🧮 Web Calculator</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Kalkulator Interaktif Modern</h2>
+                        <p class="project-desc">Aplikasi kalkulator berbasis browser dengan desain antarmuka bergaya
+                            earth-tone dan logika perhitungan JavaScript akurat.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS Variables</span>
+                            <span class="tech-badge">JS Logic</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 4 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">UI Component</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">📝 Form Registrasi UI</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Komponen Form Interaktif</h2>
+                        <p class="project-desc">Desain antarmuka form validasi data siswa dengan feedback visual CSS
+                            pseudo-class (:user-valid / :user-invalid) tanpa reload.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5 Form</span>
+                            <span class="tech-badge">CSS State</span>
+                            <span class="tech-badge">UI/UX</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 5 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">Web Slicing</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">🏫 Profil Sekolah SMK</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Website Profil Jurusan RPL</h2>
+                        <p class="project-desc">Halaman informasi keunggulan kompetensi keahlian Rekayasa Perangkat
+                            Lunak, visi misi, dan fasilitas lab komputer.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS Grid</span>
+                            <span class="tech-badge">Responsive</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 6 -->
+                <article class="project-card">
+                    <div class="project-thumb">
+                        <span class="project-category-chip">Aplikasi Web</span>
+                        <div class="project-thumb-preview">
+                            <div class="project-thumb-bar">
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                                <span class="project-thumb-dot"></span>
+                            </div>
+                            <div class="project-thumb-skeleton">✅ Task Manager App</div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <h2 class="project-title">Aplikasi Catatan Tugas (To-Do)</h2>
+                        <p class="project-desc">Aplikasi pengingat tugas sekolah dengan fitur tambah tugas, status
+                            selesai, filter prioritas, dan penyimpanan lokal di browser.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">JavaScript DOM</span>
+                            <span class="tech-badge">LocalStorage</span>
+                            <span class="tech-badge">CSS Flexbox</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-btn demo">Live Demo 🔗</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                class="project-btn code">GitHub 💻</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ================= CTA BANNER ================= -->
+        <div class="container">
+            <section class="cta-banner">
+                <div class="cta-banner-content">
+                    <h2 class="cta-banner-title">Tertarik Membangun Proyek Bersama?</h2>
+                    <p class="cta-banner-desc">Mari diskusikan kebutuhan website Anda atau saling bertukar ide seputar
+                        teknologi web terkini.</p>
+                    <a href="contact-us.html" class="btn btn-primary" id="cta-project-contact">
+                        <span>Kirim Pesan Kolaborasi</span>
+                        <span>📬</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="home.html" class="footer-logo">
+                        <span>🌿</span>
+                        <span>Danu.dev</span>
+                    </a>
+                    <p class="footer-desc">
+                        Website portofolio pribadi pengembang web siswa SMK XI RPL. Dibangun dengan HTML5 Semantik dan
+                        CSS Modern.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Navigasi Cepat</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="home.html" class="footer-link">Beranda (Home)</a></li>
+                        <li><a href="project.html" class="footer-link">Koleksi Proyek (Project)</a></li>
+
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Lokasi & Kontak</h4>
+                    <ul class="footer-links-list">
+                        <li class="footer-link">📍 Lab Komputer XI RPL</li>
+                        <li class="footer-link">📧 student@sekolah.sch.id</li>
+                        <li class="footer-link">💼 Terbuka untuk Kolaborasi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Danu.dev - Portofolio SMK XI RPL. Dibuat untuk Pembelajaran Pemrograman Web.</p>
+                <p>Dirancang dengan 🤎 menggunakan HTML5 & Vanilla CSS.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

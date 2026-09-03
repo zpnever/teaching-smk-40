@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Portofolio Web Developer Siswa SMK XI RPL - Menampilkan keahlian, proyek web, dan kontak kolaborasi.">
+    <title>Portofolio Pribadi | Beranda</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER & NAVBAR ================= -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="nav-logo" id="nav-brand-logo">
+                <span class="nav-logo-icon">🌿</span>
+                <span>Danu.dev</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html" class="nav-link active" id="nav-home">Home</a></li>
+                    <li><a href="project.html" class="nav-link" id="nav-project">Project</a></li>
+                    <li><a href="contact-us.html" class="nav-link" id="nav-contact">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- ================= HERO SECTION ================= -->
+        <section class="hero-wrapper">
+            <!-- Ornamen Daun Halus (Dekorasi Inspirasi Alam) -->
+            <svg class="hero-deco-leaf leaf-left" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+            <svg class="hero-deco-leaf leaf-right" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M10,80 Q50,0 90,40 Q60,90 10,80 Z" />
+            </svg>
+
+            <div class="container hero-content">
+                <!-- Hero Text -->
+                <div class="hero-text">
+                    <div class="badge-tag light">
+                        <span>🌱</span>
+                        <span>Frontend Developer & Siswa XI RPL</span>
+                    </div>
+
+                    <h1 class="hero-title">
+                        Membangun Solusi Web
+                        <span>Kreatif & Fungsional</span>
+                    </h1>
+
+                    <p class="hero-desc">
+                        Selamat datang di portofolio digital saya. Saya senang merancang tampilan web yang modern,
+                        responsif, dan ramah pengguna dengan kode yang terstruktur rapi.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="project.html" class="btn btn-primary" id="hero-btn-project">
+                            <span>Jelajahi Proyek</span>
+                            <span>🚀</span>
+                        </a>
+                        <a href="contact-us.html" class="btn btn-outline-light" id="hero-btn-contact">
+                            <span>Mari Terhubung</span>
+                            <span>📬</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Avatar / Profile Frame -->
+                <div class="hero-avatar-card">
+                    <div class="avatar-backdrop"></div>
+                    <div class="avatar-frame">
+                        <img src="image/photo.jpeg" alt="Foto Profil Pengembang Web" id="profile-photo">
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= STATS / HIGHLIGHTS ================= -->
+        <div class="container">
+            <section class="stats-grid" aria-label="Ringkasan Statistik">
+                <article class="stat-card">
+                    <div class="stat-num">12+</div>
+                    <p class="stat-label">Proyek & Latihan Selesai</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-num">2+</div>
+                    <p class="stat-label">Tahun Belajar Coding RPL</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-num">100%</div>
+                    <p class="stat-label">Dedikasi & Semangat Inovasi</p>
+                </article>
+            </section>
+        </div>
+
+        <!-- ================= SKILLS SECTION ================= -->
+        <section class="section-padding container">
+            <div class="section-header text-center">
+                <span class="badge-tag">Keahlian Teknis</span>
+                <h2 class="section-title">Teknologi & Fondasi Coding</h2>
+                <p class="section-desc">
+                    Keahlian utama dalam pengembangan web front-end yang terus diasah melalui kurikulum SMK RPL dan
+                    proyek mandiri.
+                </p>
+            </div>
+
+            <div class="skills-grid">
+                <article class="skill-card">
+                    <div class="skill-icon-box">🌐</div>
+                    <h3 class="skill-title">HTML5 Semantik</h3>
+                    <p class="skill-desc">Menyusun struktur web yang standar, ramah mesin pencari (SEO), dan mudah
+                        diakses semua pengguna.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Semantic Tags</span>
+                        <span class="skill-tag">Forms & Input</span>
+                        <span class="skill-tag">Accessibility</span>
+                    </div>
+                </article>
+
+                <article class="skill-card">
+                    <div class="skill-icon-box">🎨</div>
+                    <h3 class="skill-title">Modern CSS3</h3>
+                    <p class="skill-desc">Mendesain tata letak yang luwes dan responsif dengan CSS Flexbox, CSS Grid,
+                        Custom Properties, dan animasi halus.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Flexbox & Grid</span>
+                        <span class="skill-tag">Responsive Media</span>
+                        <span class="skill-tag">CSS Variables</span>
+                    </div>
+                </article>
+
+                <article class="skill-card">
+                    <div class="skill-icon-box">⚡</div>
+                    <h3 class="skill-title">JavaScript Dasar</h3>
+                    <p class="skill-desc">Membangun interaktivitas halaman web, manipulasi DOM, event listener, dan
+                        validasi form dinamis.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">DOM Manipulation</span>
+                        <span class="skill-tag">Events</span>
+                        <span class="skill-tag">Logic & Functions</span>
+                    </div>
+                </article>
+
+                <article class="skill-card">
+                    <div class="skill-icon-box">📱</div>
+                    <h3 class="skill-title">Responsive Design</h3>
+                    <p class="skill-desc">Memastikan web tampil optimal dan proporsional di berbagai perangkat, mulai
+                        dari smartphone hingga monitor desktop.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Mobile First</span>
+                        <span class="skill-tag">Breakpoints</span>
+                        <span class="skill-tag">UI Slicing</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= FEATURED PROJECTS PREVIEW ================= -->
+        <section class="section-padding" style="background-color: var(--bg-warm-secondary);">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="badge-tag">Showcase Pilihan</span>
+                    <h2 class="section-title">Karya & Proyek Unggulan</h2>
+                    <p class="section-desc">
+                        Cuplikan beberapa proyek yang telah saya buat selama pembelajaran pemrograman web.
+                    </p>
+                </div>
+
+                <div class="project-grid">
+                    <!-- Featured Project 1 -->
+                    <article class="project-card">
+                        <div class="project-thumb">
+                            <span class="project-category-chip">Web Slicing</span>
+                            <div class="project-thumb-preview">
+                                <div class="project-thumb-bar">
+                                    <span class="project-thumb-dot"></span>
+                                    <span class="project-thumb-dot"></span>
+                                    <span class="project-thumb-dot"></span>
+                                </div>
+                                <div class="project-thumb-skeleton">🌲 Jadewood Forest Landing</div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <h3 class="project-title">Landing Page Konservasi Hutan</h3>
+                            <p class="project-desc">Slicing desain landing page bertema alam dengan tata letak grid
+                                responsif, tipografi tebal, dan palet warna organik.</p>
+                            <div class="project-tech">
+                                <span class="tech-badge">HTML5</span>
+                                <span class="tech-badge">CSS Grid</span>
+                                <span class="tech-badge">Responsive</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="project.html" class="project-btn demo">Lihat Detail</a>
+                                <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                    class="project-btn code">GitHub</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Featured Project 2 -->
+                    <article class="project-card">
+                        <div class="project-thumb">
+                            <span class="project-category-chip">Aplikasi Web</span>
+                            <div class="project-thumb-preview">
+                                <div class="project-thumb-bar">
+                                    <span class="project-thumb-dot"></span>
+                                    <span class="project-thumb-dot"></span>
+                                    <span class="project-thumb-dot"></span>
+                                </div>
+                                <div class="project-thumb-skeleton">📚 Portal Belajar RPL</div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <h3 class="project-title">Website Portal Materi Siswa</h3>
+                            <p class="project-desc">Website modul pembelajaran interaktif yang memudahkan siswa
+                                mengakses materi praktikum dan tugas mingguan.</p>
+                            <div class="project-tech">
+                                <span class="tech-badge">HTML5</span>
+                                <span class="tech-badge">CSS Flexbox</span>
+                                <span class="tech-badge">JavaScript</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="project.html" class="project-btn demo">Lihat Detail</a>
+                                <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                    class="project-btn code">GitHub</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="text-center" style="margin-top: 45px;">
+                    <a href="project.html" class="btn btn-secondary" id="btn-see-all-projects">
+                        <span>Lihat Semua Koleksi Proyek (6+)</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CTA BANNER ================= -->
+        <div class="container">
+            <section class="cta-banner">
+                <div class="cta-banner-content">
+                    <h2 class="cta-banner-title">Punya Ide Proyek Web yang Menarik?</h2>
+                    <p class="cta-banner-desc">Saya selalu terbuka untuk diskusi, proyek kolaborasi, maupun peluang
+                        magang di bidang pengembangan web.</p>
+                    <a href="contact-us.html" class="btn btn-primary" id="cta-hubungi-btn">
+                        <span>Mulai Obrolan Sekarang</span>
+                        <span>✨</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="home.html" class="footer-logo">
+                        <span>🌿</span>
+                        <span>Danu.dev</span>
+                    </a>
+                    <p class="footer-desc">
+                        Website portofolio pribadi pengembang web siswa SMK XI RPL. Dibangun dengan HTML5 Semantik dan
+                        CSS Modern.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Navigasi Cepat</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="home.html" class="footer-link">Beranda (Home)</a></li>
+                        <li><a href="project.html" class="footer-link">Koleksi Proyek (Project)</a></li>
+                        <li><a href="contact-us.html" class="footer-link">Hubungi Saya (Contact Us)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Lokasi & Kontak</h4>
+                    <ul class="footer-links-list">
+                        <li class="footer-link">📍 Lab Komputer XI RPL</li>
+                        <li class="footer-link">📧 student@sekolah.sch.id</li>
+                        <li class="footer-link">💼 Terbuka untuk Kolaborasi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Danu.dev - Portofolio SMK XI RPL. Dibuat untuk Pembelajaran Pemrograman Web.</p>
+                <p>Dirancang dengan 🤎 menggunakan HTML5 & Vanilla CSS.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

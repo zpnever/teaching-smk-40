@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		.hero-section {
+			height: 100vh;
+			width: 100%;
+			background-color: bisque;
+			display: flex;
+		}
+
+		.hero-section .kiri {
+			width: 50%;
+			height: 100%;
+			background-color: aqua;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.hero-section .kiri h1 {
+			font-size: 100px;
+		}
+
+		.hero-section .kiri p {
+			font-size: 30px;
+		}
+
+		.button-kiri {
+			border-radius: 50px;
+			padding: 5px 10px;
+			font-size: 15px;
+		}
+		.button-kanan {
+			border-radius: 50px;
+			padding: 5px 10px;
+			font-size: 15px;
+		}
+
+		.hero-section .kanan {
+			width: 50%;
+			height: 100%;
+			background-color: red;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.gambar-kanan {
+			width: 50%;
+		}
+	</style>
+
+	<body>
+		<div class="hero-section">
+			<div class="kiri">
+				<h1>RASA YANG MENGGODA!</h1>
+				<p>
+					Nikmati cita rasa ramen autentik Jepang dengan kuah kaldu yang dimasak
+					hingga 18 jam. Setiap mangkuk adalah sebuah karya seni. Pesan Sekarang
+					Lihat Menu
+				</p>
+				<div>
+					<button class="button-kiri">Pesan Sekarang</button>
+					<button class="button-kanan">Lihat Menu</button>
+				</div>
+			</div>
+			<div class="kanan">
+				<img
+					class="gambar-kanan"
+					src="https://teaching-smk-40.vercel.app/pemrograman-web/pertemuan-10/images/hero-person.jpg"
+					alt=""
+				/>
+			</div>
+		</div>
+	</body>
+</html>
