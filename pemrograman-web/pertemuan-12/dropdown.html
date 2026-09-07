@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dropdown Navbar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            display: flex;
+            background-color: #333;
+            padding: 16px 32px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+        }
+
+        .nav-list>li>a {
+            color: white;
+            text-decoration: none;
+            font-family: sans-serif;
+        }
+
+        /* Dropdown wrapper */
+        .dropdown {
+            position: relative;
+            /* jadi acuan posisi untuk dropdown-menu */
+        }
+
+        /* Menu dropdown, awalnya disembunyikan */
+        .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            /* item dropdown disusun ke bawah */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #444;
+            list-style: none;
+            min-width: 180px;
+            padding: 8px 0;
+        }
+
+        .dropdown-menu li a {
+            color: white;
+            text-decoration: none;
+            font-family: sans-serif;
+            padding: 10px 16px;
+            display: block;
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: #4A90E2;
+        }
+
+        /* Munculkan dropdown saat hover */
+        .dropdown:hover .dropdown-menu {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="#">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Services ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Web Development</a></li>
+                    <li><a href="#">SEO</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</body>
+
+</html>
