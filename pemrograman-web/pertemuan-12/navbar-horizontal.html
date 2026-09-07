@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            background-color: #333;
+        }
+
+        .nav-list {
+            display: flex;
+            /* kunci utama: ubah list jadi horizontal */
+            list-style: none;
+            gap: 24px;
+            padding: 16px 32px;
+        }
+
+        .nav-list a {
+            color: white;
+            text-decoration: none;
+            font-family: sans-serif;
+        }
+
+        .nav-list a:hover {
+            color: #4A90E2;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</body>
+
+</html>
