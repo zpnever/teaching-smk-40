@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar CSS Responsive</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {}
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .box {
+            background-color: rgb(235, 49, 7);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        /* default: HP */
+        .container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* tablet ke atas */
+        @media (min-width: 480px) {
+            .container {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* desktop ke atas */
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="box box1">SATU</div>
+        <div class="box box2">DUA</div>
+        <div class="box box3">TIGA</div>
+        <div class="box box4">EMPAT</div>
+        <div class="box box5">LIMA</div>
+        <div class="box box6">ENAM</div>
+    </div>
+
+</body>
+
+</html>

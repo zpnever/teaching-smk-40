@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Page</title>
+    <style>
+        .page>* {
+            background-color: rgb(235, 49, 7);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .page {
+            gap: 10px;
+            min-height: 90vh;
+        }
+
+        .header {
+            grid-area: header;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+        }
+
+        .konten {
+            grid-area: konten;
+        }
+
+        .ads {
+            grid-area: ads;
+        }
+
+        .footer {
+            grid-area: footer;
+        }
+
+        /* Responsive: layar kecil */
+        @media (max-width: 600px) {}
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header class="header">Header</header>
+        <aside class="sidebar">Sidebar</aside>
+        <main class="konten">Konten Utama</main>
+        <aside class="ads">Iklan</aside>
+        <footer class="footer">Footer</footer>
+    </div>
+</body>
+
+</html>
