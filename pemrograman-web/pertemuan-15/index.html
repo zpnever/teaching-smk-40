@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Interaktif</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover {
+            background-color: red;
+            font-size: 50px;
+        }
+
+        .card {
+            max-width: 300px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .spinner {
+            display: none;
+            margin-top: 50px;
+            width: 100px;
+            height: 100px;
+            border: 10px solid #ddd;
+            border-top: 10px solid #4A90E2;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="btn">Klik Saya</button>
+
+    <div class="card">
+        <h3>Judul Produk</h3>
+        <p>Deskripsi singkat produk di sini.</p>
+    </div>
+
+    <div class="spinner"></div>
+</body>
+
+</html>
