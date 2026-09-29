@@ -1,0 +1,11 @@
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    platform: linux/amd64
+    environment:
+      PMA_HOST: host.docker.internal # MENGARAHKAN KE MYSQL K OMPUTER ASLI (XAMPP)
+      PMA_PORT: 3306 # Port MySQL XAMPP kamu
+    ports:
+      - "8080:80"
