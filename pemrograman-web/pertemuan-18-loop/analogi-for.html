@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analogi Perulangan for — Belajar Loop JavaScript Secara Interaktif</title>
+  <meta name="description" content="Pelajari urutan eksekusi perulangan for di JavaScript: inisialisasi, kondisi, blok kode, update, dan scope variabel let — lewat analogi, animasi, dan simulator interaktif.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================
+       DESIGN TOKENS
+       ========================================================= */
+    :root {
+      --bg: #070b18;
+      --bg-2: #0d1326;
+      --ink: #0a0f20;
+      --surface: rgba(255, 255, 255, .035);
+      --surface-2: rgba(255, 255, 255, .065);
+      --border: rgba(148, 163, 255, .12);
+      --border-strong: rgba(148, 163, 255, .24);
+      --text: #e8ebf8;
+      --muted: #8e97b8;
+      --dim: #5b6386;
+
+      --init: #38bdf8;
+      --cond: #fbbf24;
+      --body: #c084fc;
+      --update: #34d399;
+      --exit: #fb7185;
+      --accent: #818cf8;
+
+      --radius: 18px;
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @property --animation-reduced {
+      syntax: "*";
+      inherits: false;
+      initial-value: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: var(--animation-reduced) !important; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; color-scheme: dark; scroll-padding-top: 80px; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(900px 600px at 8% -10%, rgba(99, 102, 241, .24), transparent 60%),
+        radial-gradient(800px 520px at 100% 8%, rgba(192, 132, 252, .15), transparent 60%),
+        radial-gradient(760px 600px at 50% 115%, rgba(56, 189, 248, .12), transparent 60%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 75%);
+      pointer-events: none;
+    }
+
+    code { font-family: var(--mono); font-size: .9em; }
+    p code, li code, td code, .narr code, .q-ex code, .scope-note code, .map-card p code {
+      background: rgba(255, 255, 255, .07);
+      padding: .08em .38em;
+      border-radius: 6px;
+      color: #dbe1ff;
+    }
+
+    .container { width: min(1200px, 100% - 2.5rem); margin-inline: auto; }
+
+    :focus-visible { outline: 2px solid #a5b4fc; outline-offset: 3px; border-radius: 6px; }
+
+    /* =========================================================
+       NAV
+       ========================================================= */
+    .topnav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      backdrop-filter: blur(14px) saturate(140%);
+      background: rgba(7, 11, 24, .62);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topnav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      font: 800 1.05rem var(--mono);
+      color: #fff;
+      box-shadow: 0 6px 20px -6px rgba(168, 85, 247, .8);
+    }
+
+    .brand small { display: block; font: 500 .7rem var(--font); color: var(--muted); letter-spacing: 0; }
+
+    .nav-links { display: flex; gap: .25rem; list-style: none; }
+    .nav-links a {
+      display: block;
+      padding: .45rem .85rem;
+      border-radius: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .9rem;
+      transition: color .2s, background .2s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface-2); }
+    .nav-links a.is-active { color: #fff; background: rgba(129, 140, 248, .16); }
+
+    @media (max-width: 720px) {
+      .brand small { display: none; }
+      .nav-links a { padding: .4rem .55rem; font-size: .8rem; }
+    }
+    @media (max-width: 480px) {
+      .brand span.brand-text { display: none; }
+    }
+
+    /* =========================================================
+       COMMON
+       ========================================================= */
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .018));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 18px 50px -28px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .04);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: .9rem;
+    }
+    .card-title .hint { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--dim); font-size: .78rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font: 600 .93rem var(--font);
+      padding: .7rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, background .2s, border-color .2s, box-shadow .2s, opacity .2s;
+      white-space: nowrap;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(165, 180, 252, .5); background: rgba(255, 255, 255, .1); }
+    .btn:active:not(:disabled) { transform: translateY(0) scale(.97); }
+    .btn:disabled { opacity: .42; cursor: not-allowed; }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-color: transparent;
+      box-shadow: 0 10px 26px -10px rgba(139, 92, 246, .85);
+    }
+    .btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #7376f5, #b56af8); box-shadow: 0 12px 30px -8px rgba(139, 92, 246, .95); border-color: transparent; }
+    .btn-ghost { background: transparent; }
+    .btn-sm { padding: .45rem .8rem; font-size: .82rem; border-radius: 10px; }
+
+    .section { padding: 5.5rem 0 1rem; }
+    .section-head { margin-bottom: 2rem; }
+    .eyebrow {
+      font: 700 .76rem var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-head h2 {
+      font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.15;
+      margin: .45rem 0 .7rem;
+    }
+    .section-head p { color: var(--muted); max-width: 70ch; font-size: 1.02rem; }
+
+    .grad {
+      background: linear-gradient(120deg, #38bdf8, #a78bfa 45%, #f472b6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Code */
+    .code {
+      font-family: var(--mono);
+      font-size: .95rem;
+      background: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 2;
+      color: #cdd3ee;
+    }
+    .ln { color: var(--dim); user-select: none; display: inline-block; width: 2em; }
+    .t-kw { color: #f472b6; }
+    .t-str { color: #fdba74; }
+    .t-num { color: #fcd34d; }
+    .t-fn { color: #7dd3fc; }
+    .cm { color: var(--dim); font-style: italic; }
+
+    .part {
+      color: var(--c);
+      border-radius: 7px;
+      padding: .08em .22em;
+      border-bottom: 2px solid color-mix(in srgb, var(--c) 40%, transparent);
+      transition: background .3s, box-shadow .3s, color .3s, opacity .3s;
+    }
+    .part-init { --c: var(--init); }
+    .part-cond { --c: var(--cond); }
+    .part-body { --c: var(--body); }
+    .part-update { --c: var(--update); }
+    .part-after { --c: var(--muted); border-bottom-style: dashed; }
+    .part-after.is-error { --c: var(--exit); }
+    .part.is-active {
+      background: color-mix(in srgb, var(--c) 18%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 60%, transparent), 0 0 26px -2px color-mix(in srgb, var(--c) 55%, transparent);
+    }
+
+    .t-true { color: var(--update); }
+    .t-false { color: var(--exit); }
+
+    /* Keyframes */
+    @keyframes popIn { from { opacity: 0; transform: scale(.6); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
+    @keyframes lineIn { from { opacity: 0; transform: translateX(-10px); } }
+    @keyframes rowIn { from { opacity: 0; background: rgba(129, 140, 248, .25); } }
+    @keyframes bump { 40% { transform: scale(1.35); } }
+    @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+    @keyframes dissolve { to { opacity: 0; transform: scale(.55) rotate(-6deg); filter: blur(8px); } }
+    @keyframes vIn { from { transform: translateY(90%); opacity: 0; } }
+    @keyframes vOut { to { transform: translateY(-90%); opacity: 0; } }
+    @keyframes flow { to { stroke-dashoffset: -13; } }
+    @keyframes ring { from { transform: scale(1); opacity: .7; } to { transform: scale(2.3); opacity: 0; } }
+    @keyframes pulseDot { 50% { opacity: .35; } }
+    @keyframes flash { 30% { box-shadow: 0 0 0 2px var(--update), 0 0 34px -4px var(--update); } }
+    @keyframes reveal { from { opacity: 0; translate: 0 34px; } }
+
+    @supports (animation-timeline: view()) {
+      @media (prefers-reduced-motion: no-preference) {
+        .reveal {
+          animation: reveal linear both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 35%;
+        }
+      }
+    }
+
+    /* =========================================================
+       HERO
+       ========================================================= */
+    .hero { padding: 4.5rem 0 1rem; text-align: center; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .42rem .95rem;
+      border: 1px solid var(--border-strong);
+      border-radius: 99px;
+      background: var(--surface);
+      font: 600 .8rem var(--font);
+      color: #c7d2fe;
+    }
+    .pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--update); box-shadow: 0 0 10px var(--update); animation: pulseDot 1.8s infinite; }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.6vw, 4.1rem);
+      font-weight: 800;
+      line-height: 1.07;
+      letter-spacing: -.035em;
+      max-width: 17ch;
+      margin: 1.1rem auto 1rem;
+    }
+    .lead { color: var(--muted); font-size: 1.1rem; max-width: 62ch; margin: 0 auto; }
+    .hero-cta { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.8rem; }
+
+    .anatomy { margin: 3.2rem auto 0; max-width: 940px; text-align: left; padding: 1.8rem 1.5rem 1.5rem; }
+    .anatomy-code {
+      font: 500 clamp(.95rem, 2.4vw, 1.65rem) var(--mono);
+      text-align: center;
+      padding: 2.1rem .5rem 1.4rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      color: #cdd3ee;
+    }
+    .anatomy .part { position: relative; cursor: help; padding: .12em .28em; outline: none; }
+    .anatomy .part::before {
+      content: attr(data-num);
+      position: absolute;
+      left: 50%;
+      top: -1.45em;
+      translate: -50% 0;
+      width: 1.55em;
+      height: 1.55em;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      font: 800 .58em var(--font);
+      background: var(--c);
+      color: var(--ink);
+    }
+    .anatomy-legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin-top: .6rem; }
+    .legend {
+      padding: .95rem 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color .25s, background .25s, transform .25s, opacity .25s;
+      outline: none;
+    }
+    .legend-head { display: flex; align-items: center; gap: .55rem; font-weight: 700; color: var(--c); font-size: .95rem; }
+    .legend-num { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 8px; background: color-mix(in srgb, var(--c) 18%, transparent); font: 800 .78rem var(--mono); }
+    .legend p { color: var(--muted); font-size: .84rem; margin-top: .35rem; line-height: 1.5; }
+
+    .anatomy[data-hl] [data-part] { opacity: .38; }
+    .anatomy[data-hl="init"] [data-part="init"],
+    .anatomy[data-hl="cond"] [data-part="cond"],
+    .anatomy[data-hl="body"] [data-part="body"],
+    .anatomy[data-hl="update"] [data-part="update"] { opacity: 1; }
+    .anatomy[data-hl="init"] .part[data-part="init"],
+    .anatomy[data-hl="cond"] .part[data-part="cond"],
+    .anatomy[data-hl="body"] .part[data-part="body"],
+    .anatomy[data-hl="update"] .part[data-part="update"] {
+      background: color-mix(in srgb, var(--c) 18%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 60%, transparent), 0 0 26px -2px color-mix(in srgb, var(--c) 55%, transparent);
+    }
+    .anatomy[data-hl="init"] .legend[data-part="init"],
+    .anatomy[data-hl="cond"] .legend[data-part="cond"],
+    .anatomy[data-hl="body"] .legend[data-part="body"],
+    .anatomy[data-hl="update"] .legend[data-part="update"] {
+      border-color: color-mix(in srgb, var(--c) 60%, transparent);
+      background: color-mix(in srgb, var(--c) 9%, transparent);
+      transform: translateY(-3px);
+    }
+
+    .anatomy-tip {
+      margin-top: 1.1rem;
+      font-size: .9rem;
+      color: var(--muted);
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      background: rgba(251, 191, 36, .06);
+      border: 1px solid rgba(251, 191, 36, .18);
+    }
+    .anatomy-tip b { color: #fde68a; }
+
+    @media (max-width: 760px) { .anatomy-legend { grid-template-columns: repeat(2, 1fr); } }
+
+    /* =========================================================
+       ANALOGY
+       ========================================================= */
+    .analogy-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 1.25rem; }
+    @media (max-width: 960px) { .analogy-grid { grid-template-columns: 1fr; } }
+
+    .analogy-code { font-size: .9rem; line-height: 1.85; }
+
+    .track { display: block; width: 100%; height: auto; margin: 1rem 0 .4rem; }
+    .track-field { fill: rgba(52, 211, 153, .045); stroke: rgba(52, 211, 153, .12); stroke-width: 1; }
+    .track-edge { fill: none; stroke: rgba(165, 180, 252, .16); stroke-width: 50; }
+    .track-base { fill: none; stroke: #141b37; stroke-width: 46; }
+    .track-lane { fill: none; stroke: rgba(255, 255, 255, .16); stroke-width: 1.5; stroke-dasharray: 8 10; }
+    .track-progress { fill: none; stroke: var(--body); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px var(--body)); }
+    .scoreboard rect { fill: var(--ink); stroke: rgba(52, 211, 153, .4); stroke-width: 1.5; }
+    .sb-label { font: 700 10px var(--font); letter-spacing: .14em; fill: var(--muted); text-anchor: middle; }
+    .sb-value { font: 800 42px var(--mono); fill: var(--update); text-anchor: middle; transform-box: fill-box; transform-origin: center; }
+    .sb-value.bump { animation: bump .5s var(--ease-spring); }
+    .gate-light { fill: #2d365e; transition: fill .3s; }
+    .gate-light.go { fill: var(--update); filter: drop-shadow(0 0 6px var(--update)); }
+    .gate-light.stop { fill: var(--exit); filter: drop-shadow(0 0 6px var(--exit)); }
+    .gate-text { font: 600 12px var(--mono); fill: var(--muted); }
+    .gate-text.go { fill: var(--update); }
+    .gate-text.stop { fill: var(--exit); }
+    .runner { font-size: 34px; text-anchor: middle; dominant-baseline: central; }
+
+    .lap-chips { display: flex; gap: .4rem; flex-wrap: wrap; min-height: 30px; align-items: center; margin-bottom: .9rem; }
+    .lap-chip {
+      padding: .18rem .65rem;
+      border-radius: 99px;
+      background: rgba(52, 211, 153, .13);
+      color: var(--update);
+      font: 600 .76rem var(--mono);
+      border: 1px solid rgba(52, 211, 153, .3);
+      animation: popIn .4s var(--ease-spring);
+    }
+    .chip-ph { color: var(--dim); font-size: .8rem; }
+
+    .track-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1rem; }
+    .range-field { display: flex; align-items: center; gap: .6rem; font-size: .88rem; color: var(--muted); margin-right: auto; }
+    .range-field output { font: 700 1rem var(--mono); color: var(--cond); min-width: 1.2ch; }
+
+    input[type="range"] { accent-color: #8b5cf6; width: 120px; cursor: pointer; }
+
+    .map-list { display: grid; gap: .8rem; align-content: start; }
+    .map-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: .95rem;
+      align-items: center;
+      padding: 1rem 1.05rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color .3s, background .3s, box-shadow .3s, transform .35s var(--ease-spring);
+    }
+    .map-card.is-active {
+      border-color: color-mix(in srgb, var(--c) 70%, transparent);
+      background: color-mix(in srgb, var(--c) 10%, transparent);
+      box-shadow: 0 14px 34px -16px var(--c);
+      transform: translateX(6px);
+    }
+    .map-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: color-mix(in srgb, var(--c) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+    }
+    .map-card h3 { font-size: .98rem; font-weight: 700; display: flex; flex-wrap: wrap; gap: .4rem; align-items: baseline; }
+    .map-card h3 code { color: var(--c); font-size: .78rem; font-weight: 600; }
+    .map-card p { font-size: .86rem; color: var(--muted); margin-top: .15rem; line-height: 1.5; }
+
+    /* Narration (shared) */
+    .narr {
+      --c: var(--accent);
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      background: rgba(8, 12, 28, .75);
+      border: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+      min-height: 88px;
+      transition: border-color .3s;
+    }
+    .narr-badge {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font: 800 1rem var(--mono);
+      background: color-mix(in srgb, var(--c) 18%, transparent);
+      color: var(--c);
+      border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+      transition: color .3s, background .3s, border-color .3s;
+    }
+    .narr p { font-size: .96rem; line-height: 1.6; }
+    .narr p.swap { animation: fadeUp .4s ease-out; }
+
+    /* =========================================================
+       SIMULATOR
+       ========================================================= */
+    .config { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+    .cfg-field { display: grid; gap: .3rem; }
+    .cfg-field label { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .cfg-field input, .cfg-field select {
+      font: 600 .95rem var(--mono);
+      color: var(--text);
+      background: var(--ink);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: .55rem .7rem;
+      min-width: 0;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .cfg-field input { width: 88px; }
+    .cfg-field input:focus, .cfg-field select:focus { outline: none; border-color: #a5b4fc; box-shadow: 0 0 0 3px rgba(129, 140, 248, .25); }
+    .cfg-field[data-c="init"] input { color: var(--init); }
+    .cfg-field[data-c="cond"] input, .cfg-field[data-c="cond"] select { color: var(--cond); }
+    .cfg-field[data-c="update"] select { color: var(--update); }
+    .cfg-field[data-c="body"] select { color: var(--body); }
+
+    .predict {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .9rem;
+      border-radius: 11px;
+      font: 600 .85rem var(--mono);
+      background: rgba(52, 211, 153, .1);
+      color: var(--update);
+      border: 1px solid rgba(52, 211, 153, .25);
+    }
+    .predict.warn { background: rgba(251, 191, 36, .1); color: var(--cond); border-color: rgba(251, 191, 36, .3); }
+    .predict.danger { background: rgba(251, 113, 133, .12); color: var(--exit); border-color: rgba(251, 113, 133, .35); }
+
+    .presets { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); width: 100%; }
+    .presets > span { font-size: .78rem; color: var(--dim); margin-right: .25rem; }
+    .preset {
+      font: 600 .8rem var(--font);
+      padding: .38rem .75rem;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .preset:hover { color: var(--text); border-color: rgba(165, 180, 252, .45); background: rgba(129, 140, 248, .1); }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: .8rem;
+      border-radius: 16px;
+      background: rgba(8, 12, 28, .6);
+      border: 1px solid var(--border);
+      position: sticky;
+      top: 72px;
+      z-index: 20;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .speed { display: flex; align-items: center; gap: .55rem; font-size: .84rem; color: var(--muted); margin-left: auto; }
+    .speed output { font: 700 .85rem var(--mono); color: var(--text); min-width: 3.4ch; }
+    .kbd-hint { width: 100%; font-size: .74rem; color: var(--dim); }
+    kbd { font: 600 .7rem var(--mono); padding: .1rem .38rem; border-radius: 5px; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--muted); }
+
+    .sim-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; margin-top: 1.25rem; }
+    .sim-col { display: grid; gap: 1.25rem; align-content: start; }
+    .sim-bottom { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1.25rem; margin-top: 1.25rem; }
+    @media (max-width: 980px) { .sim-grid, .sim-bottom { grid-template-columns: 1fr; } }
+
+    .code-file { display: inline-flex; align-items: center; gap: .4rem; font: 500 .75rem var(--mono); color: var(--dim); text-transform: none; letter-spacing: 0; }
+
+    /* Flow diagram */
+    .flow { display: block; width: 100%; height: auto; max-height: 560px; margin-inline: auto; }
+    .arrow { fill: none; stroke: #2b3460; stroke-width: 2; marker-end: url(#ah); transition: stroke .3s; }
+    .arrow.is-flowing { stroke: var(--c); stroke-dasharray: 7 6; animation: flow .45s linear infinite; }
+    .arrow-label { font: 700 11px var(--mono); }
+    .node rect, .node polygon { fill: #0f1530; stroke: var(--node-c); stroke-opacity: .35; stroke-width: 1.5; transition: fill .3s, stroke-opacity .3s, stroke-width .3s; }
+    .node { transition: filter .35s; }
+    .node.is-active { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--node-c) 75%, transparent)); }
+    .node.is-active rect, .node.is-active polygon { fill: color-mix(in srgb, var(--node-c) 20%, #0f1530); stroke-opacity: 1; stroke-width: 2; }
+    .n-label { font: 800 10.5px var(--font); letter-spacing: .1em; fill: var(--node-c); text-anchor: middle; }
+    .n-code { font: 500 12.5px var(--mono); fill: #dfe3f5; text-anchor: middle; }
+    .token { transition: opacity .35s; }
+    .token-core { fill: url(#tokGrad); filter: drop-shadow(0 0 8px rgba(165, 180, 252, .9)); }
+    .token-ring { fill: none; stroke: #c7d2fe; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: ring 1.4s ease-out infinite; }
+    .token.is-exit .token-core { fill: var(--exit); filter: drop-shadow(0 0 8px var(--exit)); }
+    .token.is-exit .token-ring { stroke: var(--exit); }
+    .token-text { font: 800 11px var(--mono); fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+
+    /* Steps list */
+    .steps { list-style: none; display: grid; gap: .45rem; }
+    .steps li {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      padding: .6rem .8rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-size: .92rem;
+      transition: color .3s, background .3s, border-color .3s, transform .35s var(--ease-spring);
+    }
+    .steps li b { color: inherit; }
+    .step-num {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font: 700 .82rem var(--mono);
+      background: color-mix(in srgb, var(--c) 14%, transparent);
+      color: var(--c);
+      transition: background .3s, color .3s, box-shadow .3s;
+    }
+    .steps li.is-active {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--c) 55%, transparent);
+      background: color-mix(in srgb, var(--c) 10%, transparent);
+      transform: translateX(6px);
+    }
+    .steps li.is-active .step-num { background: var(--c); color: var(--ink); box-shadow: 0 0 18px -2px var(--c); }
+
+    .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 560px) { .duo { grid-template-columns: 1fr; } }
+
+    /* Memory */
+    .scope-outer { position: relative; border: 1.5px dashed rgba(148, 163, 255, .28); border-radius: 14px; padding: 1.7rem .75rem .75rem; }
+    .scope-inner {
+      position: relative;
+      border: 1.5px dashed color-mix(in srgb, var(--body) 60%, transparent);
+      background: color-mix(in srgb, var(--body) 6%, transparent);
+      border-radius: 12px;
+      padding: 1.7rem .7rem .8rem;
+      min-height: 100px;
+      display: grid;
+      place-items: center;
+      transition: opacity .4s, border-color .4s, background .4s;
+    }
+    .scope-inner.is-closed { border-color: rgba(148, 163, 255, .15); background: transparent; }
+    .scope-tag { position: absolute; top: .4rem; left: .7rem; font: 600 .66rem var(--mono); color: var(--dim); letter-spacing: .03em; }
+    .scope-inner > .scope-tag { color: color-mix(in srgb, var(--body) 80%, white); }
+    .var-empty { font-size: .8rem; color: var(--dim); font-style: italic; }
+    .var-empty.gone { color: var(--exit); font-style: normal; animation: fadeUp .4s; }
+    .var-card {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .5rem .85rem;
+      border-radius: 12px;
+      background: var(--ink);
+      border: 1px solid color-mix(in srgb, var(--init) 55%, transparent);
+      box-shadow: 0 0 26px -8px var(--init);
+      animation: popIn .55s var(--ease-spring);
+    }
+    .var-card.flash { animation: flash .6s; }
+    .var-card.dissolve { animation: dissolve .85s forwards; }
+    .var-name { font: 600 .85rem var(--mono); color: var(--init); }
+    .var-eq { color: var(--dim); font-family: var(--mono); }
+    .var-val { display: inline-grid; font: 800 1.65rem var(--mono); min-width: 2ch; overflow: hidden; text-align: center; line-height: 1.2; }
+    .var-val .v { grid-area: 1 / 1; }
+    .var-val .v.in { animation: vIn .45s var(--ease-spring); }
+    .var-val .v.out { animation: vOut .4s forwards; }
+    .mem-note { margin-top: .7rem; font: 500 .78rem var(--mono); color: var(--muted); }
+    .mem-note.error { color: var(--exit); animation: shake .45s; }
+
+    /* Eval */
+    .eval-box { display: grid; gap: .6rem; justify-items: start; }
+    .eval-expr { font: 600 .95rem var(--mono); color: var(--cond); }
+    .eval-sub { font: 700 1.55rem var(--mono); color: var(--text); min-height: 1.4em; }
+    .eval-sub.swap { animation: fadeUp .35s; }
+    .eval-result {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .32rem .85rem;
+      border-radius: 99px;
+      font: 700 .85rem var(--mono);
+      background: var(--surface-2);
+      color: var(--muted);
+      transition: background .3s, color .3s, box-shadow .3s;
+    }
+    .eval-result.true { background: rgba(52, 211, 153, .14); color: var(--update); box-shadow: 0 0 0 1px rgba(52, 211, 153, .4); }
+    .eval-result.false { background: rgba(251, 113, 133, .14); color: var(--exit); box-shadow: 0 0 0 1px rgba(251, 113, 133, .4); }
+    .eval-result.pop { animation: popIn .4s var(--ease-spring); }
+
+    /* Counters */
+    .counters { display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem; }
+    @media (max-width: 560px) { .counters { grid-template-columns: repeat(2, 1fr); } }
+    .counter { padding: .8rem .9rem; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); display: grid; gap: .1rem; }
+    .counter span { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 700; }
+    .counter b { font: 800 1.65rem var(--mono); color: var(--c); display: inline-block; transform-origin: left center; }
+    .counter b.bump { animation: bump .45s var(--ease-spring); }
+    .counter small { font-size: .72rem; color: var(--dim); }
+
+    /* Console */
+    .console { background: #060914; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .console-head { display: flex; align-items: center; gap: .45rem; padding: .7rem 1rem; border-bottom: 1px solid var(--border); font: 600 .76rem var(--mono); color: var(--muted); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .console-head .title { margin-left: .5rem; }
+    .console-body { padding: .85rem 1rem; font: 500 .9rem var(--mono); height: 290px; overflow-y: auto; }
+    .console-line { display: flex; gap: .65rem; padding: .16rem 0; animation: lineIn .35s ease-out; word-break: break-all; }
+    .console-line .p { color: var(--dim); flex: none; }
+    .console-line.err { color: var(--exit); }
+    .console-line.sys { color: var(--dim); font-style: italic; }
+    .console-line.warn { color: var(--cond); }
+    .console-empty { color: var(--dim); font-size: .85rem; font-style: italic; }
+
+    /* Trace table */
+    .table-wrap { max-height: 290px; overflow: auto; border-radius: 12px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font: 500 .84rem var(--mono); }
+    th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-2);
+      text-align: left;
+      font: 700 .68rem var(--font);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      padding: .6rem .7rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td { padding: .5rem .7rem; border-bottom: 1px solid rgba(255, 255, 255, .04); white-space: nowrap; }
+    td:nth-child(3) { color: var(--cond); }
+    tr.new { animation: rowIn .7s ease-out; }
+    tr.ph td { color: var(--dim); font-style: italic; font-family: var(--font); text-align: center; padding: 1.2rem; white-space: normal; }
+    .res-true { color: var(--update); font-weight: 700; }
+    .res-false { color: var(--exit); font-weight: 700; }
+
+    /* =========================================================
+       SCOPE
+       ========================================================= */
+    .callout {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      padding: 1.1rem 1.3rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, rgba(56, 189, 248, .08), rgba(192, 132, 252, .08));
+      border: 1px solid rgba(165, 180, 252, .25);
+      font-size: 1.02rem;
+    }
+    .callout-icon { font-size: 1.7rem; flex: none; }
+
+    .scope-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.25rem; }
+    .scope-card-head { display: flex; align-items: center; gap: .7rem; margin-bottom: .9rem; }
+    .scope-card-head h3 { font-size: 1.1rem; }
+    .tag { font: 700 .8rem var(--mono); padding: .25rem .6rem; border-radius: 8px; }
+    .tag-good { background: rgba(52, 211, 153, .15); color: var(--update); }
+    .tag-warn { background: rgba(251, 191, 36, .15); color: var(--cond); }
+    .scope-stage { display: grid; gap: .7rem; margin: 1rem 0; }
+    .sbox { position: relative; border: 1.5px dashed rgba(148, 163, 255, .28); border-radius: 12px; min-height: 78px; padding: 1.6rem .8rem .7rem; display: flex; align-items: center; justify-content: center; }
+    .sbox.inner { border-color: color-mix(in srgb, var(--body) 60%, transparent); background: color-mix(in srgb, var(--body) 6%, transparent); }
+    .sbox.shake { animation: shake .45s; border-color: var(--exit); }
+    .sbox .ph { font-size: .8rem; color: var(--dim); font-style: italic; font-family: var(--mono); }
+    .sbox .ph.bad { color: var(--exit); font-style: normal; }
+    .chip {
+      display: inline-flex;
+      gap: .45rem;
+      align-items: center;
+      padding: .38rem .8rem;
+      border-radius: 10px;
+      background: var(--ink);
+      border: 1px solid color-mix(in srgb, var(--init) 55%, transparent);
+      font: 600 .95rem var(--mono);
+      color: var(--init);
+      animation: popIn .45s var(--ease-spring);
+    }
+    .chip b { color: var(--text); display: inline-block; }
+    .chip b.tick { animation: bump .35s var(--ease-spring); }
+    .chip.dissolve { animation: dissolve .7s forwards; }
+    .chip.leaked { border-color: color-mix(in srgb, var(--cond) 60%, transparent); color: var(--cond); box-shadow: 0 0 24px -8px var(--cond); }
+    .mini-console { font: 500 .86rem var(--mono); background: #060914; border: 1px solid var(--border); border-radius: 10px; padding: .65rem .85rem; min-height: 44px; color: var(--muted); }
+    .mini-console .err { color: var(--exit); animation: fadeUp .35s; display: inline-block; }
+    .mini-console .ok { color: var(--cond); animation: fadeUp .35s; display: inline-block; }
+    .scope-actions { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+    .scope-note { font-size: .88rem; color: var(--muted); margin-top: .9rem; }
+
+    /* =========================================================
+       QUIZ
+       ========================================================= */
+    .score-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .score-num { font: 800 1.1rem var(--mono); }
+    .progress { flex: 1; min-width: 160px; height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+    .progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #38bdf8, #a855f7); border-radius: inherit; transition: width .5s var(--ease-spring); }
+    .score-msg { width: 100%; color: var(--muted); font-size: .92rem; min-height: 1.4em; }
+
+    .quiz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 1.1rem; }
+    .q-num { font: 700 .72rem var(--mono); color: var(--accent); letter-spacing: .1em; }
+    .q-text { margin: .45rem 0 .95rem; font-weight: 600; }
+    .q-text pre { font-family: var(--mono); background: var(--ink); padding: .65rem .85rem; border-radius: 10px; margin-top: .55rem; font-size: .84rem; white-space: pre; overflow-x: auto; font-weight: 500; border: 1px solid var(--border); }
+    .q-opts { display: grid; gap: .5rem; }
+    .q-opt {
+      text-align: left;
+      padding: .65rem .9rem;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: 500 .92rem var(--font);
+      cursor: pointer;
+      transition: border-color .2s, background .2s, transform .15s;
+    }
+    .q-opt:hover:not(:disabled) { border-color: rgba(165, 180, 252, .5); background: rgba(255, 255, 255, .07); transform: translateX(3px); }
+    .q-opt:disabled { cursor: default; }
+    .q-opt.correct { border-color: var(--update); background: rgba(52, 211, 153, .12); color: #a7f3d0; }
+    .q-opt.wrong { border-color: var(--exit); background: rgba(251, 113, 133, .12); color: #fecdd3; animation: shake .4s; }
+    .q-opt.dimmed { opacity: .5; }
+    .q-ex { margin-top: .85rem; font-size: .87rem; color: var(--muted); padding: .7rem .9rem; border-left: 3px solid var(--accent); background: rgba(129, 140, 248, .07); border-radius: 0 10px 10px 0; animation: fadeUp .35s; }
+
+    .order-wrap { margin-top: 2.5rem; }
+    .order-wrap h3 { font-size: 1.25rem; margin-bottom: .3rem; }
+    .order-wrap > p { color: var(--muted); margin-bottom: 1.1rem; font-size: .95rem; }
+    .order-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .8rem; }
+    .order-card {
+      position: relative;
+      padding: 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: 600 .92rem var(--font);
+      cursor: pointer;
+      text-align: left;
+      min-height: 92px;
+      display: grid;
+      align-content: space-between;
+      gap: .5rem;
+      transition: border-color .25s, background .25s, transform .2s;
+    }
+    .order-card code { color: var(--muted); font-size: .8rem; }
+    .order-card:hover:not(.placed) { border-color: rgba(165, 180, 252, .5); transform: translateY(-2px); }
+    .order-card.placed { border-color: color-mix(in srgb, var(--c) 70%, transparent); background: color-mix(in srgb, var(--c) 10%, transparent); cursor: default; }
+    .order-card.placed code { color: var(--c); }
+    .order-card .badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--c);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      font: 800 .85rem var(--mono);
+      animation: popIn .4s var(--ease-spring);
+      box-shadow: 0 0 18px -4px var(--c);
+    }
+    .order-card.shake { animation: shake .4s; border-color: var(--exit); }
+    .order-status { margin-top: 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; color: var(--muted); font-size: .92rem; }
+    .order-status .ok { color: var(--update); font-weight: 700; }
+    .order-status .bad { color: var(--exit); }
+
+    /* Footer */
+    footer { padding: 4rem 0 3rem; text-align: center; color: var(--dim); font-size: .85rem; }
+    footer .sum {
+      max-width: 760px;
+      margin: 0 auto 2rem;
+      text-align: left;
+    }
+    footer .sum h2 { font-size: 1.15rem; color: var(--text); margin-bottom: .8rem; }
+    footer .sum ol { padding-left: 1.3rem; color: var(--muted); display: grid; gap: .3rem; font-size: .95rem; }
+    footer .sum ol li::marker { color: var(--accent); font-weight: 700; }
+    footer .sum p { color: var(--muted); margin-top: .8rem; font-size: .95rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav" aria-label="Navigasi utama">
+    <div class="container">
+      <a href="#top" class="brand" aria-label="Kembali ke atas">
+        <span class="brand-logo" aria-hidden="true">↻</span>
+        <span class="brand-text">for·Lab<small>Pertemuan 18 · Perulangan</small></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#analogi">Analogi</a></li>
+        <li><a href="#simulator">Simulator</a></li>
+        <li><a href="#scope">Scope</a></li>
+        <li><a href="#kuis">Kuis</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="top">
+    <!-- ================= HERO ================= -->
+    <header class="hero container">
+      <span class="pill"><span class="pill-dot"></span>XI RPL · Pemrograman Web</span>
+      <h1>Memahami <span class="grad">Perulangan for</span> Langkah demi Langkah</h1>
+      <p class="lead">Lihat bagaimana JavaScript menjalankan setiap bagian loop <code>for</code> — mulai dari inisialisasi hingga keluar dari loop — lewat analogi, animasi, dan simulator interaktif.</p>
+      <div class="hero-cta">
+        <a href="#simulator" class="btn btn-primary" id="cta-simulator">Buka Simulator →</a>
+        <a href="#analogi" class="btn" id="cta-analogi">Lihat Analogi</a>
+      </div>
+
+      <div class="anatomy card" id="anatomy">
+        <div class="card-title">Anatomi loop for <span class="hint">Arahkan kursor / tab ke setiap bagian</span></div>
+        <div class="anatomy-code"><span class="t-kw">for</span> (<span class="part part-init" data-part="init" data-num="1" tabindex="0">let i = 1</span>; <span class="part part-cond" data-part="cond" data-num="2" tabindex="0">i &lt;= 5</span>; <span class="part part-update" data-part="update" data-num="4" tabindex="0">i++</span>) { <span class="part part-body" data-part="body" data-num="3" tabindex="0"><span class="t-fn">console</span>.<span class="t-fn">log</span>(i);</span> }</div>
+        <div class="anatomy-legend">
+          <div class="legend" data-part="init" tabindex="0" style="--c: var(--init)">
+            <div class="legend-head"><span class="legend-num">1</span>Inisialisasi</div>
+            <p>Membuat variabel penghitung. Dijalankan <b>sekali</b> di awal.</p>
+          </div>
+          <div class="legend" data-part="cond" tabindex="0" style="--c: var(--cond)">
+            <div class="legend-head"><span class="legend-num">2</span>Kondisi</div>
+            <p>Diperiksa sebelum setiap iterasi. Jika <code>false</code>, loop berhenti.</p>
+          </div>
+          <div class="legend" data-part="body" tabindex="0" style="--c: var(--body)">
+            <div class="legend-head"><span class="legend-num">3</span>Blok Kode</div>
+            <p>Perintah di dalam <code>{ }</code> yang diulang setiap iterasi.</p>
+          </div>
+          <div class="legend" data-part="update" tabindex="0" style="--c: var(--update)">
+            <div class="legend-head"><span class="legend-num">4</span>Update</div>
+            <p>Mengubah penghitung setelah blok kode selesai dijalankan.</p>
+          </div>
+        </div>
+        <div class="anatomy-tip"><span aria-hidden="true">💡</span><span><b>Perhatikan:</b> bagian update (<code>i++</code>) <b>ditulis</b> sebelum blok kode, tetapi <b>dijalankan</b> setelah blok kode selesai.</span></div>
+      </div>
+    </header>
+
+    <!-- ================= ANALOGI ================= -->
+    <section class="section container" id="analogi" aria-labelledby="analogi-title">
+      <div class="section-head reveal">
+        <span class="eyebrow">01 · Analogi</span>
+        <h2 id="analogi-title">Lari Keliling Lapangan 🏃</h2>
+        <p>Bayangkan seorang pelari yang disuruh pelatih berlari beberapa putaran. Setiap kali melewati gerbang, petugas mengecek: <i>"sudah cukup belum?"</i> Itulah cara kerja loop <code>for</code>.</p>
+      </div>
+
+      <div class="analogy-grid">
+        <div class="card reveal">
+          <pre class="code analogy-code"><span class="t-kw">for</span> (<span class="part part-init" data-apart="init">let putaran = 1</span>; <span class="part part-cond" data-apart="cond">putaran &lt;= <span class="js-a-n">3</span></span>; <span class="part part-update" data-apart="update">putaran++</span>) {
+    <span class="part part-body" data-apart="body"><span class="t-fn">lariSatuPutaran</span>();</span>
+}</pre>
+
+          <svg id="track" class="track" viewBox="0 0 600 310" role="img" aria-label="Animasi pelari mengelilingi lintasan">
+            <defs>
+              <pattern id="checker" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="4" height="4" fill="#e8ebf8" />
+                <rect x="4" y="4" width="4" height="4" fill="#e8ebf8" />
+                <rect x="4" width="4" height="4" fill="#0a0f20" />
+                <rect y="4" width="4" height="4" fill="#0a0f20" />
+              </pattern>
+            </defs>
+            <path class="track-field" d="M150,76 H450 A74,74 0 0 1 450,224 H150 A74,74 0 0 1 150,76 Z" />
+            <path class="track-edge" d="M300,250 H150 A100,100 0 0 1 150,50 H450 A100,100 0 0 1 450,250 Z" />
+            <path id="track-path" class="track-base" d="M300,250 H150 A100,100 0 0 1 150,50 H450 A100,100 0 0 1 450,250 Z" />
+            <path class="track-lane" d="M300,250 H150 A100,100 0 0 1 150,50 H450 A100,100 0 0 1 450,250 Z" />
+            <path id="track-progress" class="track-progress" d="M300,250 H150 A100,100 0 0 1 150,50 H450 A100,100 0 0 1 450,250 Z" />
+            <rect x="294" y="227" width="12" height="46" rx="2" fill="url(#checker)" opacity=".85" />
+            <line x1="300" y1="273" x2="300" y2="289" stroke="#5b6386" stroke-width="2" />
+            <circle id="gate-light" class="gate-light" cx="300" cy="296" r="7" />
+            <text id="gate-text" class="gate-text" x="314" y="300">gerbang</text>
+            <g class="scoreboard">
+              <rect x="225" y="98" width="150" height="96" rx="16" />
+              <text x="300" y="124" class="sb-label">PUTARAN KE-</text>
+              <text id="score" x="300" y="172" class="sb-value">–</text>
+            </g>
+            <text id="runner" class="runner" x="0" y="0">🏃</text>
+          </svg>
+
+          <div class="lap-chips" id="lap-chips" aria-label="Putaran selesai"></div>
+
+          <div class="narr" id="a-narr">
+            <div class="narr-badge" aria-hidden="true">🏃</div>
+            <p id="a-narr-text" aria-live="polite"></p>
+          </div>
+
+          <div class="track-controls">
+            <label class="range-field" for="a-laps">Target putaran
+              <input type="range" id="a-laps" min="1" max="5" value="3">
+              <output id="a-laps-out" for="a-laps">3</output>
+            </label>
+            <button class="btn btn-ghost" id="a-reset" type="button">↺ Reset</button>
+            <button class="btn btn-primary" id="a-start" type="button">▶ Mulai Lari</button>
+          </div>
+        </div>
+
+        <div class="map-list">
+          <article class="map-card reveal" data-apart="init" style="--c: var(--init)">
+            <div class="map-icon" aria-hidden="true">📣</div>
+            <div>
+              <h3>Inisialisasi <code>let putaran = 1</code></h3>
+              <p>Pelatih memberi aba-aba <i>"Mulai dari putaran ke-1!"</i> — hanya <b>sekali</b> di awal.</p>
+            </div>
+          </article>
+          <article class="map-card reveal" data-apart="cond" style="--c: var(--cond)">
+            <div class="map-icon" aria-hidden="true">🚦</div>
+            <div>
+              <h3>Kondisi <code>putaran &lt;= <span class="js-a-n">3</span></code></h3>
+              <p>Petugas gerbang mengecek <b>setiap kali</b> pelari lewat: masih boleh lari atau berhenti?</p>
+            </div>
+          </article>
+          <article class="map-card reveal" data-apart="body" style="--c: var(--body)">
+            <div class="map-icon" aria-hidden="true">🏃</div>
+            <div>
+              <h3>Blok kode <code>lariSatuPutaran()</code></h3>
+              <p>Tugas yang diulang-ulang: berlari <b>satu putaran</b> penuh (satu iterasi).</p>
+            </div>
+          </article>
+          <article class="map-card reveal" data-apart="update" style="--c: var(--update)">
+            <div class="map-icon" aria-hidden="true">📋</div>
+            <div>
+              <h3>Update <code>putaran++</code></h3>
+              <p>Papan skor ditambah 1 setelah satu putaran selesai, lalu kembali ke gerbang.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SIMULATOR ================= -->
+    <section class="section container" id="simulator" aria-labelledby="sim-title">
+      <div class="section-head reveal">
+        <span class="eyebrow">02 · Simulator</span>
+        <h2 id="sim-title">Urutan Eksekusi <span class="grad">for</span></h2>
+        <p>Ubah nilai-nilai di bawah, lalu jalankan loop <b>langkah demi langkah</b>. Perhatikan bola cahaya yang membawa nilai <code>i</code> berpindah mengikuti alur eksekusi.</p>
+      </div>
+
+      <div class="card config reveal" id="config">
+        <div class="cfg-field" data-c="init">
+          <label for="cfg-start">Nilai awal i</label>
+          <input type="number" id="cfg-start" value="1" min="-20" max="20" step="1">
+        </div>
+        <div class="cfg-field" data-c="cond">
+          <label for="cfg-op">Operator</label>
+          <select id="cfg-op">
+            <option value="&lt;">&lt;</option>
+            <option value="&lt;=" selected>&lt;=</option>
+            <option value="&gt;">&gt;</option>
+            <option value="&gt;=">&gt;=</option>
+          </select>
+        </div>
+        <div class="cfg-field" data-c="cond">
+          <label for="cfg-end">Batas</label>
+          <input type="number" id="cfg-end" value="5" min="-20" max="20" step="1">
+        </div>
+        <div class="cfg-field" data-c="update">
+          <label for="cfg-update">Update</label>
+          <select id="cfg-update">
+            <option value="i++" selected>i++</option>
+            <option value="i--">i--</option>
+            <option value="i += 2">i += 2</option>
+            <option value="i -= 2">i -= 2</option>
+          </select>
+        </div>
+        <div class="cfg-field" data-c="body">
+          <label for="cfg-body">Isi blok kode</label>
+          <select id="cfg-body">
+            <option value="iterasi" selected>Cetak "Iterasi ke-i"</option>
+            <option value="kali">Cetak i × 2</option>
+            <option value="kuadrat">Cetak kuadrat i</option>
+            <option value="bintang">Cetak bintang ⭐</option>
+          </select>
+        </div>
+        <div class="predict" id="predict" aria-live="polite">5 iterasi</div>
+
+        <div class="presets">
+          <span>Contoh cepat:</span>
+          <button type="button" class="preset" data-preset="1,<=,5,i++">Hitung 1–5</button>
+          <button type="button" class="preset" data-preset="5,>=,1,i--">Hitung mundur</button>
+          <button type="button" class="preset" data-preset="2,<=,10,i += 2">Bilangan genap</button>
+          <button type="button" class="preset" data-preset="10,<,5,i++">Loop tidak jalan</button>
+          <button type="button" class="preset" data-preset="1,>=,1,i++">⚠ Infinite loop</button>
+        </div>
+      </div>
+
+      <div class="controls" role="toolbar" aria-label="Kontrol simulator">
+        <button class="btn btn-primary" id="btn-step" type="button">Langkah ⏭</button>
+        <button class="btn" id="btn-play" type="button">▶ Jalankan</button>
+        <button class="btn btn-ghost" id="btn-reset" type="button">↺ Reset</button>
+        <label class="speed" for="speed">Kecepatan
+          <input type="range" id="speed" min="1" max="5" value="3">
+          <output id="speed-out" for="speed">1×</output>
+        </label>
+        <span class="kbd-hint">Pintasan (saat simulator terlihat): <kbd>→</kbd> langkah · <kbd>Space</kbd> jalankan/jeda · <kbd>R</kbd> reset</span>
+      </div>
+
+      <div class="sim-grid">
+        <div class="sim-col">
+          <div class="card">
+            <div class="card-title">Kode <span class="code-file">📄 loop.js</span></div>
+<pre class="code" id="sim-code"><span class="ln">1</span><span class="t-kw">for</span> (<span id="code-init" class="part part-init"></span>; <span id="code-cond" class="part part-cond"></span>; <span id="code-update" class="part part-update"></span>) {
+<span class="ln">2</span>    <span id="code-body" class="part part-body"></span>
+<span class="ln">3</span>}
+<span class="ln">4</span><span id="code-after" class="part part-after"><span class="t-fn">console</span>.<span class="t-fn">log</span>(i); <span class="cm">// di luar loop</span></span></pre>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Diagram Alur <span class="hint">● = posisi eksekusi (membawa nilai i)</span></div>
+            <svg class="flow" id="flow" viewBox="0 0 420 430" role="img" aria-label="Diagram alur perulangan for: inisialisasi, kondisi, blok kode, update, lalu kembali ke kondisi">
+              <defs>
+                <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#5b6386" />
+                </marker>
+                <radialGradient id="tokGrad" cx="35%" cy="35%" r="70%">
+                  <stop offset="0%" stop-color="#ffffff" />
+                  <stop offset="60%" stop-color="#c7d2fe" />
+                  <stop offset="100%" stop-color="#818cf8" />
+                </radialGradient>
+              </defs>
+
+              <path id="ar-start" class="arrow" style="--c: var(--init)" d="M210 0 L210 32" />
+              <path id="ar-init-cond" class="arrow" style="--c: var(--cond)" d="M210 86 L210 123" />
+              <path id="ar-cond-body" class="arrow" style="--c: var(--body)" d="M210 205 L210 247" />
+              <path id="ar-body-update" class="arrow" style="--c: var(--update)" d="M210 301 L210 357" />
+              <path id="ar-loop" class="arrow" style="--c: var(--accent)" d="M125 385 L45 385 L45 165 L118 165" />
+              <path id="ar-cond-exit" class="arrow" style="--c: var(--exit)" d="M300 165 L365 165 L365 247" />
+
+              <text class="arrow-label" x="218" y="232" fill="#34d399">true</text>
+              <text class="arrow-label" x="309" y="157" fill="#fb7185">false</text>
+              <text class="arrow-label" x="36" y="300" fill="#818cf8" transform="rotate(-90 36 300)">⑤ kembali ke ②</text>
+
+              <g class="node" id="n-init" style="--node-c: var(--init)">
+                <rect x="125" y="34" width="170" height="52" rx="12" />
+                <text class="n-label" x="210" y="54">① INISIALISASI</text>
+                <text class="n-code" x="210" y="73" id="nc-init">let i = 1</text>
+              </g>
+              <g class="node" id="n-cond" style="--node-c: var(--cond)">
+                <polygon points="210,125 300,165 210,205 120,165" />
+                <text class="n-label" x="210" y="160">② KONDISI</text>
+                <text class="n-code" x="210" y="179" id="nc-cond">i &lt;= 5 ?</text>
+              </g>
+              <g class="node" id="n-body" style="--node-c: var(--body)">
+                <rect x="125" y="249" width="170" height="52" rx="12" />
+                <text class="n-label" x="210" y="269">③ BLOK KODE</text>
+                <text class="n-code" x="210" y="288" id="nc-body">console.log(…)</text>
+              </g>
+              <g class="node" id="n-update" style="--node-c: var(--update)">
+                <rect x="125" y="359" width="170" height="52" rx="12" />
+                <text class="n-label" x="210" y="379">④ UPDATE</text>
+                <text class="n-code" x="210" y="398" id="nc-update">i++</text>
+              </g>
+              <g class="node" id="n-exit" style="--node-c: var(--exit)">
+                <rect x="320" y="249" width="90" height="52" rx="12" />
+                <text class="n-label" x="365" y="269">KELUAR</text>
+                <text class="n-code" x="365" y="288">selesai</text>
+              </g>
+
+              <g class="token" id="token" style="opacity: 0; transform: translate(210px, 18px);">
+                <circle class="token-ring" r="12" />
+                <circle class="token-core" r="13" />
+                <text class="token-text" id="token-text">1</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="sim-col">
+          <div class="narr" id="narr">
+            <div class="narr-badge" id="narr-badge" aria-hidden="true">▶</div>
+            <p id="narr-text" aria-live="polite"></p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Urutan Eksekusi for</div>
+            <ol class="steps" id="steps">
+              <li data-step="1" style="--c: var(--init)"><span class="step-num">1</span><span><b>Inisialisasi</b> dijalankan sekali (<code>i</code> menjadi <span class="js-start">1</span>)</span></li>
+              <li data-step="2" style="--c: var(--cond)"><span class="step-num">2</span><span><b>Kondisi diperiksa.</b> Jika <code>false</code>, keluar dari loop</span></li>
+              <li data-step="3" style="--c: var(--body)"><span class="step-num">3</span><span><b>Blok kode dijalankan</b> (satu iterasi)</span></li>
+              <li data-step="4" style="--c: var(--update)"><span class="step-num">4</span><span><b>Update dijalankan</b> (<span id="step4-desc"><code>i</code> bertambah 1</span>)</span></li>
+              <li data-step="5" style="--c: var(--accent)"><span class="step-num">5</span><span><b>Kembali ke langkah 2</b></span></li>
+            </ol>
+          </div>
+
+          <div class="duo">
+            <div class="card">
+              <div class="card-title">Memori</div>
+              <div class="scope-outer">
+                <span class="scope-tag">scope luar</span>
+                <div class="scope-inner" id="mem-inner">
+                  <span class="scope-tag">scope loop { }</span>
+                  <div id="var-slot"></div>
+                </div>
+                <p class="mem-note" id="mem-note"></p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Evaluasi Kondisi</div>
+              <div class="eval-box">
+                <div class="eval-expr" id="eval-expr">i &lt;= 5</div>
+                <div class="eval-sub" id="eval-sub">—</div>
+                <div class="eval-result" id="eval-result">menunggu…</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counters" aria-label="Jumlah eksekusi setiap bagian">
+            <div class="counter" style="--c: var(--init)"><span>Inisialisasi</span><b id="cnt-init">0</b><small>kali</small></div>
+            <div class="counter" style="--c: var(--cond)"><span>Kondisi</span><b id="cnt-cond">0</b><small>kali diperiksa</small></div>
+            <div class="counter" style="--c: var(--body)"><span>Blok kode</span><b id="cnt-body">0</b><small>iterasi</small></div>
+            <div class="counter" style="--c: var(--update)"><span>Update</span><b id="cnt-update">0</b><small>kali</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-bottom">
+        <div class="console">
+          <div class="console-head">
+            <span class="dot" style="background:#fb7185"></span>
+            <span class="dot" style="background:#fbbf24"></span>
+            <span class="dot" style="background:#34d399"></span>
+            <span class="title">Console</span>
+          </div>
+          <div class="console-body" id="console-out" aria-live="polite"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Tabel Jejak (Trace)</div>
+          <div class="table-wrap" id="trace-wrap">
+            <table>
+              <thead>
+                <tr><th>Cek ke-</th><th>Nilai i</th><th>Kondisi</th><th>Hasil</th><th>Output blok</th></tr>
+              </thead>
+              <tbody id="trace-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCOPE ================= -->
+    <section class="section container" id="scope" aria-labelledby="scope-title">
+      <div class="section-head reveal">
+        <span class="eyebrow">03 · Scope</span>
+        <h2 id="scope-title">Di Mana Variabel <code>i</code> Hidup?</h2>
+        <p>Kurung kurawal loop seperti sebuah "ruangan". Variabel yang lahir di dalam ruangan itu tidak bisa dilihat dari luar.</p>
+      </div>
+
+      <div class="callout reveal">
+        <span class="callout-icon" aria-hidden="true">🔒</span>
+        <p>Variabel <code>i</code> yang dibuat dengan <code>let</code> di dalam kurung <code>for</code> <b>hanya dikenal di dalam loop</b>. Setelah loop selesai, <code>i</code> dihapus dari memori.</p>
+      </div>
+
+      <div class="scope-grid">
+        <article class="card scope-card reveal" data-kind="let">
+          <div class="scope-card-head"><span class="tag tag-good">let</span><h3>Block scope ✅</h3></div>
+<pre class="code"><span class="t-kw">for</span> (<span class="t-kw">let</span> i = <span class="t-num">1</span>; i &lt;= <span class="t-num">3</span>; i++) {
+    <span class="cm">// i hanya hidup di sini</span>
+}
+<span class="t-fn">console</span>.<span class="t-fn">log</span>(i);</pre>
+          <div class="scope-stage">
+            <div class="sbox inner"><span class="scope-tag">{ di dalam loop }</span><div class="slot"><span class="ph">belum dijalankan</span></div></div>
+            <div class="sbox outer"><span class="scope-tag">di luar loop</span><div class="slot-out"><span class="ph">console.log(i) → ?</span></div></div>
+          </div>
+          <div class="mini-console" aria-live="polite">// output muncul di sini</div>
+          <div class="scope-actions">
+            <button type="button" class="btn btn-primary btn-sm js-run" id="run-let">▶ Jalankan</button>
+          </div>
+          <p class="scope-note">Di luar loop, <code>i</code> sudah tidak ada sehingga muncul <b class="t-false">ReferenceError</b>.</p>
+        </article>
+
+        <article class="card scope-card reveal" data-kind="var">
+          <div class="scope-card-head"><span class="tag tag-warn">var</span><h3>Bocor keluar ⚠️</h3></div>
+<pre class="code"><span class="t-kw">for</span> (<span class="t-kw">var</span> i = <span class="t-num">1</span>; i &lt;= <span class="t-num">3</span>; i++) {
+    <span class="cm">// var tidak kenal block scope</span>
+}
+<span class="t-fn">console</span>.<span class="t-fn">log</span>(i);</pre>
+          <div class="scope-stage">
+            <div class="sbox inner"><span class="scope-tag">{ di dalam loop }</span><div class="slot"><span class="ph">belum dijalankan</span></div></div>
+            <div class="sbox outer"><span class="scope-tag">di luar loop</span><div class="slot-out"><span class="ph">console.log(i) → ?</span></div></div>
+          </div>
+          <div class="mini-console" aria-live="polite">// output muncul di sini</div>
+          <div class="scope-actions">
+            <button type="button" class="btn btn-sm js-run" id="run-var">▶ Jalankan</button>
+          </div>
+          <p class="scope-note">Dengan <code>var</code>, <code>i</code> "bocor" ke luar loop dan bernilai <code>4</code>. Ini sering memicu bug — karena itu <b>gunakan <code>let</code></b>.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= KUIS ================= -->
+    <section class="section container" id="kuis" aria-labelledby="kuis-title">
+      <div class="section-head reveal">
+        <span class="eyebrow">04 · Uji Pemahaman</span>
+        <h2 id="kuis-title">Kuis Singkat 🧠</h2>
+        <p>Jawab pertanyaan berikut. Setiap jawaban langsung disertai penjelasan.</p>
+      </div>
+
+      <div class="score-bar">
+        <span class="score-num">Skor: <span id="quiz-score">0 / 6</span></span>
+        <div class="progress" aria-hidden="true"><i id="quiz-progress"></i></div>
+        <button type="button" class="btn btn-sm btn-ghost" id="quiz-reset">↺ Ulangi kuis</button>
+        <p class="score-msg" id="quiz-msg" aria-live="polite"></p>
+      </div>
+      <div class="quiz-grid" id="quiz-list"></div>
+
+      <div class="order-wrap card reveal">
+        <h3>🧩 Tantangan: Susun Urutan Eksekusi</h3>
+        <p>Klik kartu sesuai urutan yang benar saat JavaScript menjalankan loop <code>for</code>.</p>
+        <div class="order-grid" id="order-grid"></div>
+        <div class="order-status">
+          <span id="order-msg" aria-live="polite">Pilih langkah ke-1.</span>
+          <button type="button" class="btn btn-sm btn-ghost" id="order-reset">↻ Acak ulang</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="sum card">
+      <h2>📌 Ringkasan</h2>
+      <ol>
+        <li>Inisialisasi dijalankan sekali (<code>i</code> menjadi 1)</li>
+        <li>Kondisi diperiksa. Jika <code>false</code>, keluar dari loop</li>
+        <li>Blok kode dijalankan (satu iterasi)</li>
+        <li>Update dijalankan (<code>i</code> bertambah 1)</li>
+        <li>Kembali ke langkah 2</li>
+      </ol>
+      <p>Variabel <code>i</code> yang dibuat dengan <code>let</code> di dalam kurung <code>for</code> hanya dikenal di dalam loop.</p>
+    </div>
+    <p>XI RPL · Pemrograman Web · Pertemuan 18 — Perulangan <code>for</code></p>
+  </footer>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ---------- helpers ---------- */
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const restart = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+
+    function hl(code) {
+      const re = /("[^"]*")|(\b\d+\b)|\b(console|log|repeat)\b|\b(let|for|var)\b/g;
+      let out = '', last = 0, m;
+      while ((m = re.exec(code))) {
+        out += esc(code.slice(last, m.index));
+        const [, s, n, f, k] = m;
+        out += s ? `<span class="t-str">${esc(s)}</span>`
+          : n ? `<span class="t-num">${n}</span>`
+          : f ? `<span class="t-fn">${f}</span>`
+          : `<span class="t-kw">${k}</span>`;
+        last = re.lastIndex;
+      }
+      return out + esc(code.slice(last));
+    }
+
+    /* ---------- nav active link ---------- */
+    const navLinks = $$('.nav-links a');
+    const navIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === '#' + e.target.id));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    $$('main section[id]').forEach((s) => navIO.observe(s));
+
+    /* =========================================================
+       1. ANATOMY
+       ========================================================= */
+    const anatomy = $('#anatomy');
+    $$('[data-part]', anatomy).forEach((el) => {
+      const on = () => { anatomy.dataset.hl = el.dataset.part; };
+      const off = () => { delete anatomy.dataset.hl; };
+      el.addEventListener('mouseenter', on);
+      el.addEventListener('mouseleave', off);
+      el.addEventListener('focus', on);
+      el.addEventListener('blur', off);
+    });
+
+    /* =========================================================
+       2. ANALOGY — runner
+       ========================================================= */
+    const A = {
+      run: 0,
+      path: $('#track-path'),
+      progress: $('#track-progress'),
+      runner: $('#runner'),
+      score: $('#score'),
+      light: $('#gate-light'),
+      gateText: $('#gate-text'),
+      narr: $('#a-narr-text'),
+      laps: $('#a-laps'),
+      lapsOut: $('#a-laps-out'),
+      chips: $('#lap-chips'),
+      start: $('#a-start'),
+      reset: $('#a-reset'),
+    };
+    const trackLen = A.path.getTotalLength();
+    A.progress.style.strokeDasharray = String(trackLen);
+    let facing = 1;
+
+    function placeRunner(d, t = 0) {
+      const p = A.path.getPointAtLength(d);
+      const q = A.path.getPointAtLength(Math.min(trackLen, d + 2));
+      if (Math.abs(q.x - p.x) > 0.3) facing = q.x > p.x ? -1 : 1; // emoji faces left by default
+      const bob = reduceMotion.matches || !t ? 0 : -Math.abs(Math.sin(t / 70)) * 4;
+      A.runner.setAttribute('transform', `translate(${p.x.toFixed(1)} ${(p.y - 8 + bob).toFixed(1)}) scale(${facing} 1)`);
+    }
+    const setProgress = (f) => { A.progress.style.strokeDashoffset = String(trackLen * (1 - f)); };
+    const aHL = (part) => $$('[data-apart]').forEach((el) => el.classList.toggle('is-active', el.dataset.apart === part));
+    const aSay = (html) => { A.narr.innerHTML = html; restart(A.narr, 'swap'); };
+    function setScore(v, bump) { A.score.textContent = v; if (bump) restart(A.score, 'bump'); }
+    function setGate(state, text) {
+      A.light.classList.toggle('go', state === true);
+      A.light.classList.toggle('stop', state === false);
+      A.gateText.classList.toggle('go', state === true);
+      A.gateText.classList.toggle('stop', state === false);
+      A.gateText.textContent = text || 'gerbang';
+    }
+    function addChip(n) {
+      $('.chip-ph', A.chips)?.remove();
+      const c = document.createElement('span');
+      c.className = 'lap-chip';
+      c.textContent = `✓ putaran ${n}`;
+      A.chips.append(c);
+    }
+
+    function runLap(ms, alive) {
+      return new Promise((res) => {
+        const t0 = performance.now();
+        const frame = (now) => {
+          if (!alive()) return res();
+          const p = Math.min(1, (now - t0) / ms);
+          const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+          placeRunner(e * trackLen, now);
+          setProgress(e);
+          if (p < 1) requestAnimationFrame(frame);
+          else { placeRunner(0); res(); }
+        };
+        requestAnimationFrame(frame);
+      });
+    }
+
+    function resetAnalogy(withMsg = true) {
+      A.run++;
+      aHL(null);
+      setGate(null);
+      setScore('–');
+      setProgress(0);
+      A.chips.innerHTML = '<span class="chip-ph">Belum ada putaran yang selesai</span>';
+      A.runner.textContent = '🏃';
+      facing = 1;
+      placeRunner(0);
+      A.start.disabled = false;
+      A.laps.disabled = false;
+      A.start.textContent = '▶ Mulai Lari';
+      if (withMsg) aSay('Tekan <b>Mulai Lari</b> untuk melihat bagaimana seorang pelari "menjalankan" loop <code>for</code>.');
+    }
+
+    function syncLaps() {
+      A.lapsOut.textContent = A.laps.value;
+      $$('.js-a-n').forEach((el) => { el.textContent = A.laps.value; });
+    }
+
+    async function runAnalogy() {
+      resetAnalogy(false);
+      const id = A.run;
+      const alive = () => id === A.run;
+      const N = +A.laps.value;
+      A.start.disabled = true;
+      A.laps.disabled = true;
+
+      let putaran = 1;
+      aHL('init');
+      setScore(putaran, true);
+      aSay(`<b>① Inisialisasi</b> — Pelatih berseru: <i>"Mulai dari putaran ke-1!"</i> Papan skor diisi <code>putaran = 1</code>. Ini hanya terjadi <b>sekali</b>.`);
+      await wait(1700); if (!alive()) return;
+
+      while (true) {
+        const ok = putaran <= N;
+        aHL('cond');
+        setGate(ok, `${putaran} <= ${N} → ${ok}`);
+        aSay(ok
+          ? `<b>② Cek kondisi</b> — Petugas gerbang: <i>"Putaran ke-${putaran}, apakah ${putaran} &lt;= ${N}? <b class="t-true">Ya (true)</b>, silakan lari!"</i>`
+          : `<b>② Cek kondisi</b> — Petugas gerbang: <i>"Putaran ke-${putaran}, apakah ${putaran} &lt;= ${N}? <b class="t-false">Tidak (false)</b>, berhenti!"</i>`);
+        await wait(1600); if (!alive()) return;
+        if (!ok) break;
+
+        aHL('body');
+        setGate(null);
+        aSay(`<b>③ Blok kode</b> — Pelari menjalankan tugasnya: <code>lariSatuPutaran()</code>. Ini <b>iterasi ke-${putaran}</b>.`);
+        await runLap(2600, alive); if (!alive()) return;
+        addChip(putaran);
+
+        aHL('update');
+        putaran++;
+        setScore(putaran, true);
+        aSay(`<b>④ Update</b> — Papan skor ditambah 1 (<code>putaran++</code>), sekarang <code>putaran = ${putaran}</code>. Lalu <b>kembali ke gerbang</b> (langkah 2).`);
+        await wait(1600); if (!alive()) return;
+      }
+
+      aHL(null);
+      A.runner.textContent = '🙌';
+      A.runner.setAttribute('transform', 'translate(300 242)');
+      aSay(`<b>🏁 Selesai!</b> Kondisi bernilai <code>false</code>, jadi loop berhenti. Pelari berlari <b>${N} putaran</b>, gerbang memeriksa <b>${N + 1} kali</b>, dan aba-aba "mulai" hanya diberikan <b>1 kali</b>.`);
+      A.start.disabled = false;
+      A.laps.disabled = false;
+      A.start.textContent = '↻ Ulangi';
+    }
+
+    A.laps.addEventListener('input', () => { syncLaps(); resetAnalogy(); });
+    A.start.addEventListener('click', runAnalogy);
+    A.reset.addEventListener('click', () => resetAnalogy());
+    syncLaps();
+    resetAnalogy();
+
+    /* =========================================================
+       3. SIMULATOR
+       ========================================================= */
+    const MAX_ITER = 12;
+    const SPEEDS = [0.5, 0.75, 1, 1.5, 2.25];
+    const BODIES = {
+      iterasi: { code: 'console.log("Iterasi ke-" + i);', run: (i) => ({ text: `Iterasi ke-${i}` }) },
+      kali: { code: 'console.log(i * 2);', run: (i) => ({ text: String(i * 2) }) },
+      kuadrat: { code: 'console.log(i + " x " + i + " = " + (i * i));', run: (i) => ({ text: `${i} x ${i} = ${i * i}` }) },
+      bintang: {
+        code: 'console.log("⭐".repeat(i));',
+        run: (i) => (i < 0 ? { text: `RangeError: Invalid count value: ${i}`, error: true } : { text: '⭐'.repeat(i) || '(string kosong)' }),
+      },
+    };
+    const UPDATES = {
+      'i++': { fn: (i) => i + 1, desc: '<code>i</code> bertambah 1' },
+      'i--': { fn: (i) => i - 1, desc: '<code>i</code> berkurang 1' },
+      'i += 2': { fn: (i) => i + 2, desc: '<code>i</code> bertambah 2' },
+      'i -= 2': { fn: (i) => i - 2, desc: '<code>i</code> berkurang 2' },
+    };
+    const OPS = { '<': (a, b) => a < b, '<=': (a, b) => a <= b, '>': (a, b) => a > b, '>=': (a, b) => a >= b };
+
+    const P = { init: [210, 18], condTop: [210, 112], condLeft: [104, 165], body: [210, 235], update: [210, 345], exit: [365, 235] };
+    const ROUTES = {
+      'init>cond': { pts: [P.init, P.condTop], arrow: 'ar-init-cond' },
+      'condTop>body': { pts: [P.condTop, [210, 165], P.body], arrow: 'ar-cond-body' },
+      'condLeft>body': { pts: [P.condLeft, [210, 165], P.body], arrow: 'ar-cond-body' },
+      'body>update': { pts: [P.body, P.update], arrow: 'ar-body-update' },
+      'update>cond': { pts: [P.update, [210, 385], [45, 385], [45, 165], P.condLeft], arrow: 'ar-loop' },
+      'condTop>exit': { pts: [P.condTop, [210, 165], [365, 165], P.exit], arrow: 'ar-cond-exit' },
+      'condLeft>exit': { pts: [P.condLeft, [365, 165], P.exit], arrow: 'ar-cond-exit' },
+    };
+    const NODES = { init: 'n-init', cond: 'n-cond', body: 'n-body', update: 'n-update', exit: 'n-exit' };
+    const CODES = { init: 'code-init', cond: 'code-cond', body: 'code-body', update: 'code-update', after: 'code-after' };
+    const COLORS = { init: 'var(--init)', cond: 'var(--cond)', body: 'var(--body)', update: 'var(--update)', back: 'var(--accent)', exit: 'var(--exit)', idle: 'var(--accent)' };
+
+    const el = {
+      start: $('#cfg-start'), op: $('#cfg-op'), end: $('#cfg-end'), update: $('#cfg-update'), body: $('#cfg-body'),
+      predict: $('#predict'),
+      step: $('#btn-step'), play: $('#btn-play'), reset: $('#btn-reset'), speed: $('#speed'), speedOut: $('#speed-out'),
+      token: $('#token'), tokenText: $('#token-text'),
+      narr: $('#narr'), narrBadge: $('#narr-badge'), narrText: $('#narr-text'),
+      varSlot: $('#var-slot'), memInner: $('#mem-inner'), memNote: $('#mem-note'),
+      evalExpr: $('#eval-expr'), evalSub: $('#eval-sub'), evalResult: $('#eval-result'),
+      console: $('#console-out'), trace: $('#trace-body'), traceWrap: $('#trace-wrap'),
+    };
+
+    const cfg = { start: 1, op: '<=', end: 5, update: 'i++', body: 'iterasi' };
+    const sim = {
+      runId: 0, phase: 'idle', i: null, lastCond: null, tokenAt: null,
+      counts: { init: 0, cond: 0, body: 0, update: 0 },
+      playing: false, busy: false, lastRow: null, varCard: null,
+    };
+
+    const speed = () => SPEEDS[+el.speed.value - 1];
+    const dur = (ms) => ms / speed();
+    const condText = (i = 'i') => `${i} ${cfg.op} ${cfg.end}`;
+    const clampNum = (v) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.max(-20, Math.min(20, n)) : 0; };
+
+    function readCfg() {
+      cfg.start = clampNum(el.start.value);
+      cfg.end = clampNum(el.end.value);
+      cfg.op = el.op.value;
+      cfg.update = el.update.value;
+      cfg.body = el.body.value;
+    }
+
+    function predict() {
+      let i = cfg.start, n = 0;
+      while (OPS[cfg.op](i, cfg.end)) {
+        n++;
+        if (n > 2000) return Infinity;
+        i = UPDATES[cfg.update].fn(i);
+      }
+      return n;
+    }
+
+    function renderCode() {
+      $('#code-init').innerHTML = `<span class="t-kw">let</span> i = ${cfg.start}`;
+      $('#code-cond').textContent = condText();
+      $('#code-update').textContent = cfg.update;
+      $('#code-body').innerHTML = hl(BODIES[cfg.body].code);
+      $('#nc-init').textContent = `let i = ${cfg.start}`;
+      $('#nc-cond').textContent = `${condText()} ?`;
+      $('#nc-update').textContent = cfg.update;
+      el.evalExpr.textContent = condText();
+      $$('.js-start').forEach((s) => { s.textContent = cfg.start; });
+      $('#step4-desc').innerHTML = UPDATES[cfg.update].desc;
+
+      const n = predict();
+      el.predict.className = 'predict';
+      if (n === Infinity) { el.predict.classList.add('danger'); el.predict.textContent = '∞ infinite loop!'; }
+      else if (n > MAX_ITER) { el.predict.classList.add('warn'); el.predict.textContent = `${n} iterasi · disimulasikan ${MAX_ITER}`; }
+      else if (n === 0) { el.predict.classList.add('warn'); el.predict.textContent = '0 iterasi · blok tak pernah jalan'; }
+      else el.predict.textContent = `${n} iterasi`;
+    }
+
+    /* ---- visual helpers ---- */
+    function setActive(key) {
+      Object.entries(NODES).forEach(([k, id]) => $('#' + id).classList.toggle('is-active', k === key));
+      Object.entries(CODES).forEach(([k, id]) => $('#' + id).classList.toggle('is-active', k === key));
+    }
+    function setStep(n) { $$('#steps li').forEach((li) => li.classList.toggle('is-active', +li.dataset.step === n)); }
+    function setFlow(id) { $$('.flow .arrow').forEach((a) => a.classList.toggle('is-flowing', a.id === id)); }
+
+    function narrate(badge, colorKey, html) {
+      el.narrBadge.textContent = badge;
+      el.narr.style.setProperty('--c', COLORS[colorKey]);
+      el.narrText.innerHTML = html;
+      restart(el.narrText, 'swap');
+    }
+
+    const tp = ([x, y]) => `translate(${x}px, ${y}px)`;
+    function setTokenValue(v) {
+      el.tokenText.textContent = v;
+      el.tokenText.style.fontSize = String(v).length > 2 ? '8.5px' : '11px';
+    }
+    function moveToken(routeKey) {
+      const { pts, arrow } = ROUTES[routeKey];
+      const final = tp(pts[pts.length - 1]);
+      setFlow(arrow);
+      if (reduceMotion.matches) {
+        el.token.style.transform = final;
+        return wait(dur(350)).then(() => setFlow(null));
+      }
+      let total = 0;
+      const segs = [];
+      for (let k = 1; k < pts.length; k++) {
+        const d = Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
+        segs.push(d); total += d;
+      }
+      let acc = 0;
+      const frames = pts.map((p, k) => {
+        if (k > 0) acc += segs[k - 1];
+        return { transform: tp(p), offset: total ? acc / total : k / (pts.length - 1) };
+      });
+      const ms = dur(720) * Math.max(0.9, Math.min(2.2, total / 110));
+      const anim = el.token.animate(frames, { duration: ms, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' });
+      return anim.finished.then(() => {
+        el.token.style.transform = final;
+        anim.cancel();
+        setFlow(null);
+      }, () => {});
+    }
+
+    function bumpCount(key) {
+      const b = $('#cnt-' + key);
+      b.textContent = sim.counts[key];
+      restart(b, 'bump');
+    }
+    function renderCounts() { Object.keys(sim.counts).forEach((k) => { $('#cnt-' + k).textContent = sim.counts[k]; }); }
+
+    function log(text, type = '') {
+      $('.console-empty', el.console)?.remove();
+      const line = document.createElement('div');
+      line.className = 'console-line ' + type;
+      line.innerHTML = `<span class="p">${type === 'sys' ? '#' : type === 'warn' ? '!' : '›'}</span><span>${esc(text)}</span>`;
+      el.console.append(line);
+      el.console.scrollTop = el.console.scrollHeight;
+    }
+
+    function traceAdd(i, ok) {
+      $('tr.ph', el.trace)?.remove();
+      const tr = document.createElement('tr');
+      tr.className = 'new';
+      tr.innerHTML = `<td>${sim.counts.cond}</td><td>${i}</td><td>${esc(condText(i))}</td>` +
+        `<td class="${ok ? 'res-true' : 'res-false'}">${ok}</td>` +
+        `<td class="out">${ok ? '<span style="color:var(--dim)">…</span>' : '<span class="res-false">keluar loop</span>'}</td>`;
+      el.trace.append(tr);
+      sim.lastRow = tr;
+      el.traceWrap.scrollTop = el.traceWrap.scrollHeight;
+    }
+
+    function memReset() {
+      el.varSlot.innerHTML = '<span class="var-empty">belum ada variabel</span>';
+      sim.varCard = null;
+      el.memInner.classList.remove('is-closed');
+      el.memNote.className = 'mem-note';
+      el.memNote.innerHTML = 'di luar loop: <code>i</code> → ?';
+    }
+    function memCreate(v) {
+      el.varSlot.innerHTML = '';
+      const c = document.createElement('div');
+      c.className = 'var-card';
+      c.innerHTML = `<span class="var-name">let i</span><span class="var-eq">=</span><span class="var-val"><span class="v">${v}</span></span>`;
+      el.varSlot.append(c);
+      sim.varCard = c;
+    }
+    function memSet(v) {
+      if (!sim.varCard) return;
+      const box = $('.var-val', sim.varCard);
+      const old = $('.v:not(.out)', box);
+      if (old) { old.classList.add('out'); setTimeout(() => old.remove(), 420); }
+      const n = document.createElement('span');
+      n.className = 'v in';
+      n.textContent = v;
+      box.append(n);
+      restart(sim.varCard, 'flash');
+    }
+    function memDestroy(id) {
+      if (sim.varCard) sim.varCard.classList.add('dissolve');
+      el.memInner.classList.add('is-closed');
+      setTimeout(() => {
+        if (id !== sim.runId) return;
+        el.varSlot.innerHTML = '<span class="var-empty gone">🗑️ i telah dihapus</span>';
+      }, 850);
+      el.memNote.className = 'mem-note error';
+      el.memNote.innerHTML = 'di luar loop: <code>i</code> → ReferenceError';
+    }
+
+    function setEval(i, ok) {
+      el.evalSub.textContent = i === null ? '—' : condText(i);
+      restart(el.evalSub, 'swap');
+      el.evalResult.className = 'eval-result';
+      if (ok === null) { el.evalResult.textContent = 'menunggu…'; return; }
+      el.evalResult.classList.add(ok ? 'true' : 'false');
+      el.evalResult.textContent = ok ? '✓ true' : '✗ false';
+      restart(el.evalResult, 'pop');
+    }
+
+    function updateButtons() {
+      const finished = sim.phase === 'done' || sim.phase === 'halted';
+      el.step.disabled = sim.busy || finished;
+      el.play.textContent = sim.playing ? '⏸ Jeda' : finished ? '↻ Ulangi' : '▶ Jalankan';
+    }
+
+    /* ---- execution steps ---- */
+    async function doInit(id) {
+      sim.i = cfg.start;
+      sim.counts.init++;
+      bumpCount('init');
+      setActive('init');
+      setStep(1);
+      setTokenValue(sim.i);
+      el.token.classList.remove('is-exit');
+      el.token.style.transform = tp(P.init);
+      el.token.style.opacity = '1';
+      memCreate(sim.i);
+      log('Program dimulai', 'sys');
+      narrate('1', 'init', `<b>Langkah 1 · Inisialisasi.</b> <code>let i = ${cfg.start}</code> dijalankan <b>sekali saja</b>. Variabel <code>i</code> dibuat di dalam scope loop dengan nilai <b>${cfg.start}</b>.`);
+      await wait(dur(300));
+      if (id !== sim.runId) return;
+      sim.tokenAt = 'init';
+      sim.phase = 'init';
+    }
+
+    async function doCond(id) {
+      const fromUpdate = sim.tokenAt === 'update';
+      if (fromUpdate) {
+        setActive(null);
+        setStep(5);
+        narrate('5', 'back', `<b>Langkah 5 · Kembali ke langkah 2.</b> Alur melompat ke atas untuk memeriksa kondisi lagi dengan nilai baru <code>i = ${sim.i}</code>. (Inisialisasi <u>tidak</u> diulang!)`);
+        await wait(dur(500));
+        if (id !== sim.runId) return;
+        await moveToken('update>cond');
+      } else {
+        await moveToken('init>cond');
+      }
+      if (id !== sim.runId) return;
+
+      sim.tokenAt = fromUpdate ? 'condLeft' : 'condTop';
+      const ok = OPS[cfg.op](sim.i, cfg.end);
+      sim.counts.cond++;
+      bumpCount('cond');
+      setActive('cond');
+      setStep(2);
+      setEval(sim.i, ok);
+      traceAdd(sim.i, ok);
+      sim.lastCond = ok;
+
+      if (ok && sim.counts.body >= MAX_ITER) {
+        const infinite = predict() === Infinity;
+        sim.phase = 'halted';
+        log(infinite ? 'Infinite loop terdeteksi — simulasi dihentikan' : `Simulasi dihentikan setelah ${MAX_ITER} iterasi`, 'warn');
+        narrate('!', 'exit', infinite
+          ? `<b>⚠ Infinite loop!</b> Kondisi <code>${esc(condText())}</code> tidak akan pernah bernilai <code>false</code> karena <code>${esc(cfg.update)}</code> membuat <code>i</code> bergerak menjauhi batas. Di browser sungguhan, halaman bisa <b>hang</b>. Periksa arah update dan operator kondisi!`
+          : `<b>⚠ Dihentikan.</b> Loop ini masih akan berjalan lebih dari ${MAX_ITER} iterasi. Simulator membatasinya agar tetap mudah diamati.`);
+        return;
+      }
+
+      narrate('2', 'cond', ok
+        ? `<b>Langkah 2 · Cek kondisi.</b> <code>${esc(condText(sim.i))}</code> bernilai <b class="t-true">true</b> → blok kode akan dijalankan.`
+        : `<b>Langkah 2 · Cek kondisi.</b> <code>${esc(condText(sim.i))}</code> bernilai <b class="t-false">false</b> → <b>keluar dari loop!</b>`);
+      sim.phase = 'cond';
+    }
+
+    async function doBody(id) {
+      await moveToken(sim.tokenAt + '>body');
+      if (id !== sim.runId) return;
+      sim.tokenAt = 'body';
+      sim.counts.body++;
+      bumpCount('body');
+      setActive('body');
+      setStep(3);
+      const res = BODIES[cfg.body].run(sim.i);
+      log(res.text, res.error ? 'err' : '');
+      if (sim.lastRow) $('.out', sim.lastRow).textContent = res.text;
+      narrate('3', 'body', `<b>Langkah 3 · Blok kode (iterasi ke-${sim.counts.body}).</b> <code>${esc(BODIES[cfg.body].code)}</code> dijalankan dengan <code>i = ${sim.i}</code> → output: <b>${esc(res.text)}</b>`);
+      sim.phase = 'body';
+    }
+
+    async function doUpdate(id) {
+      await moveToken('body>update');
+      if (id !== sim.runId) return;
+      sim.tokenAt = 'update';
+      const old = sim.i;
+      sim.i = UPDATES[cfg.update].fn(sim.i);
+      sim.counts.update++;
+      bumpCount('update');
+      setActive('update');
+      setStep(4);
+      setTokenValue(sim.i);
+      memSet(sim.i);
+      narrate('4', 'update', `<b>Langkah 4 · Update.</b> <code>${esc(cfg.update)}</code> dijalankan: nilai <code>i</code> berubah dari <b>${old}</b> menjadi <b>${sim.i}</b>.`);
+      sim.phase = 'update';
+    }
+
+    async function doExit(id) {
+      await moveToken(sim.tokenAt + '>exit');
+      if (id !== sim.runId) return;
+      sim.tokenAt = 'exit';
+      el.token.classList.add('is-exit');
+      setActive('exit');
+      setStep(null);
+      log('— loop selesai —', 'sys');
+      narrate('✕', 'exit', `<b>Keluar dari loop.</b> Karena kondisi bernilai <code>false</code>, blok kode <u>tidak</u> dijalankan lagi. Program melanjutkan ke baris setelah kurung kurawal <code>}</code>.`);
+      sim.phase = 'exit';
+    }
+
+    async function doScope(id) {
+      setActive('after');
+      $('#code-after').classList.add('is-error');
+      el.token.style.opacity = '0';
+      memDestroy(id);
+      log('ReferenceError: i is not defined', 'err');
+      const c = sim.counts;
+      narrate('✓', 'exit', `<b>Di luar loop.</b> <code>console.log(i)</code> menghasilkan <b class="t-false">ReferenceError</b>, karena <code>i</code> dibuat dengan <code>let</code> di dalam kurung <code>for</code> sehingga <b>hanya dikenal di dalam loop</b>.<br><small style="color:var(--muted)">Ringkasan: inisialisasi <b>${c.init}×</b> · kondisi <b>${c.cond}×</b> · blok kode <b>${c.body}×</b> · update <b>${c.update}×</b></small>`);
+      await wait(dur(200));
+      if (id !== sim.runId) return;
+      sim.phase = 'done';
+    }
+
+    async function stepSim() {
+      if (sim.busy) return;
+      const id = sim.runId;
+      sim.busy = true;
+      updateButtons();
+      try {
+        switch (sim.phase) {
+          case 'idle': await doInit(id); break;
+          case 'init': await doCond(id); break;
+          case 'cond': await (sim.lastCond ? doBody(id) : doExit(id)); break;
+          case 'body': await doUpdate(id); break;
+          case 'update': await doCond(id); break;
+          case 'exit': await doScope(id); break;
+        }
+      } finally {
+        if (id === sim.runId) { sim.busy = false; updateButtons(); }
+      }
+    }
+
+    async function play() {
+      if (sim.phase === 'done' || sim.phase === 'halted') resetSim();
+      sim.playing = true;
+      updateButtons();
+      const id = sim.runId;
+      while (sim.playing && id === sim.runId && sim.phase !== 'done' && sim.phase !== 'halted') {
+        await stepSim();
+        if (!sim.playing || id !== sim.runId) break;
+        await wait(dur(650));
+      }
+      if (id === sim.runId) { sim.playing = false; updateButtons(); }
+    }
+
+    function resetSim() {
+      sim.runId++;
+      sim.playing = false;
+      sim.busy = false;
+      sim.phase = 'idle';
+      sim.i = null;
+      sim.lastCond = null;
+      sim.tokenAt = null;
+      sim.lastRow = null;
+      sim.counts = { init: 0, cond: 0, body: 0, update: 0 };
+      el.token.getAnimations().forEach((a) => a.cancel());
+      el.token.style.transform = tp(P.init);
+      el.token.style.opacity = '0';
+      el.token.classList.remove('is-exit');
+      setActive(null);
+      setStep(null);
+      setFlow(null);
+      $('#code-after').classList.remove('is-error');
+      el.console.innerHTML = '<span class="console-empty">Output console.log() akan muncul di sini…</span>';
+      el.trace.innerHTML = '<tr class="ph"><td colspan="5">Setiap kali kondisi diperiksa, satu baris akan ditambahkan di sini.</td></tr>';
+      memReset();
+      setEval(null, null);
+      renderCounts();
+      narrate('▶', 'idle', 'Atur nilai di atas, lalu tekan <b>Langkah</b> untuk maju satu tahap, atau <b>Jalankan</b> untuk melihat animasi otomatis.');
+      updateButtons();
+    }
+
+    /* ---- events ---- */
+    [el.start, el.op, el.end, el.update, el.body].forEach((input) => {
+      input.addEventListener('change', () => {
+        readCfg();
+        if (input === el.start) el.start.value = cfg.start;
+        if (input === el.end) el.end.value = cfg.end;
+        renderCode();
+        resetSim();
+      });
+    });
+
+    $$('.preset').forEach((b) => b.addEventListener('click', () => {
+      const [s, op, e, up] = b.dataset.preset.split(',');
+      el.start.value = s; el.op.value = op; el.end.value = e; el.update.value = up;
+      readCfg();
+      renderCode();
+      resetSim();
+    }));
+
+    el.step.addEventListener('click', () => { sim.playing = false; stepSim(); });
+    el.play.addEventListener('click', () => {
+      if (sim.playing) { sim.playing = false; updateButtons(); }
+      else play();
+    });
+    el.reset.addEventListener('click', resetSim);
+    el.speed.addEventListener('input', () => { el.speedOut.textContent = `${speed()}×`; });
+
+    let simVisible = false;
+    new IntersectionObserver(([e]) => { simVisible = e.isIntersecting; }, { threshold: 0.15 }).observe($('#simulator'));
+
+    document.addEventListener('keydown', (e) => {
+      if (!simVisible || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target.closest('input, select, textarea, button, a, [contenteditable]')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); if (!el.step.disabled) el.step.click(); }
+      else if (e.key === ' ') { e.preventDefault(); el.play.click(); }
+      else if (e.key === 'r' || e.key === 'R') { resetSim(); }
+    });
+
+    readCfg();
+    renderCode();
+    resetSim();
+    el.speedOut.textContent = `${speed()}×`;
+
+    /* =========================================================
+       4. SCOPE DEMO
+       ========================================================= */
+    $$('.scope-card').forEach((card) => {
+      const kind = card.dataset.kind;
+      const btn = $('.js-run', card);
+      const inner = $('.sbox.inner', card);
+      const outer = $('.sbox.outer', card);
+      const slot = $('.slot', card);
+      const slotOut = $('.slot-out', card);
+      const con = $('.mini-console', card);
+
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        outer.classList.remove('shake');
+        slot.innerHTML = '';
+        slotOut.innerHTML = '<span class="ph">console.log(i) → ?</span>';
+        con.innerHTML = '<span style="color:var(--dim)">// menjalankan loop…</span>';
+
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `<span>${kind} i</span> = <b>1</b>`;
+        slot.append(chip);
+        const v = $('b', chip);
+
+        for (let i = 1; i <= 4; i++) {
+          v.textContent = i;
+          restart(v, 'tick');
+          con.innerHTML = i <= 3
+            ? `<span style="color:var(--dim)">// iterasi ke-${i}, i = ${i}</span>`
+            : '<span style="color:var(--dim)">// i = 4 → 4 &lt;= 3 false, loop selesai</span>';
+          await wait(600);
+        }
+
+        if (kind === 'let') {
+          chip.classList.add('dissolve');
+          await wait(700);
+          slot.innerHTML = '<span class="ph bad">🗑️ i dihapus saat loop selesai</span>';
+          slotOut.innerHTML = '<span class="ph bad">console.log(i) → ❌</span>';
+          restart(outer, 'shake');
+          con.innerHTML = '<span class="err">❌ ReferenceError: i is not defined</span>';
+        } else {
+          const first = chip.getBoundingClientRect();
+          slotOut.innerHTML = '';
+          slotOut.append(chip);
+          slot.innerHTML = '<span class="ph">(kosong)</span>';
+          const last = chip.getBoundingClientRect();
+          chip.classList.add('leaked');
+          if (!reduceMotion.matches) {
+            chip.animate(
+              [{ transform: `translate(${first.left - last.left}px, ${first.top - last.top}px)` }, { transform: 'none' }],
+              { duration: 650, easing: 'cubic-bezier(.34,1.3,.64,1)' }
+            );
+          }
+          await wait(700);
+          con.innerHTML = '<span class="ok">› 4</span> <span style="color:var(--dim)">// i "bocor" ke luar loop</span>';
+        }
+        btn.disabled = false;
+        btn.textContent = '↻ Jalankan lagi';
+      });
+    });
+
+    /* =========================================================
+       5. QUIZ
+       ========================================================= */
+    const QUIZ = [
+      {
+        q: 'Pada <code>for (let i = 0; i &lt; 4; i++)</code>, berapa kali blok kode dijalankan?',
+        opts: ['3 kali', '4 kali', '5 kali', 'Tak terhingga'], a: 1,
+        ex: '<code>i</code> bernilai 0, 1, 2, 3 → kondisi <code>true</code> 4 kali. Saat <code>i = 4</code>, <code>4 &lt; 4</code> bernilai <code>false</code> sehingga loop berhenti.',
+      },
+      {
+        q: 'Masih loop yang sama, berapa kali <b>kondisi</b> diperiksa?',
+        opts: ['3 kali', '4 kali', '5 kali', '1 kali'], a: 2,
+        ex: 'Kondisi diperiksa 4 kali (hasil <code>true</code>) + 1 kali terakhir (hasil <code>false</code>) = <b>5 kali</b>. Kondisi selalu diperiksa satu kali lebih banyak dari jumlah iterasi.',
+      },
+      {
+        q: 'Bagian mana yang hanya dijalankan <b>satu kali</b>?',
+        opts: ['Kondisi', 'Blok kode', 'Update', 'Inisialisasi'], a: 3,
+        ex: 'Inisialisasi (<code>let i = …</code>) hanya dijalankan sekali di awal, sebelum kondisi pertama diperiksa.',
+      },
+      {
+        q: 'Setelah langkah <b>update</b> dijalankan, apa yang terjadi berikutnya?',
+        opts: ['Inisialisasi diulang', 'Kondisi diperiksa lagi', 'Blok kode langsung dijalankan', 'Loop pasti selesai'], a: 1,
+        ex: 'Setelah update, alur <b>kembali ke langkah 2</b>: kondisi diperiksa lagi dengan nilai <code>i</code> yang baru.',
+      },
+      {
+        q: 'Apa hasil kode berikut?<pre>for (let i = 1; i &lt;= 3; i++) { }\nconsole.log(i);</pre>',
+        opts: ['3', '4', 'undefined', 'ReferenceError: i is not defined'], a: 3,
+        ex: '<code>i</code> dibuat dengan <code>let</code> di dalam kurung <code>for</code>, sehingga hanya dikenal di dalam loop. Di luar loop, <code>i</code> tidak ada → <b>ReferenceError</b>.',
+      },
+      {
+        q: 'Output dari kode berikut adalah…<pre>for (let i = 10; i &gt; 4; i -= 2) {\n  console.log(i);\n}</pre>',
+        opts: ['10 8 6', '10 8 6 4', '8 6 4', '10 9 8 7 6 5'], a: 0,
+        ex: '<code>i</code> = 10 → 8 → 6 dicetak. Saat <code>i = 4</code>, kondisi <code>4 &gt; 4</code> bernilai <code>false</code>, loop berhenti.',
+      },
+    ];
+
+    const quizList = $('#quiz-list');
+    let qScore = 0, qAnswered = 0;
+
+    function updateScore() {
+      $('#quiz-score').textContent = `${qScore} / ${QUIZ.length}`;
+      $('#quiz-progress').style.width = `${(qAnswered / QUIZ.length) * 100}%`;
+      const msg = $('#quiz-msg');
+      if (qAnswered < QUIZ.length) { msg.textContent = qAnswered ? `${QUIZ.length - qAnswered} soal lagi…` : ''; return; }
+      msg.textContent = qScore === QUIZ.length ? '🎉 Sempurna! Kamu sudah menguasai urutan eksekusi for.'
+        : qScore >= 4 ? '👍 Bagus! Coba ulangi simulator untuk soal yang masih keliru.'
+        : '💪 Tidak apa-apa — coba jalankan simulator langkah demi langkah, lalu ulangi kuis.';
+    }
+
+    function renderQuiz() {
+      qScore = 0; qAnswered = 0;
+      quizList.innerHTML = '';
+      QUIZ.forEach((item, qi) => {
+        const card = document.createElement('article');
+        card.className = 'card q-card';
+        card.innerHTML = `<span class="q-num">SOAL ${qi + 1}</span>
+          <div class="q-text">${item.q}</div>
+          <div class="q-opts">${item.opts.map((o, oi) => `<button class="q-opt" type="button" data-i="${oi}" id="q${qi}-o${oi}">${esc(o)}</button>`).join('')}</div>
+          <p class="q-ex" hidden></p>`;
+        $$('.q-opt', card).forEach((b) => b.addEventListener('click', () => {
+          const pick = +b.dataset.i;
+          const right = pick === item.a;
+          $$('.q-opt', card).forEach((o) => {
+            o.disabled = true;
+            const i = +o.dataset.i;
+            if (i === item.a) o.classList.add('correct');
+            else if (i === pick) o.classList.add('wrong');
+            else o.classList.add('dimmed');
+          });
+          const ex = $('.q-ex', card);
+          ex.innerHTML = `${right ? '✅ <b>Benar!</b>' : '❌ <b>Belum tepat.</b>'} ${item.ex}`;
+          ex.hidden = false;
+          qAnswered++;
+          if (right) qScore++;
+          updateScore();
+        }));
+        quizList.append(card);
+      });
+      updateScore();
+    }
+    $('#quiz-reset').addEventListener('click', renderQuiz);
+    renderQuiz();
+
+    /* ---- ordering challenge ---- */
+    const ORDER = [
+      { t: 'Inisialisasi', d: 'let i = 1', c: 'var(--init)' },
+      { t: 'Periksa kondisi', d: 'i <= 5 ?', c: 'var(--cond)' },
+      { t: 'Jalankan blok kode', d: '{ … }', c: 'var(--body)' },
+      { t: 'Update', d: 'i++', c: 'var(--update)' },
+      { t: 'Kembali ke langkah 2', d: '↺ ulangi', c: 'var(--accent)' },
+    ];
+    const orderGrid = $('#order-grid');
+    const orderMsg = $('#order-msg');
+    let nextIdx = 0, mistakes = 0;
+
+    function shuffled() {
+      let arr;
+      do {
+        arr = ORDER.map((_, i) => i);
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+      } while (arr.every((v, i) => v === i));
+      return arr;
+    }
+
+    function renderOrder() {
+      nextIdx = 0; mistakes = 0;
+      orderGrid.innerHTML = '';
+      orderMsg.innerHTML = 'Pilih langkah ke-1.';
+      shuffled().forEach((idx) => {
+        const item = ORDER[idx];
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'order-card';
+        b.id = `order-${idx}`;
+        b.style.setProperty('--c', item.c);
+        b.innerHTML = `<span>${esc(item.t)}</span><code>${esc(item.d)}</code>`;
+        b.addEventListener('click', () => {
+          if (b.classList.contains('placed') || nextIdx >= ORDER.length) return;
+          if (idx === nextIdx) {
+            b.classList.add('placed');
+            b.setAttribute('aria-disabled', 'true');
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = nextIdx + 1;
+            b.append(badge);
+            nextIdx++;
+            orderMsg.innerHTML = nextIdx === ORDER.length
+              ? `<span class="ok">🎉 Urutan benar!</span> Kesalahan: ${mistakes}. Setelah langkah 5, alur kembali ke langkah 2 sampai kondisi <code>false</code>.`
+              : `Bagus! Sekarang pilih langkah ke-${nextIdx + 1}.`;
+          } else {
+            mistakes++;
+            restart(b, 'shake');
+            orderMsg.innerHTML = `<span class="bad">Belum tepat.</span> "${esc(item.t)}" bukan langkah ke-${nextIdx + 1}. Coba lagi!`;
+          }
+        });
+        orderGrid.append(b);
+      });
+    }
+    $('#order-reset').addEventListener('click', renderOrder);
+    renderOrder();
+  })();
+  </script>
+</body>
+</html>
