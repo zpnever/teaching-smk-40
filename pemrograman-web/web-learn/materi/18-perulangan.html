@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#18 Perulangan — Coret.js</title>
+  <meta name="description" content="Pertemuan 18: perulangan for, while, do...while, break & continue, pola akumulator, dan nested loop — lengkap dengan penelusur loop, editor kode, praktik, dan kuis.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    /* Matikan ligatur font kode: siswa harus melihat <= dan ++ apa adanya */
+    .CodeMirror, code, pre, kbd, select, .input, .trace-code, .trace-tabel td, .mini-console, .readout, .nest-cell, .console-lines { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* Penelusur loop */
+    .trace-code {
+      font-family: var(--font-mono);
+      font-size: .95rem;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-md);
+      padding: .9rem 1.1rem;
+      background: var(--bg-card-alt);
+      background-image: var(--dots);
+      background-size: 14px 14px;
+      overflow-x: auto;
+    }
+    .trace-code .part { padding: 2px 5px; border-radius: 5px; border: 1.5px dashed transparent; transition: background .2s, color .2s; }
+    .trace-code .part.on { background: var(--ink); color: var(--bg); box-shadow: 2px 2px 0 var(--border-light); }
+    .trace-status {
+      font-size: .9rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+      border-left: 4px solid var(--ink);
+      padding: .3rem 0 .3rem .9rem;
+      min-height: 2.4rem;
+    }
+    .trace-wrap { max-height: 260px; overflow-y: auto; }
+    .trace-tabel th { position: sticky; top: 0; z-index: 1; }
+    .trace-tabel tr.now td { background: var(--ink) !important; color: var(--bg) !important; }
+    .trace-tabel td { font-family: var(--font-mono); font-size: .84rem; }
+
+    /* Grid nested loop */
+    .nest-wrap { overflow-x: auto; padding: 4px 4px 8px; }
+    .nest-grid { display: grid; gap: 6px; align-items: center; min-width: max-content; }
+    .nest-label { font-family: var(--font-mono); font-size: .72rem; font-weight: 700; color: var(--ink-lighter); text-align: center; padding: 0 4px; }
+    .nest-cell {
+      height: 38px;
+      border: 2px dashed var(--ink-lighter);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: .82rem;
+      background: var(--bg-card);
+      transition: background .2s, transform .2s;
+    }
+    .nest-cell.isi { border-style: solid; border-color: var(--ink); background: var(--accent-soft); }
+    .nest-cell.now { background: var(--ink); color: var(--bg); transform: scale(1.08); box-shadow: 2px 2px 0 var(--border-light); }
+
+    @media (max-width: 600px) {
+      .trace-code { font-size: .82rem; }
+    }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+<body data-materi="18">
+  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
+        <a href="16-operator.html" data-nav="16">#16 Operator</a>
+        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
+        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
+        <a href="19-function.html" data-nav="19">#19 Function</a>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Pertemuan 18</span>
+      <h1>Tulis Sekali, <span class="highlight">Ulangi</span> <span style="white-space:nowrap">Berkali-kali</span></h1>
+      <p class="hero-subtitle">Perulangan (loop) membuat komputer mengerjakan tugas yang sama ratusan kali tanpa kamu menyalin kode. Di sini kamu belajar <code>for</code>, <code>while</code>, <code>do...while</code>, sampai loop di dalam loop.</p>
+      <p class="tujuan-title">Setelah ini kamu bisa:</p>
+      <ul class="tujuan">
+        <li><span>Menjelaskan konsep perulangan dan alasan loop dibutuhkan</span></li>
+        <li><span>Menulis <code>for</code> dengan tiga bagian: inisialisasi, kondisi, dan update</span></li>
+        <li><span>Menelusuri (dry run) jalannya iterasi satu per satu</span></li>
+        <li><span>Menulis <code>while</code> dan <code>do...while</code>, serta memilih loop yang tepat</span></li>
+        <li><span>Mengendalikan loop dengan <code>break</code> dan <code>continue</code></span></li>
+        <li><span>Menerapkan pola akumulator dan nested loop</span></li>
+      </ul>
+      <a href="#s1" class="hero-cta">Mulai Belajar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Maskot Kurawal berlari di lintasan melingkar dengan angka 1 sampai 5">
+          <g class="wobble">
+            <ellipse cx="180" cy="135" rx="150" ry="95" class="soft"/>
+            <ellipse cx="180" cy="135" rx="112" ry="62" class="paper"/>
+            <ellipse cx="180" cy="135" rx="131" ry="78" class="dash"/>
+            <path class="ink" d="M300 92 l14 2 l-4 13"/>
+            <path class="ink" d="M60 178 l-14 -2 l4 -13"/>
+            <rect x="160" y="40" width="30" height="26" rx="6" class="solid"/>
+            <rect x="290" y="128" width="30" height="26" rx="6" class="solid"/>
+            <rect x="196" y="200" width="30" height="26" rx="6" class="solid"/>
+            <rect x="72" y="196" width="30" height="26" rx="6" class="solid"/>
+            <rect x="38" y="110" width="30" height="26" rx="6" class="solid"/>
+          </g>
+          <text x="175" y="58" text-anchor="middle" font-size="14" class="mono inv">1</text>
+          <text x="305" y="146" text-anchor="middle" font-size="14" class="mono inv">2</text>
+          <text x="211" y="218" text-anchor="middle" font-size="14" class="mono inv">3</text>
+          <text x="87" y="214" text-anchor="middle" font-size="14" class="mono inv">4</text>
+          <text x="53" y="128" text-anchor="middle" font-size="14" class="mono inv">5</text>
+          <text x="318" y="80" font-size="13" class="mono">i++</text>
+          <g transform="translate(130 82) scale(1)">
+            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4"/>
+            <g class="wobble">
+              <path class="ink" d="M41 82 l-8 8 h-6 M59 82 l10 6 h6"/>
+              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8"/>
+              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8"/>
+              <rect x="25" y="24" width="50" height="60" rx="17" class="paper"/>
+              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5"/>
+              <circle cx="43" cy="46" r="3.3" class="solid"/><circle cx="61" cy="46" r="3.3" class="solid"/>
+              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch"/><ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch"/>
+              <path class="paper" d="M43 56 q9 12 18 0 z"/>
+              <path class="thin" d="M6 40 h-12 M4 50 h-14 M6 60 h-10"/>
+            </g>
+            <text x="50" y="77" text-anchor="middle" font-size="9" class="mono">JS</text>
+          </g>
+        </svg>
+        <div class="illus-caption"><span>Ulangi sampai selesai</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <!-- ═══════════ 1. KENAPA BUTUH LOOP ═══════════ -->
+      <article class="step" id="s1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Motivasi</small>Kenapa Butuh Loop?</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="Papan tulis penuh tulisan Halo yang disalin berulang kali, dengan tanda tanya seratus kali">
+                <g class="wobble">
+                  <rect x="24" y="16" width="312" height="170" rx="10" class="solid"/>
+                  <rect x="36" y="28" width="288" height="146" rx="6" class="paper"/>
+                  <path class="ink" d="M60 186 v20 M300 186 v20"/>
+                  <rect x="250" y="178" width="34" height="8" rx="3" class="soft"/>
+                  <path class="thin" d="M212 160 q26 -10 52 0"/>
+                </g>
+                <text x="54" y="56" font-size="16">Halo!</text>
+                <text x="54" y="80" font-size="16">Halo!</text>
+                <text x="54" y="104" font-size="16">Halo!</text>
+                <text x="54" y="128" font-size="16">Halo!</text>
+                <text x="54" y="152" font-size="16">Halo!</text>
+                <text x="140" y="80" font-size="15" class="mono">... × 100 ?!</text>
+                <text x="140" y="112" font-size="13">capek nyalinnya...</text>
+                <text x="214" y="150" font-size="13" class="mono">for (...)</text>
+              </svg>
+              <div class="illus-caption"><span>Menyalin itu melelahkan</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Untuk menampilkan pesan yang sama 5 kali, cara yang paling sederhana adalah menyalin barisnya:</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+console.log("Halo!");
+console.log("Halo!");
+console.log("Halo!");
+console.log("Halo!");
+console.log("Halo!");</textarea></div>
+            <p class="content-text"><strong>Bagaimana jika harus 100 kali? Atau jumlahnya berubah-ubah?</strong> Menyalin 100 baris itu melelahkan, mudah salah, dan susah diubah.</p>
+
+            <div class="subsection">
+              <div class="section-label">Dengan loop: tulis sekali, jalankan berkali-kali</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let i = 1; i <= 5; i++) {
+  console.log("Halo!");
+}</textarea></div>
+              <div class="callout" data-kind="mikir" data-label="Coba sendiri">Ganti angka <code>5</code> di editor atas menjadi <code>100</code>, lalu jalankan. Cukup ubah <strong>satu angka</strong> untuk 100 baris output!</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 2. KONSEP PERULANGAN ═══════════ -->
+      <article class="step" id="s2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Konsep</small>Perulangan &amp; Iterasi</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 222" role="img" aria-label="Flowchart perulangan: inisialisasi, cek kondisi, jika true jalankan blok lalu update dan kembali cek kondisi, jika false keluar dari loop">
+                <g class="wobble">
+                  <rect x="6" y="46" width="80" height="46" rx="8" class="paper"/>
+                  <path class="soft" d="M150 30 L198 69 L150 108 L102 69 Z"/>
+                  <rect x="228" y="46" width="124" height="46" rx="8" class="paper"/>
+                  <rect x="228" y="150" width="124" height="46" rx="8" class="paper"/>
+                  <rect x="96" y="166" width="108" height="46" rx="8" class="solid"/>
+                  <path class="ink" d="M86 69 H100 M94 64 l6 5 l-6 5"/>
+                  <path class="ink" d="M198 69 H226 M220 64 l6 5 l-6 5"/>
+                  <path class="ink" d="M290 92 V148 M285 142 l5 6 l5 -6"/>
+                  <path class="dash" d="M352 173 H358 V12 H150 V26"/>
+                  <path class="ink" d="M145 21 l5 7 l5 -7"/>
+                  <path class="ink" d="M150 108 V164 M145 158 l5 6 l5 -6"/>
+                </g>
+                <text x="46" y="65" text-anchor="middle" font-size="11">Inisialisasi</text>
+                <text x="46" y="82" text-anchor="middle" font-size="10.5" class="mono">let i = 1</text>
+                <text x="150" y="66" text-anchor="middle" font-size="11">Kondisi</text>
+                <text x="150" y="80" text-anchor="middle" font-size="10.5" class="mono">true?</text>
+                <text x="290" y="65" text-anchor="middle" font-size="11">Jalankan blok</text>
+                <text x="290" y="82" text-anchor="middle" font-size="10.5">satu iterasi</text>
+                <text x="290" y="169" text-anchor="middle" font-size="11">Update</text>
+                <text x="290" y="186" text-anchor="middle" font-size="10.5" class="mono">i++</text>
+                <text x="150" y="185" text-anchor="middle" font-size="11" class="inv">Keluar loop</text>
+                <text x="150" y="202" text-anchor="middle" font-size="10" class="inv">lanjut ke bawah</text>
+                <text x="212" y="62" text-anchor="middle" font-size="10">true</text>
+                <text x="158" y="140" font-size="10">false</text>
+                <text x="254" y="26" text-anchor="middle" font-size="10">kembali cek kondisi</text>
+              </svg>
+              <div class="illus-caption"><span>Cek, jalankan, update, ulangi</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="def-box"><strong>Definisi</strong><b>Perulangan (loop)</b> adalah struktur yang membuat program menjalankan blok kode berulang kali selama suatu kondisi masih <code>true</code>. Satu kali putaran disebut <b>iterasi</b>.</div>
+
+            <div class="subsection">
+              <div class="section-label">Analogi sehari-hari</div>
+              <div class="mini-grid">
+                <div class="mini-card"><h4><span class="letter-badge">1</span>Menulis hukuman</h4><p>Selama belum 100 kali, tulis kalimat lagi. <em>Jumlah ulangan diketahui.</em></p></div>
+                <div class="mini-card"><h4><span class="letter-badge">2</span>Alarm pagi</h4><p>Selama belum dimatikan, alarm terus berbunyi. <em>Jumlah ulangan tidak diketahui.</em></p></div>
+                <div class="mini-card"><h4><span class="letter-badge">3</span>Absen kelas</h4><p>Untuk setiap siswa dalam daftar absen, guru memanggil satu nama.</p></div>
+              </div>
+            </div>
+
+            <div class="important-banner">
+              <h3>Kondisi diperiksa sebelum setiap putaran</h3>
+              <p>Selama kondisinya <strong>true</strong>, blok dijalankan lalu counter di-update. Begitu kondisinya <strong>false</strong>, loop berhenti dan program lanjut ke kode berikutnya.</p>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 3. PERULANGAN FOR ═══════════ -->
+      <article class="step" id="s3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Loop</small>Perulangan for</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text"><code>for</code> dipakai ketika <strong>jumlah pengulangan sudah diketahui</strong> sebelum loop dimulai. Semua pengaturan loop ditulis rapi dalam satu baris.</p>
+            <div class="editor" data-editor data-norun data-label="sintaks"><textarea class="editor-src">
+for (inisialisasi; kondisi; update) {
+  // kode yang diulang
+}</textarea></div>
+
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Bagian</th><th>Contoh</th><th>Kapan dijalankan</th><th>Fungsi</th></tr></thead>
+                <tbody>
+                  <tr><td>Inisialisasi</td><td><code>let i = 1</code></td><td><strong>Sekali</strong>, di awal</td><td>Membuat dan mengisi counter</td></tr>
+                  <tr><td>Kondisi</td><td><code>i &lt;= 5</code></td><td><strong>Sebelum</strong> setiap iterasi</td><td>Selama <code>true</code>, loop lanjut</td></tr>
+                  <tr><td>Update</td><td><code>i++</code></td><td><strong>Setelah</strong> setiap iterasi</td><td>Mengubah counter</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let i = 1; i <= 5; i++) {
+  console.log(`Iterasi ke-${i}`);
+}
+
+console.log("Loop selesai.");</textarea></div>
+              <div class="callout" data-kind="fakta" data-label="Kenapa selalu i?">Programmer di seluruh dunia hampir selalu menamai counter loop dengan <code>i</code> (dari <em>index</em> atau <em>iterasi</em>), lalu <code>j</code> untuk loop di dalamnya. Bukan aturan wajib — cuma kebiasaan yang sudah "jadi hukum".</div>
+            </div>
+
+            <div data-widget="penelusur-loop"></div>
+            <p class="content-text">Mau lihat animasi urutan eksekusinya lebih detail? Buka <a href="../../pertemuan-18-loop/analogi-for.html" target="_blank" rel="noopener"><strong>simulator analogi for</strong></a> yang dipakai di kelas.</p>
+
+            <div class="subsection">
+              <div class="section-label">Variasi for</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Tujuan</th><th>Kode</th><th>Output</th></tr></thead>
+                  <tbody>
+                    <tr><td>Hitung mundur</td><td><code>for (let i = 5; i &gt;= 1; i--)</code></td><td>5 4 3 2 1</td></tr>
+                    <tr><td>Loncat 2 angka</td><td><code>for (let i = 2; i &lt;= 10; i += 2)</code></td><td>2 4 6 8 10</td></tr>
+                    <tr><td>Mulai dari 0</td><td><code>for (let i = 0; i &lt; 5; i++)</code></td><td>0 1 2 3 4</td></tr>
+                    <tr><td>Kelipatan 5</td><td><code>for (let i = 5; i &lt;= 50; i += 5)</code></td><td>5 10 15 … 50</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="content-text">Coba ganti baris <code>for</code> di bawah dengan variasi-variasi di tabel:</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let i = 5; i >= 1; i--) {
+  console.log(i);
+}</textarea></div>
+            </div>
+
+            <div data-tebak data-judul="Mulai dari 0" data-q="Perhatikan nilai awal dan kondisinya. Angka berapa saja yang tercetak?"><textarea>
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</textarea></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 4. PRAKTIK 1 ═══════════ -->
+      <article class="step" id="s4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Praktik</small>Praktik 1: Latihan for</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Tiga latihan pemanasan dari slide. Tulis kodenya, jalankan, lalu tekan <strong>Periksa Jawaban</strong>.</p>
+            <div data-challenge="18:p1a"></div>
+            <div data-challenge="18:p1b"></div>
+            <div data-challenge="18:p1c"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 5. POLA AKUMULATOR ═══════════ -->
+      <article class="step" id="s5">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <h2><small>Pola</small>Pola Akumulator</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Loop sering dipakai untuk <strong>mengumpulkan hasil ke satu variabel</strong>, misalnya menjumlahkan, mengalikan, atau menghitung. Variabel penampung itu disebut <b>akumulator</b>. Polanya selalu tiga langkah:</p>
+            <div class="mini-grid">
+              <div class="mini-card"><h4><span class="letter-badge">1</span>Siapkan</h4><p>Siapkan penampung dengan nilai awal <strong>sebelum</strong> loop.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">2</span>Perbarui</h4><p>Perbarui penampung <strong>di dalam</strong> loop.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">3</span>Pakai</h4><p>Pakai hasilnya <strong>setelah</strong> loop selesai.</p></div>
+            </div>
+            <div class="editor" data-editor><textarea class="editor-src">
+let total = 0;                // 1. siapkan penampung
+
+for (let i = 1; i <= 5; i++) {
+  total += i;                 // 2. perbarui di setiap iterasi
+}
+
+console.log(total);           // 3. pakai hasilnya: 15</textarea></div>
+            <div class="callout" data-kind="awas">Kalau <code>let total = 0;</code> ditaruh <strong>di dalam</strong> loop, penampungnya di-reset ke 0 setiap putaran. Kalau <code>console.log(total)</code> ditaruh di dalam loop, hasilnya tercetak berkali-kali.</div>
+            <div data-challenge="18:p2"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 6. IF DI DALAM LOOP ═══════════ -->
+      <article class="step" id="s6">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <h2><small>Gabungan</small>if di Dalam Loop</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text"><code>if</code> boleh ditulis di dalam loop. Dengan begitu program <strong>mengambil keputusan di setiap iterasi</strong>. Contoh: genap atau ganjil?</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 === 0) {
+    console.log(`${i} genap`);
+  } else {
+    console.log(`${i} ganjil`);
+  }
+}</textarea></div>
+            <div class="callout" data-kind="tips">Ingat operator <code>%</code> (modulus) dari pertemuan 16: <code>i % 2 === 0</code> artinya sisa bagi i dengan 2 adalah 0 → i <strong>genap</strong>. Begitu juga <code>i % 3 === 0</code> → i kelipatan 3.</div>
+            <div data-challenge="18:p3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 7. WHILE ═══════════ -->
+      <article class="step" id="s7">
+        <div class="step-header">
+          <div class="step-number">7</div>
+          <h2><small>Loop</small>Perulangan while</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text"><code>while</code> dipakai ketika <strong>jumlah pengulangan belum diketahui</strong>. Loop terus berjalan selama kondisi <code>true</code> dan berhenti begitu kondisi menjadi <code>false</code>. Kondisi diperiksa <strong>sebelum</strong> setiap iterasi, sama seperti <code>for</code>.</p>
+            <div class="editor" data-editor data-norun data-label="sintaks"><textarea class="editor-src">
+while (kondisi) {
+  // kode yang diulang
+  // harus ada yang berubah agar kondisi suatu saat menjadi false
+}</textarea></div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh: menabung sampai target</div>
+              <p class="content-text">Seorang siswa menabung <strong>Rp20.000</strong> setiap hari. Berapa hari yang dibutuhkan agar tabungan mencapai <strong>Rp150.000</strong>? Kita tidak tahu jumlah harinya sejak awal, jadi <code>while</code> cocok.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const target = 150000;
+let tabungan = 0;
+let hari = 0;
+
+while (tabungan < target) {
+  tabungan += 20000;
+  hari++;
+}
+
+console.log(`Target tercapai dalam ${hari} hari, tabungan Rp${tabungan}`);</textarea></div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">for dan while: dua cara untuk hal yang sama</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+// Versi for
+for (let i = 1; i <= 5; i++) {
+  console.log(i);
+}
+
+// Versi while
+let j = 1;
+while (j <= 5) {
+  console.log(j);
+  j++;
+}</textarea></div>
+              <p class="content-text">Pada <code>while</code>, tiga bagian loop tetap ada, hanya letaknya terpisah: inisialisasi <code>let j = 1</code> di atas, kondisi di dalam <code>while ( )</code>, dan update <code>j++</code> di dalam blok.</p>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 8. DO...WHILE ═══════════ -->
+      <article class="step" id="s8">
+        <div class="step-header">
+          <div class="step-number">8</div>
+          <h2><small>Loop</small>Perulangan do...while</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Dua tokoh di tepi jurang: tokoh while berhenti karena memeriksa dulu, tokoh do...while sudah melompat sebelum memeriksa">
+                <g class="wobble">
+                  <path class="soft" d="M0 150 H196 L206 210 H0 Z"/>
+                  <path class="thin" d="M30 170 l20 0 M90 186 l26 0 M140 168 l18 0"/>
+                  <circle cx="150" cy="104" r="15" class="paper"/>
+                  <path class="ink" d="M150 119 v16 M150 135 l-8 15 M150 135 l8 15 M150 124 l-12 -4 M150 124 l12 -10"/>
+                  <circle cx="146" cy="101" r="2" class="solid"/><circle cx="155" cy="101" r="2" class="solid"/>
+                  <path class="ink" d="M146 110 h9"/>
+                  <g transform="translate(-10 52)">
+                    <circle cx="262" cy="96" r="15" class="paper"/>
+                    <path class="ink" d="M262 111 v18 M262 129 l-12 10 M262 129 l14 6 M262 116 l-16 -14 M262 116 l16 -14"/>
+                    <circle cx="258" cy="92" r="4" class="paper"/><circle cx="268" cy="92" r="4" class="paper"/>
+                    <circle cx="258" cy="92" r="1.5" class="solid"/><circle cx="268" cy="92" r="1.5" class="solid"/>
+                    <ellipse cx="263" cy="103" rx="3" ry="4" class="paper"/>
+                    <path class="thin" d="M250 70 v-16 M262 66 v-22 M274 70 v-16"/>
+                  </g>
+                  <path class="dash" d="M206 150 h-6"/>
+                  <rect x="100" y="20" width="96" height="30" rx="15" class="solid"/>
+                  <rect x="214" y="20" width="118" height="30" rx="15" class="solid"/>
+                </g>
+                <text x="148" y="40" text-anchor="middle" font-size="13" class="mono inv">while</text>
+                <text x="273" y="40" text-anchor="middle" font-size="13" class="mono inv">do...while</text>
+                <text x="148" y="76" text-anchor="middle" font-size="11">cek dulu, stop!</text>
+                <text x="300" y="104" text-anchor="middle" font-size="11">eh, jurang?!</text>
+              </svg>
+              <div class="illus-caption"><span>Cek dulu vs jalan dulu</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><code>do...while</code> menjalankan blok kode <strong>dulu</strong>, baru memeriksa kondisi. Artinya blok <strong>pasti berjalan minimal satu kali</strong>.</p>
+            <div class="editor" data-editor data-norun data-label="sintaks"><textarea class="editor-src">
+do {
+  // dijalankan minimal 1 kali
+} while (kondisi);</textarea></div>
+            <div class="callout" data-kind="awas">Perhatikan tanda titik koma <code>;</code> setelah <code>while (kondisi)</code> — pada <code>do...while</code> titik koma itu <strong>wajib</strong> ditulis.</div>
+
+            <div class="subsection">
+              <div class="section-label">Perbandingan while dan do...while</div>
+              <div data-tebak data-judul="while vs do...while" data-q="Kedua kondisi sama-sama false sejak awal (10 &lt; 5). Baris apa saja yang tercetak?"><textarea>
+let a = 10;
+let b = 10;
+
+while (a < 5) {
+  console.log("while:", a);
+  a++;
+}
+
+do {
+  console.log("do...while:", b);
+  b++;
+} while (b < 5);</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th></th><th>while</th><th>do...while</th></tr></thead>
+                  <tbody>
+                    <tr><td>Urutan</td><td>Cek kondisi dulu, baru jalankan blok</td><td>Jalankan blok dulu, baru cek kondisi</td></tr>
+                    <tr><td>Minimal berjalan</td><td>0 kali (jika kondisi langsung false)</td><td>1 kali</td></tr>
+                    <tr><td>Contoh pemakaian</td><td>Menabung sampai target</td><td>Menu program yang tampil minimal sekali</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 9. BREAK & CONTINUE ═══════════ -->
+      <article class="step" id="s9">
+        <div class="step-header">
+          <div class="step-number">9</div>
+          <h2><small>Kendali</small>break &amp; continue</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 190" role="img" aria-label="Jalur angka 1 sampai 5: angka 3 dilompati oleh continue, dan rambu stop break di ujung">
+                <g class="wobble">
+                  <path class="ink" d="M20 120 H300"/>
+                  <circle cx="44" cy="120" r="16" class="paper"/>
+                  <circle cx="98" cy="120" r="16" class="paper"/>
+                  <circle cx="152" cy="120" r="16" class="hatch"/>
+                  <circle cx="152" cy="120" r="16" class="dash"/>
+                  <circle cx="206" cy="120" r="16" class="paper"/>
+                  <circle cx="260" cy="120" r="16" class="paper"/>
+                  <path class="ink" d="M104 98 C 120 52, 184 52, 200 98"/>
+                  <path class="ink" d="M192 92 l8 7 l2 -11"/>
+                  <path class="solid" d="M312 66 l14 -14 h20 l14 14 v20 l-14 14 h-20 l-14 -14 z" transform="translate(-14 4)"/>
+                  <path class="ink" d="M322 104 v40"/>
+                </g>
+                <text x="44" y="125" text-anchor="middle" font-size="14" class="mono">1</text>
+                <text x="98" y="125" text-anchor="middle" font-size="14" class="mono">2</text>
+                <text x="152" y="125" text-anchor="middle" font-size="14" class="mono">3</text>
+                <text x="206" y="125" text-anchor="middle" font-size="14" class="mono">4</text>
+                <text x="260" y="125" text-anchor="middle" font-size="14" class="mono">5</text>
+                <text x="152" y="44" text-anchor="middle" font-size="13" class="mono">continue</text>
+                <text x="322" y="85" text-anchor="middle" font-size="10" class="mono inv">break</text>
+                <text x="152" y="166" text-anchor="middle" font-size="11">dilewati</text>
+              </svg>
+              <div class="illus-caption"><span>Lompati atau berhenti</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Kadang loop perlu dihentikan lebih awal, atau satu iterasi perlu dilewati. JavaScript menyediakan dua kata kunci untuk itu.</p>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Kata kunci</th><th>Fungsi</th></tr></thead>
+                <tbody>
+                  <tr><td><code>break</code></td><td>Menghentikan <strong>seluruh loop</strong> seketika, lalu lanjut ke kode setelah loop</td></tr>
+                  <tr><td><code>continue</code></td><td>Melewati <strong>sisa iterasi saat ini</strong>, lalu lanjut ke iterasi berikutnya</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">break: berhenti begitu ketemu</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+const pinBenar = 2468;
+let percobaan = 0;
+
+for (let pin = 0; pin <= 9999; pin++) {
+  percobaan++;
+  if (pin === pinBenar) {
+    console.log(`PIN ditemukan: ${pin} setelah ${percobaan} percobaan`);
+    break;
+  }
+}
+
+console.log("Pencarian selesai.");</textarea></div>
+              <p class="content-text">Hasil: <code>PIN ditemukan: 2468 setelah 2469 percobaan</code>, lalu <code>Pencarian selesai.</code> Tanpa <code>break</code>, loop tetap memeriksa sisa 7.531 angka yang sudah tidak diperlukan.</p>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">continue: lewati yang tidak diinginkan</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let i = 1; i <= 10; i++) {
+  if (i % 3 === 0) {
+    continue;
+  }
+  console.log(i);
+}</textarea></div>
+              <p class="content-text">Hasil: <code>1 2 4 5 7 8 10</code> (setiap angka di baris sendiri). Kelipatan 3 dilewati karena <code>continue</code> langsung melompat ke iterasi berikutnya.</p>
+            </div>
+
+            <div data-tebak data-judul="Quick Test dari slide" data-q="Jangan langsung tulis kodenya, coba tebak hasilnya! Ada <code>continue</code> <em>dan</em> <code>break</code> sekaligus."><textarea>
+for (let i = 1; i <= 20; i++) {
+  if (i % 5 === 0) {
+    continue;
+  }
+
+  console.log("Angka: " + i);
+
+  if (i === 13) {
+    console.log("Angka sial ditemukan. Stop!");
+    break;
+  }
+}</textarea></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 10. INFINITE LOOP ═══════════ -->
+      <article class="step" id="s10">
+        <div class="step-header">
+          <div class="step-number">10</div>
+          <h2><small>Hati-hati</small>Bahaya Infinite Loop</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="def-box"><strong>Definisi</strong><b>Infinite loop</b> adalah perulangan yang kondisinya <strong>tidak pernah menjadi false</strong>, sehingga loop berjalan tanpa akhir. Di browser sungguhan, tab bisa macet (<em>hang</em>) dan harus ditutup paksa.</div>
+            <div class="subsection">
+              <div class="section-label">Tiga penyebab paling sering</div>
+              <div class="mini-grid">
+                <div class="mini-card mini-card--dash"><h4><span class="letter-badge">1</span>Lupa update</h4><p>Tidak ada <code>i++</code>, jadi i tidak pernah berubah.</p></div>
+                <div class="mini-card mini-card--dash"><h4><span class="letter-badge">2</span>Arah update salah</h4><p>Kondisi <code>i &lt;= 5</code> tapi update-nya <code>i--</code>, jadi i makin menjauh.</p></div>
+                <div class="mini-card mini-card--dash"><h4><span class="letter-badge">3</span>Kondisi selalu true</h4><p><code>while (true)</code> tanpa <code>break</code> di dalamnya.</p></div>
+              </div>
+            </div>
+            <p class="content-text">Tenang, editor di website ini <strong>aman</strong>: program otomatis dihentikan setelah 2 detik. Jalankan kode di bawah, lihat apa yang terjadi, lalu perbaiki dengan menambahkan <code>i++;</code></p>
+            <div class="editor" data-editor><textarea class="editor-src">
+let i = 1;
+
+while (i <= 5) {
+  console.log(i);
+  // lupa i++ di sini!
+}</textarea></div>
+            <div class="editor" data-editor><textarea class="editor-src">
+// Arah update salah: i makin kecil, tidak pernah > 5
+for (let i = 1; i <= 5; i--) {
+  // tidak ada output, tapi loop jalan terus
+}
+
+console.log("Baris ini tidak pernah tercapai");</textarea></div>
+            <div class="callout" data-kind="tips">Sebelum menjalankan loop, tanyakan pada dirimu: <strong>"Kapan kondisinya menjadi false?"</strong> Kalau jawabannya "tidak pernah", berarti ada yang perlu diperbaiki.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 11. NESTED LOOP ═══════════ -->
+      <article class="step" id="s11">
+        <div class="step-header">
+          <div class="step-number">11</div>
+          <h2><small>Loop</small>Nested Loop (Loop Bersarang)</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Jam dinding: jarum menit berputar 60 kali untuk setiap satu putaran jarum jam">
+                <g class="wobble">
+                  <circle cx="110" cy="105" r="78" class="paper"/>
+                  <circle cx="110" cy="105" r="66" class="dash"/>
+                  <path class="ink" d="M110 34 v10 M110 166 v10 M39 105 h10 M171 105 h10"/>
+                  <path class="ink" d="M110 105 L110 52" style="stroke-width:3.5"/>
+                  <path class="ink" d="M110 105 L146 122" style="stroke-width:5"/>
+                  <circle cx="110" cy="105" r="6" class="solid"/>
+                  <path class="ink" d="M150 30 a88 88 0 0 1 44 46"/>
+                  <path class="ink" d="M188 66 l7 11 l4 -12"/>
+                  <rect x="204" y="44" width="152" height="46" rx="10" class="solid"/>
+                  <rect x="204" y="112" width="152" height="46" rx="10" class="paper"/>
+                </g>
+                <text x="280" y="64" text-anchor="middle" font-size="10.5" class="inv">loop luar = jarum jam</text>
+                <text x="280" y="80" text-anchor="middle" font-size="10" class="mono inv">1 putaran</text>
+                <text x="280" y="132" text-anchor="middle" font-size="10.5">loop dalam = jarum menit</text>
+                <text x="280" y="148" text-anchor="middle" font-size="10" class="mono">60 putaran</text>
+              </svg>
+              <div class="illus-caption"><span>Loop di dalam loop</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><b>Nested loop</b> adalah loop yang berada di dalam loop lain (sama seperti nested if). Setiap kali loop luar berputar satu kali, loop dalam berjalan <strong>penuh dari awal sampai selesai</strong>.</p>
+            <p class="content-text"><strong>Analogi:</strong> jarum menit pada jam berputar 60 kali untuk setiap 1 putaran jarum jam.</p>
+            <div class="subsection">
+              <div class="section-label">Contoh 1: baris dan kolom</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let baris = 1; baris <= 3; baris++) {
+  for (let kolom = 1; kolom <= 4; kolom++) {
+    console.log(`Baris ${baris}, Kolom ${kolom}`);
+  }
+}</textarea></div>
+            </div>
+
+            <div data-widget="grid-nested"></div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh 2: pola bintang</div>
+              <p class="content-text">Loop luar mengatur baris, loop dalam menyusun isi satu baris di variabel <code>teks</code>, lalu baris itu dicetak.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let baris = 1; baris <= 4; baris++) {
+  let teks = "";
+  for (let kolom = 1; kolom <= 5; kolom++) {
+    teks += "* ";
+  }
+  console.log(teks);
+}</textarea></div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh 3: tabel perkalian</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+for (let a = 1; a <= 3; a++) {
+  console.log(`--- Perkalian ${a} ---`);
+  for (let b = 1; b <= 5; b++) {
+    console.log(`${a} x ${b} = ${a * b}`);
+  }
+}</textarea></div>
+            </div>
+
+            <div data-tebak data-judul="Hitung baris output" data-q="Berapa baris yang tercetak, dan apa isinya?"><textarea>
+for (let i = 1; i <= 2; i++) {
+  for (let j = 1; j <= 3; j++) {
+    console.log(i + "-" + j);
+  }
+}</textarea></div>
+            <div class="callout" data-kind="tips">Jumlah iterasi loop dalam = (putaran loop luar) × (putaran loop dalam). 3 baris × 4 kolom = 12 kali <code>console.log</code>.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 12. LOOP PADA STRING ═══════════ -->
+      <article class="step" id="s12">
+        <div class="step-header">
+          <div class="step-number">12</div>
+          <h2><small>Loop</small>Loop pada String</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 190" role="img" aria-label="Kata KODE dipecah per huruf dalam kotak bernomor indeks 0 sampai 3">
+                <g class="wobble">
+                  <rect x="60" y="60" width="56" height="56" rx="8" class="solid"/>
+                  <rect x="122" y="60" width="56" height="56" rx="8" class="paper"/>
+                  <rect x="184" y="60" width="56" height="56" rx="8" class="paper"/>
+                  <rect x="246" y="60" width="56" height="56" rx="8" class="paper"/>
+                  <path class="ink" d="M60 150 v8 h242 v-8"/>
+                  <path class="dash" d="M40 30 C 60 30, 80 36, 86 54"/>
+                  <path class="ink" d="M80 48 l6 7 l4 -9"/>
+                </g>
+                <text x="88" y="98" text-anchor="middle" font-size="26" class="mono inv">K</text>
+                <text x="150" y="98" text-anchor="middle" font-size="26" class="mono">O</text>
+                <text x="212" y="98" text-anchor="middle" font-size="26" class="mono">D</text>
+                <text x="274" y="98" text-anchor="middle" font-size="26" class="mono">E</text>
+                <text x="88" y="136" text-anchor="middle" font-size="13" class="mono">0</text>
+                <text x="150" y="136" text-anchor="middle" font-size="13" class="mono">1</text>
+                <text x="212" y="136" text-anchor="middle" font-size="13" class="mono">2</text>
+                <text x="274" y="136" text-anchor="middle" font-size="13" class="mono">3</text>
+                <text x="12" y="26" font-size="13" class="mono">teks[0]</text>
+                <text x="181" y="180" text-anchor="middle" font-size="13" class="mono">teks.length = 4</text>
+              </svg>
+              <div class="illus-caption"><span>Indeks mulai dari 0</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">String sebenarnya adalah deretan karakter. Setiap karakter punya nomor urut yang disebut <b>indeks</b>, dimulai dari <strong>0</strong>.</p>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Kode</th><th>Artinya</th><th>Contoh (teks = "KODE")</th></tr></thead>
+                <tbody>
+                  <tr><td><code>teks.length</code></td><td>Panjang string (jumlah karakter)</td><td><code>4</code></td></tr>
+                  <tr><td><code>teks[0]</code></td><td>Karakter di indeks 0 (pertama)</td><td><code>"K"</code></td></tr>
+                  <tr><td><code>teks[teks.length - 1]</code></td><td>Karakter terakhir</td><td><code>"E"</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="content-text">Karena indeks dimulai dari 0, loop dimulai dari <code>let i = 0</code> dan berhenti <strong>sebelum</strong> <code>teks.length</code> (pakai <code>&lt;</code>, bukan <code>&lt;=</code>).</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+let teks = "KODE";
+
+for (let i = 0; i < teks.length; i++) {
+  console.log(`Indeks ${i}: ${teks[i]}`);
+}
+
+// Bonus: membalik kata
+let balik = "";
+for (let i = teks.length - 1; i >= 0; i--) {
+  balik += teks[i];
+}
+console.log(balik);</textarea></div>
+            <div data-challenge="18:p4"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 13. KAPAN PAKAI & RANGKUMAN ═══════════ -->
+      <article class="step" id="s13">
+        <div class="step-header">
+          <div class="step-number">13</div>
+          <h2><small>Ringkas</small>Kapan Pakai yang Mana &amp; Rangkuman</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">for vs while vs do...while</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Situasi</th><th>Pilihan</th></tr></thead>
+                  <tbody>
+                    <tr><td>Jumlah pengulangan diketahui (1 sampai 10, 7 kali)</td><td><code>for</code></td></tr>
+                    <tr><td>Berulang sampai suatu kondisi tercapai, jumlahnya tidak diketahui</td><td><code>while</code></td></tr>
+                    <tr><td>Blok harus berjalan minimal satu kali</td><td><code>do...while</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Rangkuman materi</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Struktur</th><th>Fungsi</th><th>Contoh singkat</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>for</code></td><td>Berulang dengan jumlah ulangan yang diketahui</td><td><code>for (let i = 1; i &lt;= 5; i++) { ... }</code></td></tr>
+                    <tr><td><code>while</code></td><td>Berulang selama kondisi <code>true</code>, jumlah ulangan tidak diketahui</td><td><code>while (saldo &lt; target) { ... }</code></td></tr>
+                    <tr><td><code>do...while</code></td><td>Seperti <code>while</code>, tetapi <strong>minimal berjalan sekali</strong></td><td><code>do { ... } while (kondisi);</code></td></tr>
+                    <tr><td><code>break</code></td><td>Menghentikan loop seketika</td><td><code>if (pin === pinBenar) { break; }</code></td></tr>
+                    <tr><td><code>continue</code></td><td>Melewati iterasi saat ini</td><td><code>if (i % 3 === 0) { continue; }</code></td></tr>
+                    <tr><td>Akumulator</td><td>Mengumpulkan hasil di dalam loop</td><td><code>total += i;</code></td></tr>
+                    <tr><td>Nested loop</td><td>Loop di dalam loop (baris dan kolom)</td><td><code>for (...) { for (...) { ... } }</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ TES PENGETAHUAN ═══════════ -->
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Tes Pengetahuan</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+            <div data-kuis="18" data-judul="Kuis Perulangan"></div>
+            <div data-challenge="18:t1"></div>
+            <div data-challenge="18:t2"></div>
+            <div data-challenge="18:t3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a class="prev" href="17-percabangan.html"><small>Sebelumnya</small><b>← #17 Percabangan</b></a>
+        <a class="next" href="19-function.html"><small>Berikutnya</small><b>#19 Function →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/xml.min.js"></script>
+  <script src="../assets/vendor/codemirror/css.min.js"></script>
+  <script src="../assets/vendor/codemirror/htmlmixed.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-18.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/widgets/w18.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

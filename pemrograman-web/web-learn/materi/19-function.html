@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#19 Function — Coret.js</title>
+  <meta name="description" content="Pertemuan 19: membuat dan memanggil function, parameter & argument, return, arrow function, default parameter, scope, sampai callback — lengkap dengan editor kode, praktik, dan kuis.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    /* Mesin function */
+    .mf-stage { position: relative; width: 100%; max-width: 520px; margin: 0 auto; padding-top: 6px; }
+    .mf-stage svg { display: block; width: 100%; height: auto; }
+    .mf-chip {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: .85rem;
+      padding: 4px 10px;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+      max-width: 46%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .mf-chip:empty { display: none; }
+    .mf-in { left: 0; top: 0; }
+    .mf-out { right: 0; top: 82%; background: var(--ink); color: var(--bg); opacity: 0; }
+    .mf-gigi { transform-box: fill-box; transform-origin: center; }
+    .mf-stage.jalan .mf-in { animation: mfMasuk .75s ease-in forwards; }
+    .mf-stage.jalan .mf-gigi { animation: mfPutar .5s linear .55s 2; }
+    .mf-stage.jalan .mf-gigi--b { animation-direction: reverse; }
+    .mf-stage.keluar .mf-out { animation: mfKeluar .45s ease-out forwards; }
+    @keyframes mfMasuk {
+      0% { left: 0; top: 0; opacity: 1; transform: none; }
+      65% { left: 34%; top: 2%; opacity: 1; transform: scale(.9); }
+      100% { left: 38%; top: 20%; opacity: 0; transform: scale(.4); }
+    }
+    @keyframes mfPutar { to { transform: rotate(360deg); } }
+    @keyframes mfKeluar { from { opacity: 0; transform: translateX(-34px) scale(.6); } to { opacity: 1; transform: none; } }
+
+    /* Kotak scope */
+    .scope-global, .scope-lokal {
+      position: relative;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--radius-md);
+      padding: 2rem 1rem 1.2rem;
+      background: var(--bg-card);
+      transition: box-shadow .25s, background-color .25s;
+    }
+    .scope-global { margin-top: .6rem; }
+    .scope-lokal { border-style: dashed; background: var(--bg-card-alt); flex: 1 1 220px; }
+    .scope-label {
+      position: absolute;
+      top: -12px;
+      left: 14px;
+      max-width: calc(100% - 28px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 50px;
+    }
+    .scope-lokal .scope-label { background: var(--bg-card); color: var(--ink); border: 2px solid var(--ink); text-transform: none; letter-spacing: .5px; font-family: var(--font-mono); }
+    .scope-isi { display: flex; flex-wrap: wrap; gap: 1.8rem 1.2rem; align-items: center; justify-content: center; }
+    .scope-global.aktif, .scope-lokal.aktif { box-shadow: var(--shadow-md); background-image: var(--dots); background-size: 14px 14px; }
+    .scope-global .vbox-body { font-size: .92rem; }
+    .vbox.ketemu .vbox-body { background: var(--ink); color: var(--bg); }
+
+    /* Tabel tiga cara menulis function */
+    .tabel td code { white-space: nowrap; }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+<body data-materi="19">
+  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
+        <a href="16-operator.html" data-nav="16">#16 Operator</a>
+        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
+        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
+        <a href="19-function.html" data-nav="19">#19 Function</a>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Pertemuan 19</span>
+      <h1>Function: <span class="highlight">Mesin Kecil</span> di Dalam Kode</h1>
+      <p class="hero-subtitle">Tulis sekali, pakai berkali-kali. Function membungkus sekumpulan perintah menjadi satu "mesin" bernama yang bisa menerima input dan mengembalikan hasil.</p>
+      <p class="tujuan-title">Setelah ini kamu bisa:</p>
+      <ul class="tujuan">
+        <li><span>Membuat dan memanggil function</span></li>
+        <li><span>Memakai parameter dan argument</span></li>
+        <li><span>Memakai <code>return</code> dan membedakannya dengan <code>console.log()</code></span></li>
+        <li><span>Menulis arrow function dan default parameter</span></li>
+        <li><span>Memahami scope (variabel lokal dan global)</span></li>
+      </ul>
+      <a href="#s1" class="hero-cta">Mulai Belajar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Mesin jus berlabel function: jeruk masuk dari atas, segelas jus keluar di samping">
+          <g class="wobble">
+            <circle cx="150" cy="30" r="17" class="paper"/>
+            <path class="ink" d="M150 13 q4 -9 12 -8 M146 26 l3 3 M155 34 l2 2 M143 36 l2 -1"/>
+            <path class="soft" d="M110 58 h80 l-20 30 h-40 z"/>
+            <rect x="80" y="88" width="160" height="120" rx="16" class="paper"/>
+            <rect x="102" y="104" width="116" height="30" rx="7" class="solid"/>
+            <circle cx="126" cy="168" r="18" class="paper"/>
+            <path class="ink" d="M126 146 v-4 M126 190 v4 M104 168 h-4 M148 168 h4 M110 152 l-3 -3 M142 184 l3 3 M110 184 l-3 3 M142 152 l3 -3"/>
+            <circle cx="126" cy="168" r="6" class="solid"/>
+            <path class="thin" d="M168 158 h52 M168 170 h38 M168 182 h46"/>
+            <path class="paper" d="M240 150 h36 l10 18 h-46 z"/>
+            <path class="ink" d="M272 168 q4 10 0 18"/>
+            <path class="paper" d="M252 196 h44 l-6 46 h-32 z"/>
+            <path class="hatch" d="M256 212 h36 l-4 28 h-28 z"/>
+            <path class="ink" d="M100 208 v22 M220 208 v22 M88 230 h24 M208 230 h24"/>
+            <path class="dash" d="M54 60 q20 -30 70 -32"/>
+            <path class="dash" d="M312 214 q24 -20 10 -60"/>
+          </g>
+          <text x="160" y="124" text-anchor="middle" font-size="15" class="mono inv">function</text>
+          <text x="30" y="80" font-size="12">input</text>
+          <text x="306" y="146" font-size="12">return</text>
+        </svg>
+        <div class="illus-caption"><span>Input masuk, hasil keluar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <!-- ═══════════ 1. APA ITU FUNCTION ═══════════ -->
+      <article class="step" id="s1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Pengenalan</small>Apa Itu Function?</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Kartu resep buatTeh dipakai untuk membuat tiga gelas teh">
+                <g class="wobble">
+                  <g transform="rotate(-4 90 100)">
+                    <rect x="24" y="30" width="136" height="150" rx="10" class="paper"/>
+                    <rect x="38" y="44" width="108" height="26" rx="6" class="solid"/>
+                    <path class="thin" d="M44 92 h10 M62 92 h78 M44 112 h10 M62 112 h64 M44 132 h10 M62 132 h72 M44 152 h10 M62 152 h50"/>
+                  </g>
+                  <path class="dash" d="M172 104 h40"/>
+                  <path class="ink" d="M204 96 l10 8 l-10 8"/>
+                  <path class="paper" d="M232 70 h36 l-5 40 h-26 z"/>
+                  <path class="paper" d="M282 104 h36 l-5 40 h-26 z"/>
+                  <path class="paper" d="M232 140 h36 l-5 40 h-26 z"/>
+                  <path class="ink" d="M268 80 q10 0 8 12 q-2 8 -10 8 M318 114 q10 0 8 12 q-2 8 -10 8 M268 150 q10 0 8 12 q-2 8 -10 8"/>
+                  <path class="thin" d="M244 62 q-4 -6 0 -12 M298 96 q-4 -6 0 -12 M244 132 q-4 -6 0 -12"/>
+                </g>
+                <text x="92" y="62" text-anchor="middle" font-size="12" class="mono inv" transform="rotate(-4 90 100)">buatTeh()</text>
+                <text x="296" y="190" text-anchor="middle" font-size="11">dipakai</text>
+                <text x="296" y="203" text-anchor="middle" font-size="11">berkali-kali</text>
+              </svg>
+              <div class="illus-caption"><span>Satu resep, banyak hasil</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="def-box"><strong>Definisi</strong><b>Function</b> adalah blok kode bernama yang berisi sekumpulan perintah untuk menyelesaikan <b>satu tugas tertentu</b>, dan bisa dipanggil berulang kali kapan pun dibutuhkan.</div>
+
+            <div class="subsection">
+              <div class="section-label">Analogi</div>
+              <div class="mini-grid">
+                <div class="mini-card"><h4><span class="letter-badge">1</span>Resep masakan</h4><p>Resep ditulis sekali. Setiap kali ingin masak, cukup "panggil" resepnya — tidak perlu menulis ulang langkah-langkahnya.</p></div>
+                <div class="mini-card"><h4><span class="letter-badge">2</span>Mesin jus</h4><p>Masukkan buah (input), mesin bekerja, keluar jus (output). Buah berbeda → jus berbeda, mesinnya tetap sama.</p></div>
+                <div class="mini-card"><h4><span class="letter-badge">3</span>Tombol lift</h4><p>Tekan tombol "3", lift menjalankan banyak langkah rumit. Kamu cukup tahu nama tombolnya.</p></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Kenapa butuh function?</div>
+              <ul class="content-list">
+                <li><strong>Tidak mengulang kode</strong> (prinsip <em>DRY — Don't Repeat Yourself</em>).</li>
+                <li><strong>Mudah diperbaiki</strong>: cukup ubah di satu tempat, semua pemanggil ikut berubah.</li>
+                <li><strong>Kode lebih rapi</strong>: program besar dipecah jadi tugas-tugas kecil bernama jelas.</li>
+              </ul>
+            </div>
+            <div class="callout" data-kind="fakta">Kamu sudah memakai function sejak pertemuan 15! <code>console.log()</code>, <code>Number()</code>, dan <code>String()</code> adalah function bawaan JavaScript. Sekarang saatnya membuat function <em>sendiri</em>.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 2. MEMBUAT & MEMANGGIL ═══════════ -->
+      <article class="step" id="s2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Dasar</small>Membuat &amp; Memanggil Function</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Tombol sapa ditekan tiga kali, muncul tiga balon bertuliskan Halo">
+                <g class="wobble">
+                  <rect x="30" y="70" width="110" height="100" rx="16" class="paper"/>
+                  <rect x="46" y="96" width="78" height="40" rx="20" class="solid"/>
+                  <path class="paper" d="M106 132 l0 30 l8 -7 l6 13 l7 -3 l-6 -13 l11 -1 z"/>
+                  <path class="ink" d="M150 84 l12 -8 M152 112 h16 M150 140 l12 8"/>
+                  <rect x="186" y="26" width="140" height="40" rx="12" class="paper"/>
+                  <rect x="196" y="82" width="140" height="40" rx="12" class="paper"/>
+                  <rect x="186" y="138" width="140" height="40" rx="12" class="paper"/>
+                </g>
+                <text x="85" y="121" text-anchor="middle" font-size="15" class="mono inv">sapa()</text>
+                <text x="256" y="51" text-anchor="middle" font-size="13">Halo, selamat belajar!</text>
+                <text x="266" y="107" text-anchor="middle" font-size="13">Halo, selamat belajar!</text>
+                <text x="256" y="163" text-anchor="middle" font-size="13">Halo, selamat belajar!</text>
+              </svg>
+              <div class="illus-caption"><span>Panggil = jalankan isinya</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Function punya <strong>dua tahap</strong>: dibuat dulu (deklarasi), lalu dipanggil. Membuat function saja <em>tidak</em> menjalankan isinya — isinya baru jalan saat function dipanggil.</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+// 1. MEMBUAT function
+function sapa() {
+  console.log("Halo, selamat belajar JavaScript!");
+}
+
+// 2. MEMANGGIL function (tanda kurung wajib)
+sapa();
+sapa();
+sapa();</textarea></div>
+
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Bagian</th><th>Contoh</th><th>Artinya</th></tr></thead>
+                <tbody>
+                  <tr><td>Kata kunci</td><td><code>function</code></td><td>"Saya mau membuat function"</td></tr>
+                  <tr><td>Nama function</td><td><code>sapa</code></td><td>Nama untuk memanggilnya nanti (camelCase, biasanya kata kerja)</td></tr>
+                  <tr><td>Kurung</td><td><code>()</code></td><td>Tempat parameter (boleh kosong)</td></tr>
+                  <tr><td>Badan function</td><td><code>{ ... }</code></td><td>Perintah-perintah yang dijalankan saat dipanggil</td></tr>
+                  <tr><td>Pemanggilan</td><td><code>sapa();</code></td><td>Menjalankan isi function</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout" data-kind="awas">Lupa tanda kurung? <code>sapa;</code> tidak memanggil apa-apa. Coba ganti salah satu <code>sapa();</code> di editor menjadi <code>console.log(sapa);</code> — yang tampil justru isi function-nya, bukan hasilnya.</div>
+
+            <div data-challenge="19:p1"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 3. PARAMETER & ARGUMENT ═══════════ -->
+      <article class="step" id="s3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Input</small>Parameter &amp; Argument</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Mesin dengan lubang bernama nama menerima kartu Budi, Ani, dan Citra">
+                <g class="wobble">
+                  <rect x="196" y="52" width="138" height="112" rx="14" class="paper"/>
+                  <rect x="182" y="84" width="22" height="48" rx="4" class="solid"/>
+                  <path class="thin" d="M226 128 h80 M226 142 h56"/>
+                  <g transform="rotate(-8 50 70)"><rect x="18" y="52" width="72" height="34" rx="6" class="paper"/></g>
+                  <g transform="rotate(5 60 125)"><rect x="24" y="108" width="72" height="34" rx="6" class="paper"/></g>
+                  <rect x="108" y="88" width="72" height="34" rx="6" class="paper"/>
+                  <path class="dash" d="M96 72 q30 0 20 14"/>
+                  <path class="dash" d="M100 130 q20 0 14 -6"/>
+                </g>
+                <text x="265" y="84" text-anchor="middle" font-size="14" class="mono">sapaNama</text>
+                <text x="265" y="106" text-anchor="middle" font-size="12">parameter: nama</text>
+                <text x="54" y="74" text-anchor="middle" font-size="13" class="mono" transform="rotate(-8 50 70)">"Budi"</text>
+                <text x="60" y="130" text-anchor="middle" font-size="13" class="mono" transform="rotate(5 60 125)">"Ani"</text>
+                <text x="144" y="110" text-anchor="middle" font-size="13" class="mono">"Citra"</text>
+                <text x="60" y="186" text-anchor="middle" font-size="12">argument</text>
+              </svg>
+              <div class="illus-caption"><span>Argument mengisi parameter</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Function <code>sapa()</code> selalu menampilkan kalimat yang sama. Bagaimana kalau kita ingin menyapa nama yang berbeda-beda? Solusinya pakai <strong>parameter</strong>.</p>
+            <div class="mini-grid">
+              <div class="mini-card mini-card--ink"><h4>Parameter</h4><p>Variabel penampung yang ditulis di dalam tanda kurung saat <strong>membuat</strong> function.</p></div>
+              <div class="mini-card"><h4>Argument</h4><p>Nilai sebenarnya yang dikirim saat function <strong>dipanggil</strong>.</p></div>
+            </div>
+            <div class="editor" data-editor><textarea class="editor-src">
+function sapaNama(nama) {
+  console.log(`Halo, ${nama}!`);
+}
+
+sapaNama("Budi");
+sapaNama("Ani");
+sapaNama("Citra");</textarea></div>
+            <p class="content-text"><code>nama</code> adalah <strong>parameter</strong>. <code>"Budi"</code>, <code>"Ani"</code>, dan <code>"Citra"</code> adalah <strong>argument</strong>.</p>
+
+            <div class="subsection">
+              <div class="section-label">Parameter lebih dari satu</div>
+              <p class="content-text">Pisahkan dengan koma. <strong>Urutan argument harus sama</strong> dengan urutan parameter.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+function perkenalan(nama, kelas, hobi) {
+  console.log(`Saya ${nama}, kelas ${kelas}, hobi ${hobi}.`);
+}
+
+perkenalan("Budi", "XI RPL", "ngoding");
+perkenalan("Ani", "XI RPL");          // hobi tidak diisi
+perkenalan("ngoding", "Budi", "XI RPL"); // urutan tertukar!</textarea></div>
+              <div class="callout" data-kind="awas">Argument yang tidak diisi akan bernilai <code>undefined</code>. Dan JavaScript tidak tahu kalau urutannya tertukar — ia hanya mengisi parameter sesuai urutan.</div>
+            </div>
+
+            <div data-challenge="19:p2"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 4. RETURN ═══════════ -->
+      <article class="step" id="s4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Output</small>return: Mengembalikan Nilai</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="return mengirim nilai 96 ke kotak variabel luas, sedangkan console.log hanya menampilkan lalu hilang">
+                <g class="wobble">
+                  <rect x="20" y="70" width="120" height="70" rx="12" class="paper"/>
+                  <path class="ink" d="M140 92 h66"/>
+                  <path class="ink" d="M198 84 l10 8 l-10 8"/>
+                  <path class="soft" d="M236 54 l-16 -16 h40 l12 16 z"/>
+                  <path class="soft" d="M316 54 l16 -16 h-40 l-12 16 z"/>
+                  <rect x="236" y="54" width="80" height="62" rx="5" class="paper"/>
+                  <rect x="248" y="124" width="56" height="22" rx="5" class="solid"/>
+                  <path class="dash" d="M80 140 v28"/>
+                  <rect x="40" y="170" width="84" height="30" rx="12" class="paper"/>
+                  <path class="thin" d="M134 178 l14 -4 M134 190 l14 4"/>
+                </g>
+                <text x="80" y="102" text-anchor="middle" font-size="12" class="mono">hitungLuas</text>
+                <text x="80" y="120" text-anchor="middle" font-size="12" class="mono">(12, 8)</text>
+                <text x="172" y="82" text-anchor="middle" font-size="12" class="mono">return</text>
+                <text x="276" y="92" text-anchor="middle" font-size="20" class="mono">96</text>
+                <text x="276" y="140" text-anchor="middle" font-size="12" class="mono inv">luas</text>
+                <text x="82" y="190" text-anchor="middle" font-size="13" class="mono">96</text>
+                <text x="210" y="190" font-size="11">console.log: tampil saja</text>
+              </svg>
+              <div class="illus-caption"><span>return = hasil bisa disimpan</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Function yang hanya <code>console.log()</code> cuma <strong>menampilkan</strong> hasil. Bagaimana jika kita ingin hasilnya disimpan di variabel atau dipakai untuk perhitungan lain?</p>
+            <div class="def-box"><strong>return</strong><code>return</code> mengirim sebuah nilai <b>keluar</b> dari function sebagai hasil, lalu <b>menghentikan</b> function tersebut.</div>
+            <div class="editor" data-editor><textarea class="editor-src">
+function hitungLuas(panjang, lebar) {
+  return panjang * lebar;
+}
+
+const luas = hitungLuas(12, 8);
+console.log(luas);                     // 96
+console.log(hitungLuas(5, 4) + 10);    // 30</textarea></div>
+
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th></th><th>console.log()</th><th>return</th></tr></thead>
+                <tbody>
+                  <tr><td>Fungsinya</td><td>Menampilkan ke Console</td><td>Mengirim hasil keluar dari function</td></tr>
+                  <tr><td>Bisa disimpan di variabel?</td><td>Tidak (hasilnya <code>undefined</code>)</td><td>Bisa</td></tr>
+                  <tr><td>Bisa dihitung lagi?</td><td>Tidak</td><td>Bisa, misal <code>hitungLuas(5, 4) + 10</code></td></tr>
+                  <tr><td>Menghentikan function?</td><td>Tidak</td><td>Ya, kode setelahnya tidak jalan</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Kesalahan yang sering terjadi</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+// 1. Lupa return → hasilnya undefined
+function tambah(a, b) {
+  a + b;
+}
+console.log(tambah(2, 3));    // undefined
+
+// 2. Kode setelah return tidak pernah dijalankan
+function contoh() {
+  return "Selesai";
+  console.log("Tidak akan tampil");
+}
+console.log(contoh());</textarea></div>
+            </div>
+
+            <div data-tebak data-judul="return atau console.log?" data-q="Function <code>dobel</code> memakai <code>console.log</code>, bukan <code>return</code>. Apa output-nya?"><textarea>
+function dobel(x) {
+  console.log(x * 2);
+}
+
+const hasil = dobel(5);
+console.log(hasil);</textarea></div>
+
+            <div data-widget="mesin-function"></div>
+
+            <div data-challenge="19:p3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 5. ARROW & DEFAULT ═══════════ -->
+      <article class="step" id="s5">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <h2><small>Gaya Penulisan</small>Arrow Function &amp; Default Parameter</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 180" role="img" aria-label="Panah besar dari parameter a, b menuju hasil a kali b">
+                <g class="wobble">
+                  <rect x="20" y="60" width="96" height="56" rx="28" class="paper"/>
+                  <path class="soft" d="M128 70 h120 v-22 l52 40 l-52 40 v-22 h-120 z"/>
+                  <rect x="270" y="132" width="76" height="36" rx="8" class="solid"/>
+                  <path class="dash" d="M300 106 v22"/>
+                </g>
+                <text x="68" y="94" text-anchor="middle" font-size="18" class="mono">(a, b)</text>
+                <text x="200" y="95" text-anchor="middle" font-size="24" class="mono">=&gt;</text>
+                <text x="308" y="155" text-anchor="middle" font-size="16" class="mono inv">a * b</text>
+                <text x="180" y="30" text-anchor="middle" font-size="13">"masukkan ini, hasilkan itu"</text>
+              </svg>
+              <div class="illus-caption"><span>Arrow = cara singkat</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Arrow function (penulisan ringkas)</div>
+              <p class="content-text">Arrow function memakai tanda panah <code>=&gt;</code>. Hasilnya sama, tulisannya lebih pendek.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+// Function biasa
+function kali(a, b) {
+  return a * b;
+}
+
+// Arrow function lengkap
+const kaliArrow = (a, b) => {
+  return a * b;
+};
+
+// Arrow function singkat (1 baris langsung return)
+const kaliSingkat = (a, b) => a * b;
+
+// Satu parameter: kurung boleh dibuang
+const kuadrat = x => x * x;
+
+console.log(kali(3, 4), kaliArrow(3, 4), kaliSingkat(3, 4), kuadrat(5));</textarea></div>
+              <div class="callout" data-kind="tips">Di slide, ketiga contoh memakai nama yang sama (<code>kali</code>). Di editor ini namanya dibedakan (<code>kaliArrow</code>, <code>kaliSingkat</code>) supaya bisa dijalankan bersamaan — ingat, satu nama hanya boleh dibuat sekali!</div>
+              <div class="callout" data-kind="awas">Arrow function <strong>singkat</strong> (tanpa kurawal) otomatis me-return. Tapi kalau memakai kurawal <code>{ }</code>, kamu <strong>wajib</strong> menulis <code>return</code> sendiri.</div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Default parameter (nilai bawaan)</div>
+              <p class="content-text">Parameter bisa diberi nilai bawaan. Nilai ini dipakai kalau argument-nya tidak diisi — jadi tidak muncul <code>undefined</code>.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+function salam(nama = "Teman") {
+  return `Halo, ${nama}!`;
+}
+
+console.log(salam("Budi"));   // Halo, Budi!
+console.log(salam());         // Halo, Teman!</textarea></div>
+            </div>
+
+            <div data-tebak data-judul="Arrow singkat"><textarea>
+const kali = (a, b) => a * b;
+
+console.log(kali(3, 4) + kali(2, 5));</textarea></div>
+
+            <div data-challenge="19:p4"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 6. FUNCTION EXPRESSION & HOISTING ═══════════ -->
+      <article class="step" id="s6">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <h2><small>Gaya Penulisan</small>Function Expression &amp; Hoisting</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Selain deklarasi dan arrow, ada satu cara lagi yang sering kamu temui di internet: <strong>function expression</strong> — function disimpan ke dalam variabel.</p>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Cara</th><th>Contoh</th><th>Dipanggil sebelum ditulis?</th></tr></thead>
+                <tbody>
+                  <tr><td>Deklarasi</td><td><code>function kali(a, b) { return a * b; }</code></td><td>Bisa</td></tr>
+                  <tr><td>Expression</td><td><code>const kali = function (a, b) { return a * b; };</code></td><td>Tidak</td></tr>
+                  <tr><td>Arrow</td><td><code>const kali = (a, b) =&gt; a * b;</code></td><td>Tidak</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Hoisting: "diangkat" ke atas</div>
+              <p class="content-text">Sebelum menjalankan kode, JavaScript "mengangkat" semua <strong>deklarasi function</strong> ke atas. Karena itu function deklarasi bisa dipanggil sebelum ditulis:</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+// Function deklarasi: boleh dipanggil sebelum ditulis
+console.log(dobel(4));   // 8
+
+function dobel(x) {
+  return x * 2;
+}</textarea></div>
+              <p class="content-text">Tapi function yang disimpan di <code>const</code> (expression &amp; arrow) <strong>tidak</strong> ikut diangkat. Jalankan dan baca error-nya:</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+console.log(tripel(4));   // Error!
+
+const tripel = (x) => x * 3;</textarea></div>
+              <div class="callout" data-kind="tips">Supaya aman dan mudah dibaca, biasakan <strong>membuat function di bagian atas</strong>, baru memanggilnya di bawah.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 7. SCOPE ═══════════ -->
+      <article class="step" id="s7">
+        <div class="step-header">
+          <div class="step-number">7</div>
+          <h2><small>Jangkauan</small>Scope: Variabel Lokal &amp; Global</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Rumah function berisi kotak kelas, di luar ada kotak sekolah; mata dari luar tidak bisa melihat ke dalam rumah">
+                <g class="wobble">
+                  <path class="paper" d="M150 80 l80 -56 l80 56 v112 h-160 z"/>
+                  <path class="ink" d="M150 80 h160"/>
+                  <rect x="196" y="116" width="70" height="52" rx="4" class="paper"/>
+                  <path class="soft" d="M196 116 l-10 -12 h30 l6 12 z"/>
+                  <rect x="30" y="140" width="72" height="50" rx="4" class="paper"/>
+                  <path class="soft" d="M30 140 l-10 -12 h30 l6 12 z"/>
+                  <path class="ink" d="M40 62 q22 -18 44 0 q-22 18 -44 0 z"/>
+                  <circle cx="62" cy="62" r="6" class="solid"/>
+                  <path class="dash" d="M92 62 q40 0 60 30"/>
+                  <path class="ink" d="M120 66 l14 14 M134 66 l-14 14"/>
+                </g>
+                <text x="230" y="70" text-anchor="middle" font-size="11" class="mono">function</text>
+                <text x="231" y="147" text-anchor="middle" font-size="13" class="mono">kelas</text>
+                <text x="66" y="170" text-anchor="middle" font-size="12" class="mono">sekolah</text>
+                <text x="66" y="206" text-anchor="middle" font-size="11">global</text>
+                <text x="231" y="186" text-anchor="middle" font-size="11">lokal</text>
+              </svg>
+              <div class="illus-caption"><span>Yang di dalam tak terlihat dari luar</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><strong>Scope</strong> menentukan di mana variabel bisa diakses. Variabel yang dibuat <strong>di dalam</strong> function hanya hidup di dalam function itu.</p>
+            <div class="mini-grid">
+              <div class="mini-card mini-card--ink"><h4>Global</h4><p>Dibuat di luar function. Bisa diakses di mana saja, termasuk dari dalam function.</p></div>
+              <div class="mini-card mini-card--dash"><h4>Lokal</h4><p>Dibuat di dalam function. Hanya bisa diakses di dalam function itu.</p></div>
+            </div>
+            <div class="editor" data-editor><textarea class="editor-src">
+const sekolah = "SMK 40 Jakarta";      // GLOBAL (bisa diakses di mana saja)
+
+function tampilkan() {
+  const kelas = "XI RPL";              // LOKAL (hanya di dalam function)
+  console.log(`${sekolah} - ${kelas}`);
+}
+
+tampilkan();
+console.log(sekolah);   // berhasil
+console.log(kelas);     // ReferenceError: kelas is not defined</textarea></div>
+
+            <div data-widget="kotak-scope"></div>
+
+            <div data-tebak data-judul="Dua skor, satu nama" data-q="Ada dua variabel bernama <code>skor</code>: satu global, satu lokal. Apa output-nya?"><textarea>
+let skor = 10;
+
+function tambahSkor() {
+  let skor = 50;
+  skor = skor + 1;
+}
+
+tambahSkor();
+console.log(skor);</textarea></div>
+            <div class="callout" data-kind="mikir" data-label="Kenapa scope berguna?">Bayangkan setiap function boleh mengubah semua variabel sesukanya — program besar akan kacau. Scope membuat tiap function punya "kamar" sendiri, jadi nama variabel di dalamnya tidak bentrok dengan yang di luar.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 8. FUNCTION MEMANGGIL FUNCTION ═══════════ -->
+      <article class="step" id="s8">
+        <div class="step-header">
+          <div class="step-number">8</div>
+          <h2><small>Kerja Sama</small>Function Memanggil Function &amp; Early Return</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 170" role="img" aria-label="Tiga mesin berantai: hitungNilai, tentukanPredikat, rapor">
+                <g class="wobble">
+                  <rect x="12" y="50" width="96" height="62" rx="12" class="paper"/>
+                  <rect x="132" y="50" width="96" height="62" rx="12" class="paper"/>
+                  <rect x="252" y="50" width="96" height="62" rx="12" class="solid"/>
+                  <path class="ink" d="M108 81 h18 M228 81 h18"/>
+                  <path class="ink" d="M120 75 l7 6 l-7 6 M240 75 l7 6 l-7 6"/>
+                  <path class="dash" d="M60 112 v22 M180 112 v22"/>
+                </g>
+                <text x="60" y="78" text-anchor="middle" font-size="11" class="mono">hitung</text>
+                <text x="60" y="94" text-anchor="middle" font-size="11" class="mono">Nilai()</text>
+                <text x="180" y="78" text-anchor="middle" font-size="11" class="mono">tentukan</text>
+                <text x="180" y="94" text-anchor="middle" font-size="11" class="mono">Predikat()</text>
+                <text x="300" y="86" text-anchor="middle" font-size="13" class="mono inv">rapor()</text>
+                <text x="60" y="150" text-anchor="middle" font-size="13" class="mono">85</text>
+                <text x="180" y="150" text-anchor="middle" font-size="13" class="mono">"B"</text>
+                <text x="180" y="30" text-anchor="middle" font-size="12">hasil satu function jadi input function lain</text>
+              </svg>
+              <div class="illus-caption"><span>Kecil-kecil, saling bantu</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Function di dalam function</div>
+              <p class="content-text">Program yang rapi terdiri dari function-function kecil yang masing-masing punya <strong>satu tugas</strong>. Hasil <code>return</code> satu function bisa langsung menjadi argument function lain.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+function hitungNilaiAkhir(tugas, uts, uas) {
+  return tugas * 0.3 + uts * 0.3 + uas * 0.4;
+}
+
+function statusLulus(nilai) {
+  return nilai >= 75 ? "LULUS" : "REMEDIAL";
+}
+
+function laporan(nama, tugas, uts, uas) {
+  const nilai = hitungNilaiAkhir(tugas, uts, uas);
+  return `${nama}: ${nilai} (${statusLulus(nilai)})`;
+}
+
+console.log(laporan("Budi", 85, 90, 88));
+console.log(laporan("Ani", 60, 70, 65));</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Early return</div>
+              <p class="content-text">Karena <code>return</code> langsung menghentikan function, kita bisa memakainya untuk <strong>keluar lebih awal</strong> saat menemukan kasus khusus. Hasilnya: if-else bersarang berkurang dan kode lebih mudah dibaca.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+function cekUmur(umur) {
+  if (umur < 0) {
+    return "Umur tidak valid";   // berhenti di sini
+  }
+  if (umur >= 17) {
+    return "Boleh bikin KTP";
+  }
+  return "Belum boleh bikin KTP";
+}
+
+console.log(cekUmur(-3));
+console.log(cekUmur(18));
+console.log(cekUmur(12));</textarea></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 9. CALLBACK ═══════════ -->
+      <article class="step" id="s9">
+        <div class="step-header">
+          <div class="step-number">9</div>
+          <h2><small>Jembatan ke DOM</small>Callback: Function sebagai Argument</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 190" role="img" aria-label="Jam weker dengan catatan berisi function yang akan dipanggil nanti">
+                <g class="wobble">
+                  <circle cx="110" cy="100" r="58" class="paper"/>
+                  <circle cx="68" cy="44" r="16" class="solid"/>
+                  <circle cx="152" cy="44" r="16" class="solid"/>
+                  <path class="ink" d="M110 100 v-34 M110 100 l24 14"/>
+                  <path class="ink" d="M76 154 l-12 16 M144 154 l12 16"/>
+                  <path class="thin" d="M110 50 v6 M110 144 v6 M60 100 h6 M154 100 h6"/>
+                  <g transform="rotate(5 270 96)"><rect x="200" y="56" width="140" height="80" rx="6" class="paper"/><path class="soft" d="M254 50 h32 v14 h-32 z"/></g>
+                  <path class="dash" d="M196 104 q-14 0 -24 -8"/>
+                </g>
+                <text x="270" y="92" text-anchor="middle" font-size="12" transform="rotate(5 270 96)">panggil aku nanti:</text>
+                <text x="270" y="116" text-anchor="middle" font-size="13" class="mono" transform="rotate(5 270 96)">() =&gt; {…}</text>
+              </svg>
+              <div class="illus-caption"><span>Dipanggil balik nanti</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Function juga sebuah <strong>nilai</strong>, jadi bisa dikirim sebagai argument ke function lain. Function yang dikirim dengan cara ini disebut <strong>callback</strong> — "nanti tolong panggil balik function ini ya".</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+function sapa(nama) {
+  console.log(`Halo, ${nama}!`);
+}
+
+function prosesNama(nama, callback) {
+  console.log("Memproses data...");
+  callback(nama);   // memanggil function yang dikirim
+}
+
+prosesNama("Budi", sapa);   // sapa dikirim TANPA tanda kurung</textarea></div>
+
+            <div class="subsection">
+              <div class="section-label">Callback yang dipanggil nanti: setTimeout</div>
+              <p class="content-text"><code>setTimeout(callback, waktu)</code> adalah function bawaan yang memanggil callback setelah sekian milidetik. Jalankan, lalu perhatikan <strong>urutan</strong> output-nya!</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+console.log("Pesan pizza...");
+
+setTimeout(() => {
+  console.log("Pizza datang!");
+}, 1500);
+
+console.log("Sambil menunggu, kerjakan PR dulu.");</textarea></div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Sneak peek: event di halaman web</div>
+              <p class="content-text">Inilah alasan callback sangat penting. Saat belajar DOM nanti, kamu akan menulis kode seperti ini — arrow function di dalamnya adalah callback yang dipanggil browser <strong>setiap kali tombol diklik</strong>:</p>
+              <div class="editor" data-editor data-mode="html"><textarea class="editor-src">
+<button id="tombol">Klik aku</button>
+
+<script>
+  const tombol = document.querySelector("#tombol");
+
+  tombol.addEventListener("click", () => {
+    console.log("Tombol diklik!");
+  });
+</script></textarea></div>
+              <div class="callout" data-kind="tips">Kode di atas tidak bisa dijalankan di editor latihan (tidak ada halaman HTML). Coba salin ke <code>index.html</code> milikmu, buka di browser, lalu klik tombolnya sambil melihat Console (<kbd>F12</kbd>).</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 10. RANGKUMAN ═══════════ -->
+      <article class="step" id="s10">
+        <div class="step-header">
+          <div class="step-number">10</div>
+          <h2><small>Ringkas</small>Rangkuman</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Konsep</th><th>Ingat</th></tr></thead>
+                <tbody>
+                  <tr><td>Function</td><td>Dibuat sekali, dipanggil berkali-kali dengan <code>nama()</code></td></tr>
+                  <tr><td>Parameter / Argument</td><td>Penampung / nilai yang dikirim</td></tr>
+                  <tr><td><code>return</code></td><td>Mengirim hasil keluar, bisa disimpan dan dihitung lagi</td></tr>
+                  <tr><td>Arrow function</td><td><code>(a, b) =&gt; a * b</code></td></tr>
+                  <tr><td>Default parameter</td><td><code>function f(a = 10)</code></td></tr>
+                  <tr><td>Scope</td><td>Variabel di dalam function tidak terlihat dari luar</td></tr>
+                  <tr><td>Hoisting</td><td>Function deklarasi bisa dipanggil sebelum ditulis; <code>const</code> tidak</td></tr>
+                  <tr><td>Callback</td><td>Function yang dikirim sebagai argument untuk dipanggil nanti</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="important-banner">
+              <h3>Aturan praktis</h3>
+              <ol>
+                <li>Satu function, <strong>satu tugas</strong>, dengan nama kata kerja yang jelas (<code>hitungLuas</code>, <code>tampilkanMenu</code>).</li>
+                <li>Pakai <code>return</code> kalau hasilnya masih akan dipakai; <code>console.log</code> hanya untuk menampilkan.</li>
+                <li>Buat function di atas, panggil di bawah.</li>
+              </ol>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 11. TES PENGETAHUAN ═══════════ -->
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Tes Pengetahuan</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Tantangan diuji dengan memanggil function-mu memakai banyak argument berbeda. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+            <div data-kuis="19" data-judul="Kuis Function"></div>
+            <div data-challenge="19:t1"></div>
+            <div data-challenge="19:t2"></div>
+            <div data-challenge="19:t3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a class="prev" href="18-perulangan.html"><small>Sebelumnya</small><b>← #18 Perulangan</b></a>
+        <a class="next" href="tantangan-akhir.html"><small>Berikutnya</small><b>Tantangan Akhir →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/xml.min.js"></script>
+  <script src="../assets/vendor/codemirror/css.min.js"></script>
+  <script src="../assets/vendor/codemirror/htmlmixed.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-19.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/widgets/w19.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

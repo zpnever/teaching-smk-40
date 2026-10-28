@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#17 Percabangan — Coret.js</title>
+  <meta name="description" content="Pertemuan 17: percabangan di JavaScript — if, if-else, else if, kondisi majemuk, nested if, truthy & falsy, ternary, switch, kesalahan umum, dan studi kasus kasir toko. Lengkap dengan editor kode, praktik, dan kuis.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    /* Tampilkan >= === != apa adanya (bukan ligatur ≥ ≡ ≠) supaya siswa tahu yang harus diketik */
+    .CodeMirror, pre.snippet, code, .readout, .doodle text, .opsi-text.mono, .susun-line, .tebak-input, .console-line { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* Widget flowchart else if */
+    .flow-wrap {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-md);
+      background: var(--bg-card-alt);
+      background-image: var(--dots);
+      background-size: 16px 16px;
+      padding: 12px;
+    }
+    .flow-svg { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
+    .flow-svg .f-redup { opacity: .22; }
+    .flow-svg .f-salah { stroke-dasharray: 6 5; }
+    .flow-svg .f-jalan { stroke-width: 4; }
+    .flow-svg path, .flow-svg rect, .flow-svg text { transition: opacity .25s, fill .25s; }
+
+    /* Widget penyortir truthy/falsy */
+    .sorter-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .sorter-card { text-align: center; }
+    .sorter-card .big { font-size: 2rem; margin: 4px 0; }
+    .sorter-aksi { justify-content: center; }
+    .sorter-aksi .btn { min-width: 130px; }
+    .sorter-bins { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sorter-bins .mini-card { min-height: 96px; }
+    .sorter-bins h4 { margin-bottom: .5rem; }
+    .chip-salah { border-style: dashed; background-image: var(--hatch); }
+    @media (max-width: 600px) {
+      .sorter-bins { grid-template-columns: 1fr; }
+      .sorter-aksi .btn { min-width: 0; flex: 1; }
+    }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+<body data-materi="17">
+  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
+        <a href="16-operator.html" data-nav="16">#16 Operator</a>
+        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
+        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
+        <a href="19-function.html" data-nav="19">#19 Function</a>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Pertemuan 17</span>
+      <h1>Program yang Bisa <span class="highlight">Memilih Jalan</span></h1>
+      <p class="hero-subtitle">Sejauh ini kode kita selalu jalan lurus dari atas ke bawah. Dengan percabangan, program bisa mengambil keputusan: kalau begini lakukan itu, kalau tidak lakukan yang lain.</p>
+      <p class="tujuan-title">Setelah ini kamu bisa:</p>
+      <ul class="tujuan">
+        <li><span>Menjelaskan konsep percabangan dan alur eksekusi program</span></li>
+        <li><span>Menulis <code>if</code>, <code>if-else</code>, dan <code>else if</code> dengan sintaks yang benar</span></li>
+        <li><span>Menyusun kondisi dengan operator perbandingan &amp; logika, termasuk nested if</span></li>
+        <li><span>Memahami nilai truthy &amp; falsy, ternary, dan <code>switch</code></span></li>
+        <li><span>Mengenali &amp; memperbaiki kesalahan umum, lalu membangun program kasir toko</span></li>
+      </ul>
+      <a href="#s1" class="hero-cta">Mulai Belajar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Maskot Kurawal berpikir di depan jalan bercabang dengan papan petunjuk true dan false">
+          <g class="wobble">
+            <path class="soft" d="M150 260 L160 172 L58 30 L112 30 L180 128 L248 30 L302 30 L200 172 L210 260 Z"/>
+            <path class="dash" d="M180 252 V182 M172 166 L96 50 M188 166 L264 50"/>
+            <path class="ink" d="M180 214 V86" style="stroke-width:5"/>
+            <path class="paper" d="M184 88 h68 l15 14 l-15 14 h-68 z"/>
+            <path class="paper" d="M176 124 h-68 l-15 14 l15 14 h68 z"/>
+            <path class="ink" d="M168 214 h24"/>
+          </g>
+          <text x="222" y="107" text-anchor="middle" font-size="14" class="mono">true</text>
+          <text x="138" y="143" text-anchor="middle" font-size="14" class="mono">false</text>
+          <g transform="translate(18 150)">
+            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4"/>
+            <g class="wobble">
+              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6"/>
+              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8"/>
+              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8"/>
+              <rect x="25" y="24" width="50" height="60" rx="17" class="paper"/>
+              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5"/>
+              <circle cx="42" cy="44" r="3.1" class="solid"/><circle cx="60" cy="44" r="3.1" class="solid"/>
+              <path class="thin" d="M37 38 l8 -2 M56 36 l8 2"/>
+              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch"/><ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch"/>
+              <path class="ink" d="M44 60 q5 -3 11 0"/>
+            </g>
+            <text x="50" y="77" text-anchor="middle" font-size="9" class="mono">JS</text>
+            <text x="82" y="22" font-size="18">?</text>
+          </g>
+        </svg>
+        <div class="illus-caption"><span>Pilih jalan yang benar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <!-- ═══════════ 1. KONSEP PERCABANGAN ═══════════ -->
+      <article class="step" id="s1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Konsep</small>Konsep Percabangan</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 232" role="img" aria-label="Flowchart: mulai, cek kondisi, jika true jalankan blok kode, lalu lanjut ke kode berikutnya">
+                <g class="wobble">
+                  <rect x="30" y="10" width="90" height="34" rx="17" class="paper"/>
+                  <path class="ink" d="M75 44 v18 M69 56 l6 7 l6 -7"/>
+                  <path class="paper" d="M75 66 l56 32 l-56 32 l-56 -32 z"/>
+                  <path class="ink" d="M131 98 h62 M185 92 l8 6 l-8 6"/>
+                  <rect x="198" y="76" width="146" height="44" rx="7" class="solid"/>
+                  <path class="ink" d="M271 120 v64 M265 178 l6 7 l6 -7"/>
+                  <path class="ink" d="M75 130 v54 M69 178 l6 7 l6 -7"/>
+                  <rect x="24" y="188" width="320" height="36" rx="7" class="paper"/>
+                </g>
+                <text x="75" y="32" text-anchor="middle" font-size="14">Mulai</text>
+                <text x="75" y="103" text-anchor="middle" font-size="13" class="mono">kondisi</text>
+                <text x="162" y="90" text-anchor="middle" font-size="12" class="mono">true</text>
+                <text x="84" y="160" font-size="12" class="mono">false</text>
+                <text x="271" y="103" text-anchor="middle" font-size="13" class="inv">Jalankan blok kode</text>
+                <text x="184" y="211" text-anchor="middle" font-size="13">Lanjut ke kode berikutnya</text>
+              </svg>
+              <div class="illus-caption"><span>Alur percabangan</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="def-box"><strong>Definisi</strong><b>Percabangan (conditional)</b> adalah struktur yang membuat program menjalankan blok kode tertentu <b>hanya jika</b> suatu kondisi terpenuhi.</div>
+            <p class="content-text">Kata kunci utamanya: kondisi itu <strong>selalu menghasilkan boolean</strong> (<code>true</code> atau <code>false</code>), persis seperti hasil operator perbandingan yang sudah kalian pelajari di pertemuan 16.</p>
+            <div class="mini-grid">
+              <div class="mini-card"><h4><span class="letter-badge">1</span>Payung</h4><p>Kalau hujan, bawa payung.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">2</span>Kantin</h4><p>Kalau uang cukup, beli bakso. Kalau tidak, beli gorengan.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">3</span>Rapor</h4><p>Nilai ≥ 90 dapat A, ≥ 80 dapat B, dan seterusnya.</p></div>
+            </div>
+            <div class="callout" data-kind="mikir">Coba cari contoh "kalau… maka…" di aplikasi yang sering kamu pakai. Misalnya: kalau password salah, tampilkan pesan error. Semua itu percabangan!</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 2. IF ═══════════ -->
+      <article class="step" id="s2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Sintaks</small>Pernyataan if</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text"><code>if</code> menjalankan sebuah blok kode <strong>hanya jika</strong> kondisinya <code>true</code>. Jika <code>false</code>, blok tersebut dilewati.</p>
+            <div class="subsection">
+              <div class="section-label">Sintaks</div>
+              <div class="editor" data-editor data-norun><textarea class="editor-src">
+if (kondisi) {
+  // kode yang dijalankan jika kondisi bernilai true
+}</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Bagian</th><th>Contoh</th><th>Keterangan</th></tr></thead>
+                  <tbody>
+                    <tr><td>Kata kunci</td><td><code>if</code></td><td>Menandai awal percabangan</td></tr>
+                    <tr><td>Kondisi</td><td><code>suhu &gt; 30</code></td><td>Hasilnya harus boolean</td></tr>
+                    <tr><td>Awal blok kode</td><td><code>{</code></td><td>Isi blok dijalankan jika kondisi true, ditutup dengan <code>}</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh</div>
+              <p class="content-text">Jalankan, lalu coba ganti <code>35</code> menjadi <code>25</code>. Baris mana yang hilang?</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const suhu = 35;
+
+if (suhu > 30) {
+  console.log("Cuaca panas, minum yang banyak!");
+}
+
+console.log("Program selesai.");</textarea></div>
+            </div>
+
+            <div class="important-banner">
+              <h3>3 aturan penting</h3>
+              <ol>
+                <li>Kondisi diletakkan di dalam tanda kurung <code>( )</code></li>
+                <li>Blok kode diapit kurung kurawal <code>{ }</code></li>
+                <li>Indentasi (menjorok ke dalam) isi blok agar mudah dibaca</li>
+              </ol>
+            </div>
+
+            <div data-tebak data-judul="Quick Test" data-q="Hitung dulu di kepala, jangan langsung dijalankan. Ada 3 if terpisah — mana saja yang tampil? (Petunjuk: <code>+umur</code> mengubah string menjadi number.)"><textarea>
+const umur = "20"
+if (umur === 20) {
+    console.log("Umur sesuai")
+}
+if (umur < 30) {
+    console.log("Umur kurang")
+}
+if (+umur > 17) {
+    console.log("Umur anda melebihi 17 tahun")
+}</textarea></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 3. IF-ELSE ═══════════ -->
+      <article class="step" id="s3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Sintaks</small>Pernyataan if-else</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 226" role="img" aria-label="Flowchart if-else: jika nilai lebih dari sama dengan KKM maka Lulus, jika tidak Remedial">
+                <g class="wobble">
+                  <path class="paper" d="M180 12 l82 34 l-82 34 l-82 -34 z"/>
+                  <path class="ink" d="M98 46 h-38 v52 M54 92 l6 7 l6 -7"/>
+                  <path class="ink" d="M262 46 h38 v52 M294 92 l6 7 l6 -7"/>
+                  <rect x="10" y="102" width="100" height="40" rx="8" class="solid"/>
+                  <rect x="250" y="102" width="100" height="40" rx="8" class="paper"/>
+                  <rect x="250" y="102" width="100" height="40" rx="8" class="hatch"/>
+                  <path class="ink" d="M60 142 v28 h112 M300 142 v28 h-112 M180 170 v18 M174 182 l6 7 l6 -7"/>
+                </g>
+                <text x="180" y="51" text-anchor="middle" font-size="13" class="mono">nilai &gt;= kkm ?</text>
+                <text x="70" y="38" font-size="12" class="mono">true</text>
+                <text x="262" y="38" font-size="12" class="mono">false</text>
+                <text x="60" y="127" text-anchor="middle" font-size="15" class="inv">Lulus</text>
+                <text x="300" y="127" text-anchor="middle" font-size="15">Remedial</text>
+                <text x="180" y="214" text-anchor="middle" font-size="13">Lanjut ke kode berikutnya</text>
+              </svg>
+              <div class="illus-caption"><span>Selalu ada tepat satu jalur</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><code>else</code> menyediakan jalur alternatif ketika kondisi <code>if</code> bernilai <code>false</code>. Artinya, <strong>selalu ada tepat satu blok</strong> yang dijalankan.</p>
+            <div class="editor" data-editor data-norun><textarea class="editor-src">
+if (kondisi) {
+  // jalankan jika kondisi true
+} else {
+  // jalankan jika kondisi false
+}</textarea></div>
+            <div class="subsection">
+              <div class="section-label">Contoh penggunaan if-else</div>
+              <p class="content-text">Operator modulus <code>%</code> menghasilkan sisa bagi. Bilangan genap jika sisa bagi 2 sama dengan 0.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const angka = 7;
+
+if (angka % 2 === 0) {
+  console.log(`${angka} adalah bilangan GENAP`);
+} else {
+  console.log(`${angka} adalah bilangan GANJIL`);
+}</textarea></div>
+              <div class="callout" data-kind="tips">Ubah <code>angka</code> menjadi <code>12</code>, lalu <code>0</code>, lalu <code>-3</code>. Program memilih jalurnya sendiri tanpa kamu mengubah if-nya.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 4. ELSE IF ═══════════ -->
+      <article class="step" id="s4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Sintaks</small>Pernyataan else if</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 226" role="img" aria-label="Tangga predikat: bola bernilai 85 jatuh melewati anak tangga A dan berhenti di anak tangga B">
+                <g class="wobble">
+                  <path class="paper" d="M20 62 h80 v40 h80 v40 h80 v40 h80 v40 H20 Z"/>
+                  <path class="thin" d="M100 62 v160 M180 102 v120 M260 142 v80"/>
+                  <path class="dash" d="M36 22 Q 96 4 128 66"/>
+                  <path class="ink" d="M120 60 l9 8 l2 -12"/>
+                  <circle cx="140" cy="86" r="15" class="solid"/>
+                </g>
+                <text x="140" y="91" text-anchor="middle" font-size="12" class="mono inv">85</text>
+                <text x="60" y="88" text-anchor="middle" font-size="13" class="mono">≥90 A</text>
+                <text x="140" y="128" text-anchor="middle" font-size="13" class="mono">≥80 B</text>
+                <text x="220" y="168" text-anchor="middle" font-size="13" class="mono">≥70 C</text>
+                <text x="300" y="208" text-anchor="middle" font-size="13" class="mono">else D</text>
+                <text x="230" y="40" font-size="12">berhenti di</text>
+                <text x="230" y="56" font-size="12">true pertama!</text>
+              </svg>
+              <div class="illus-caption"><span>Diperiksa dari atas</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><code>if-else</code> hanya punya 2 jalur. Bagaimana jika ada lebih dari 2 kemungkinan? Misalnya predikat nilai: A, B, C, D. <code>else if</code> menambahkan kondisi tambahan yang <strong>diperiksa berurutan dari atas ke bawah</strong>.</p>
+            <div class="editor" data-editor data-norun><textarea class="editor-src">
+if (kondisi1) {
+  // dijalankan jika kondisi1 true
+} else if (kondisi2) {
+  // dijalankan jika kondisi1 false DAN kondisi2 true
+} else if (kondisi3) {
+  // dijalankan jika kondisi1, kondisi2 false DAN kondisi3 true
+} else {
+  // dijalankan jika SEMUA kondisi di atas false
+}</textarea></div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh penulisan kode</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+const nilai = 85;
+
+if (nilai >= 90) {
+  console.log("Predikat A");
+} else if (nilai >= 80) {
+  console.log("Predikat B");
+} else if (nilai >= 70) {
+  console.log("Predikat C");
+} else {
+  console.log("Predikat D");
+}</textarea></div>
+            </div>
+
+            <div data-widget="predikat-flow"></div>
+
+            <div data-tebak data-judul="Tebak Hasil" data-q="Kodenya mirip, tapi <strong>urutan kondisinya dibalik</strong> dan nilainya 95. Apa yang tampil?"><textarea>
+const nilai = 95;
+
+if (nilai >= 70) {
+  console.log("Predikat C");
+} else if (nilai >= 80) {
+  console.log("Predikat B");
+} else if (nilai >= 90) {
+  console.log("Predikat A");
+}</textarea></div>
+            <div class="callout" data-kind="awas">Urutan kondisi pada <code>else if</code> itu penting! Letakkan kondisi yang <strong>paling ketat</strong> (paling sulit dipenuhi) di paling atas.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 5. KONDISI MAJEMUK ═══════════ -->
+      <article class="step" id="s5">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <h2><small>Logika</small>Kondisi Majemuk: &amp;&amp;, ||, !</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 214" role="img" aria-label="Rangkaian lampu: AND butuh dua saklar menyala berderet, OR cukup salah satu saklar pada jalur paralel">
+                <g class="wobble">
+                  <path class="ink" d="M24 70 h22 M82 70 h18 M136 70 h26 v100 h-52 M80 170 h-56 v-100"/>
+                  <circle cx="48" cy="70" r="3.5" class="solid"/><circle cx="80" cy="70" r="3.5" class="solid"/>
+                  <path class="ink" d="M48 70 L80 67" style="stroke-width:3.5"/>
+                  <circle cx="102" cy="70" r="3.5" class="solid"/><circle cx="134" cy="70" r="3.5" class="solid"/>
+                  <path class="ink" d="M102 70 L134 67" style="stroke-width:3.5"/>
+                  <circle cx="95" cy="170" r="15" class="paper"/>
+                  <path class="thin" d="M89 172 q6 -10 12 0"/>
+                  <path class="ink" d="M95 146 v-6 M74 156 l-5 -4 M116 156 l5 -4 M70 176 h-6 M120 176 h6"/>
+                  <path class="ink" d="M196 50 h30 M262 50 h34 v120 h-52 M230 170 h-34 v-120"/>
+                  <path class="ink" d="M206 50 v50 h20 M262 100 h24 v-50"/>
+                  <circle cx="228" cy="50" r="3.5" class="solid"/><circle cx="260" cy="50" r="3.5" class="solid"/>
+                  <path class="ink" d="M228 50 L258 30" style="stroke-width:3.5"/>
+                  <circle cx="228" cy="100" r="3.5" class="solid"/><circle cx="260" cy="100" r="3.5" class="solid"/>
+                  <path class="ink" d="M228 100 L260 97" style="stroke-width:3.5"/>
+                  <circle cx="245" cy="170" r="15" class="paper"/>
+                  <path class="thin" d="M239 172 q6 -10 12 0"/>
+                  <path class="ink" d="M245 146 v-6 M224 156 l-5 -4 M266 156 l5 -4 M220 176 h-6 M270 176 h6"/>
+                </g>
+                <text x="94" y="34" text-anchor="middle" font-size="22" class="mono">&amp;&amp;</text>
+                <text x="94" y="207" text-anchor="middle" font-size="11">dua saklar ON → nyala</text>
+                <text x="314" y="34" text-anchor="middle" font-size="22" class="mono">||</text>
+                <text x="246" y="207" text-anchor="middle" font-size="11">satu saklar ON → nyala</text>
+              </svg>
+              <div class="illus-caption"><span>Gabungkan beberapa syarat</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Kilas balik operator logika</div>
+              <p class="content-text">Operator logika dipakai untuk menggabungkan beberapa syarat dalam satu kondisi.</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Operator</th><th>Nama</th><th>Hasil true jika</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>&amp;&amp;</code></td><td>AND</td><td><strong>Kedua</strong> kondisi <code>true</code></td></tr>
+                    <tr><td><code>||</code></td><td>OR</td><td><strong>Salah satu</strong> kondisi <code>true</code></td></tr>
+                    <tr><td><code>!</code></td><td>NOT</td><td>Kondisi aslinya <code>false</code> (membalik nilai)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh dengan || (Bioskop)</div>
+              <p class="content-text">Boleh masuk jika sudah 17 tahun <strong>atau</strong> didampingi orang tua.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const umur = 15;
+const didampingiOrtu = true;
+
+if (umur >= 17 || didampingiOrtu) {
+  console.log("Silakan masuk, selamat menonton!");
+} else {
+  console.log("Maaf, tidak diperbolehkan masuk.");
+}</textarea></div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Contoh dengan &amp;&amp; (Syarat Kelulusan)</div>
+              <p class="content-text">Lulus jika nilai akhir minimal 75 <strong>dan</strong> kehadiran minimal 80.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const nilaiAkhir = 80;
+const kehadiran = 70;
+
+if (nilaiAkhir >= 75 && kehadiran >= 80) {
+  console.log("LULUS");
+} else {
+  console.log("TIDAK LULUS");
+}</textarea></div>
+              <div class="callout" data-kind="tips">Nilainya sudah 80, kenapa tetap tidak lulus? Karena <code>&amp;&amp;</code> menuntut <strong>semua</strong> syarat terpenuhi, dan kehadiran 70 belum mencapai 80.</div>
+            </div>
+
+            <div data-challenge="17:p1"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 6. NESTED IF ═══════════ -->
+      <article class="step" id="s6">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <h2><small>Struktur</small>Nested if (if Bersarang)</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 214" role="img" aria-label="Dua gerbang bersarang: gerbang username di luar, gerbang password di dalam, lalu login berhasil">
+                <g class="wobble">
+                  <rect x="20" y="26" width="320" height="176" rx="14" class="paper"/>
+                  <rect x="34" y="12" width="170" height="28" rx="7" class="solid"/>
+                  <rect x="78" y="76" width="204" height="112" rx="12" class="soft"/>
+                  <rect x="92" y="62" width="170" height="28" rx="7" class="solid"/>
+                  <circle cx="180" cy="142" r="26" class="paper"/>
+                  <path class="ink" d="M168 142 l9 9 l16 -18" style="stroke-width:3.5"/>
+                  <circle cx="48" cy="114" r="7" class="paper"/><path class="ink" d="M48 121 v12"/>
+                  <circle cx="312" cy="114" r="7" class="paper"/><path class="ink" d="M312 121 v12"/>
+                </g>
+                <text x="119" y="31" text-anchor="middle" font-size="12" class="mono inv">if (username ok)</text>
+                <text x="177" y="81" text-anchor="middle" font-size="12" class="mono inv">if (password ok)</text>
+                <text x="180" y="183" text-anchor="middle" font-size="12">Login berhasil!</text>
+              </svg>
+              <div class="illus-caption"><span>if di dalam if</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><strong>Nested if</strong> adalah <code>if</code> yang berada di dalam blok <code>if</code> atau <code>else</code> lainnya. Dipakai ketika sebuah pengecekan baru boleh dilakukan <strong>setelah pengecekan sebelumnya terpenuhi</strong>.</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+const username = "budi";
+const password = "rpl123";
+
+if (username === "budi") {
+  if (password === "rpl123") {
+    console.log("Login berhasil! Selamat datang.");
+  } else {
+    console.log("Password salah.");
+  }
+} else {
+  console.log("Username tidak ditemukan.");
+}</textarea></div>
+
+            <div class="subsection">
+              <div class="section-label">Nested if vs operator &amp;&amp;</div>
+              <p class="content-text">Pada kasus tertentu, nested if bisa diganti <code>&amp;&amp;</code>. Bedanya: versi <code>&amp;&amp;</code> lebih ringkas, tapi tidak bisa memberi pesan berbeda untuk username salah dan password salah.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const username = "budi";
+const password = "rpl123";
+
+if (username === "budi" && password === "rpl123") {
+  console.log("Login berhasil!");
+} else {
+  console.log("Username atau password salah.");
+}</textarea></div>
+              <div class="callout" data-kind="tips">Jangan membuat nested if lebih dari <strong>3 tingkat</strong>. Jika sudah terlalu dalam, pertimbangkan menyederhanakannya dengan <code>&amp;&amp;</code> atau <code>else if</code>.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 7. TRUTHY & FALSY ═══════════ -->
+      <article class="step" id="s7">
+        <div class="step-header">
+          <div class="step-number">7</div>
+          <h2><small>Konsep</small>Truthy dan Falsy</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 214" role="img" aria-label="Dua keranjang: keranjang truthy dan keranjang falsy berisi contoh nilai">
+                <g class="wobble">
+                  <path class="paper" d="M20 92 h150 l-14 104 h-122 z"/>
+                  <path class="thin" d="M30 120 h130 M32 150 h126 M36 178 h118"/>
+                  <path class="paper" d="M190 92 h150 l-14 104 h-122 z"/>
+                  <path class="hatch" d="M190 92 h150 l-14 104 h-122 z"/>
+                  <rect x="30" y="58" width="60" height="26" rx="13" class="paper"/>
+                  <rect x="98" y="58" width="34" height="26" rx="13" class="paper"/>
+                  <rect x="56" y="28" width="46" height="26" rx="13" class="paper"/>
+                  <rect x="200" y="58" width="34" height="26" rx="13" class="paper"/>
+                  <rect x="242" y="58" width="40" height="26" rx="13" class="paper"/>
+                  <rect x="290" y="58" width="44" height="26" rx="13" class="paper"/>
+                  <rect x="226" y="28" width="86" height="26" rx="13" class="paper"/>
+                </g>
+                <text x="60" y="76" text-anchor="middle" font-size="12" class="mono">"halo"</text>
+                <text x="115" y="76" text-anchor="middle" font-size="12" class="mono">-1</text>
+                <text x="79" y="46" text-anchor="middle" font-size="12" class="mono">true</text>
+                <text x="217" y="76" text-anchor="middle" font-size="12" class="mono">0</text>
+                <text x="262" y="76" text-anchor="middle" font-size="12" class="mono">""</text>
+                <text x="312" y="76" text-anchor="middle" font-size="12" class="mono">NaN</text>
+                <text x="269" y="46" text-anchor="middle" font-size="12" class="mono">undefined</text>
+                <rect x="58" y="134" width="74" height="24" rx="5" fill="#1A1A1A"/>
+                <text x="95" y="151" text-anchor="middle" font-size="13" class="inv">TRUTHY</text>
+                <rect x="228" y="134" width="74" height="24" rx="5" fill="#1A1A1A"/>
+                <text x="265" y="151" text-anchor="middle" font-size="13" class="inv">FALSY</text>
+              </svg>
+              <div class="illus-caption"><span>Semua nilai bisa jadi kondisi</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Kondisi <code>if</code> tidak harus selalu berupa perbandingan. JavaScript bisa menganggap <strong>nilai apa pun</strong> sebagai <code>true</code> atau <code>false</code> ketika dipakai di dalam kondisi.</p>
+            <div class="mini-grid">
+              <div class="mini-card mini-card--ink">
+                <h4>Nilai Falsy <span class="tag">dianggap false</span></h4>
+                <p>Hanya 6 nilai ini: <code>false</code>, <code>0</code>, <code>""</code> (string kosong), <code>null</code>, <code>undefined</code>, <code>NaN</code>.</p>
+              </div>
+              <div class="mini-card">
+                <h4>Nilai Truthy <span class="tag">dianggap true</span></h4>
+                <p>Semua nilai selain yang disebut di atas. Contoh: <code>"halo"</code>, <code>5</code>, <code>-1</code>, <code>true</code>.</p>
+              </div>
+            </div>
+            <p class="content-text">Kegunaan nyata: mengecek apakah sebuah isian sudah diisi. Ganti <code>nama</code> menjadi string kosong <code>""</code> lalu jalankan lagi.</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+const nama = "Sinta";
+
+if (nama) {
+  console.log(`Halo, ${nama}!`);
+} else {
+  console.log("Nama belum diisi.");
+}</textarea></div>
+
+            <div data-tebak data-judul="Quick Test 1" data-q="Angka <code>10</code> dipakai sebagai kondisi. Masuk ke blok mana?"><textarea>
+if (10) {
+    console.log("Teks tampil");
+} else {
+    console.log("Masuk ke kondisi false");
+}</textarea></div>
+            <div data-tebak data-judul="Quick Test 2" data-q="Bagaimana kalau kondisinya string kosong?"><textarea>
+if ("") {
+    console.log("Teks akan tampil karena bernilai true");
+} else {
+    console.log("Masuk ke kondisi false");
+}</textarea></div>
+            <div data-tebak data-judul="Quick Test 3" data-q="Perhatikan tanda <code>!</code> di depan string."><textarea>
+if (!"cogito ergo sum") {
+    console.log("Teks akan tampil karena bernilai true");
+} else {
+    console.log("Masuk ke kondisi false");
+}</textarea></div>
+            <div data-tebak data-judul="Quick Test 4" data-q="Sekarang kondisinya <code>null</code>."><textarea>
+if (null) {
+    console.log("Teks tampil");
+} else {
+    console.log("Masuk ke kondisi false");
+}</textarea></div>
+
+            <div data-widget="truthy-sorter"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 8. TERNARY ═══════════ -->
+      <article class="step" id="s8">
+        <div class="step-header">
+          <div class="step-number">8</div>
+          <h2><small>Ringkas</small>Operator Ternary</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Operator ternary adalah cara singkat menulis <code>if-else</code> sederhana dalam <strong>satu baris</strong>. Disebut "ternary" karena memiliki <strong>3 bagian</strong>: kondisi, hasil jika benar, dan hasil jika salah.</p>
+            <div class="subsection">
+              <div class="section-label">Sintaks</div>
+              <div class="editor" data-editor data-norun><textarea class="editor-src">kondisi ? nilaiJikaBenar : nilaiJikaSalah;</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Contoh</div>
+              <div class="editor" data-editor><textarea class="editor-src">
+let umur = 20;
+let status = umur >= 17 ? "Dewasa" : "Anak-anak";
+console.log(status);   // Dewasa</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>if-else (5 baris)</th><th>Ternary (1 baris)</th></tr></thead>
+                  <tbody>
+                    <tr><td style="font-family:var(--font-mono);font-weight:500;white-space:pre">let status;
+if (umur &gt;= 17) {
+  status = "Dewasa";
+} else {
+  status = "Anak-anak";
+}</td><td style="font-family:var(--font-mono)">let status = umur &gt;= 17 ? "Dewasa" : "Anak-anak";</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="callout" data-kind="awas">Ternary cocok untuk kondisi sederhana dengan <strong>2 kemungkinan hasil</strong>. Kalau sudah lebih dari itu, pakai <code>if / else if</code> supaya tetap mudah dibaca.</div>
+            </div>
+            <div data-challenge="17:p2"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 9. SWITCH ═══════════ -->
+      <article class="step" id="s9">
+        <div class="step-header">
+          <div class="step-number">9</div>
+          <h2><small>Sintaks</small>Pernyataan switch</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 226" role="img" aria-label="Mesin minuman dengan tombol 1, 2, 3; tombol 3 ditekan dan keluar kertas bertuliskan Rabu">
+                <g class="wobble">
+                  <rect x="110" y="10" width="150" height="204" rx="14" class="paper"/>
+                  <rect x="124" y="26" width="86" height="116" rx="6" class="soft"/>
+                  <path class="thin" d="M124 64 h86 M124 102 h86"/>
+                  <rect x="134" y="38" width="16" height="22" rx="4" class="paper"/><rect x="160" y="38" width="16" height="22" rx="4" class="paper"/><rect x="186" y="38" width="16" height="22" rx="4" class="paper"/>
+                  <rect x="134" y="76" width="16" height="22" rx="4" class="paper"/><rect x="160" y="76" width="16" height="22" rx="4" class="paper"/>
+                  <rect x="134" y="114" width="16" height="22" rx="4" class="paper"/>
+                  <circle cx="236" cy="44" r="11" class="paper"/>
+                  <circle cx="236" cy="74" r="11" class="paper"/>
+                  <circle cx="236" cy="104" r="11" class="solid"/>
+                  <rect x="124" y="160" width="86" height="34" rx="5" class="solid"/>
+                  <path class="paper" d="M140 178 h54 v34 h-54 z"/>
+                  <path class="dash" d="M82 104 C 100 104, 200 120, 222 106"/>
+                </g>
+                <text x="236" y="49" text-anchor="middle" font-size="12" class="mono">1</text>
+                <text x="236" y="79" text-anchor="middle" font-size="12" class="mono">2</text>
+                <text x="236" y="109" text-anchor="middle" font-size="12" class="mono inv">3</text>
+                <text x="167" y="201" text-anchor="middle" font-size="12" class="mono">Rabu</text>
+                <text x="18" y="90" font-size="13" class="mono">switch</text>
+                <text x="18" y="108" font-size="13" class="mono">(hari)</text>
+                <text x="280" y="108" font-size="12" class="mono">case 3</text>
+              </svg>
+              <div class="illus-caption"><span>Pilih satu dari banyak</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text"><code>switch</code> cocok saat kamu membandingkan <strong>satu nilai</strong> dengan <strong>banyak kemungkinan nilai pasti</strong> (misalnya nomor hari, kode menu). Setiap kemungkinan ditulis sebagai <code>case</code>, dan <code>default</code> dijalankan kalau tidak ada yang cocok.</p>
+            <div class="editor" data-editor><textarea class="editor-src">
+const hari = 3;
+
+switch (hari) {
+  case 1:
+    console.log("Senin");
+    break;
+  case 2:
+    console.log("Selasa");
+    break;
+  case 3:
+    console.log("Rabu");
+    break;
+  default:
+    console.log("Hari tidak dikenal");
+}</textarea></div>
+            <div class="callout" data-kind="awas">Jangan lupa <code>break;</code>! Tanpa <code>break</code>, setelah menemukan case yang cocok, JavaScript akan terus menjalankan case-case di bawahnya. Coba hapus satu <code>break</code> di atas lalu jalankan.</div>
+
+            <div class="subsection">
+              <div class="section-label">Beberapa case, satu aksi</div>
+              <p class="content-text">Case boleh ditumpuk kalau aksinya sama. <code>switch</code> membandingkan dengan <code>===</code> (ketat), jadi tipe datanya harus sama persis.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+const hari = "Minggu";
+
+switch (hari) {
+  case "Sabtu":
+  case "Minggu":
+    console.log("Libur, waktunya istirahat!");
+    break;
+  default:
+    console.log("Hari sekolah, semangat!");
+}</textarea></div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">switch atau else if?</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Pakai</th><th>Ketika</th><th>Contoh</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>switch</code></td><td>Mencocokkan satu nilai dengan daftar nilai pasti</td><td>nomor hari, pilihan menu 1/2/3, kode kelas</td></tr>
+                    <tr><td><code>else if</code></td><td>Kondisinya berupa rentang atau gabungan syarat</td><td><code>nilai &gt;= 80</code>, <code>umur &gt;= 17 &amp;&amp; punyaKTP</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 10. KESALAHAN UMUM ═══════════ -->
+      <article class="step" id="s10">
+        <div class="step-header">
+          <div class="step-number">10</div>
+          <h2><small>Debugging</small>Kesalahan Umum pada Percabangan</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Kaca pembesar memeriksa seekor kumbang bug">
+                <g class="wobble">
+                  <path class="ink" d="M140 92 l-30 -12 M138 120 l-34 0 M140 148 l-30 12 M220 92 l30 -12 M222 120 l34 0 M220 148 l30 12"/>
+                  <path class="ink" d="M170 48 q-8 -22 -26 -24 M190 48 q8 -22 26 -24"/>
+                  <ellipse cx="180" cy="122" rx="46" ry="56" class="paper"/>
+                  <circle cx="180" cy="58" r="20" class="paper"/>
+                  <path class="ink" d="M180 70 v108"/>
+                  <circle cx="160" cy="104" r="8" class="hatch"/><circle cx="200" cy="104" r="8" class="hatch"/>
+                  <circle cx="162" cy="142" r="7" class="hatch"/><circle cx="198" cy="142" r="7" class="hatch"/>
+                  <circle cx="172" cy="56" r="3" class="solid"/><circle cx="188" cy="56" r="3" class="solid"/>
+                  <circle cx="274" cy="154" r="30" class="ink" style="stroke-width:4"/>
+                  <path class="ink" d="M296 176 l26 26" style="stroke-width:7"/>
+                </g>
+                <text x="66" y="40" font-size="20" class="mono">= ?</text>
+                <text x="250" y="60" font-size="20" class="mono">===</text>
+              </svg>
+              <div class="illus-caption"><span>Temukan bug-nya</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Kode yang <em>terlihat</em> benar kadang menghasilkan output aneh. Berikut 4 kesalahan yang paling sering terjadi. Jalankan tiap contoh, lihat hasilnya, lalu baca cara memperbaikinya.</p>
+            <div class="tabs">
+              <div class="tabs-nav" role="tablist">
+                <button class="tab-btn" aria-selected="true" aria-controls="bug-sama">1. = vs ===</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="bug-urutan">2. Urutan else if</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="bug-titikkoma">3. ; setelah if</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="bug-kurawal">4. Lupa { }</button>
+              </div>
+              <div class="tab-panel" id="bug-sama">
+                <p class="content-text">Satu <code>=</code> adalah <strong>penugasan</strong> (mengisi nilai), bukan perbandingan. Kondisinya jadi bernilai 100 (truthy), dan variabelnya ikut berubah!</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+let nilai = 60;
+
+if (nilai = 100) {
+  console.log("Sempurna!");
+}
+
+console.log(nilai); // lho, kok jadi 100?</textarea></div>
+                <p class="content-text"><strong>Perbaikan:</strong> pakai <code>===</code> untuk membandingkan: <code>if (nilai === 100)</code>.</p>
+              </div>
+              <div class="tab-panel" id="bug-urutan" hidden>
+                <p class="content-text">Kondisi yang longgar diletakkan paling atas, sehingga kondisi yang lebih ketat tidak pernah tercapai. Nilai 95 malah dapat C!</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+const nilai = 95;
+
+if (nilai >= 70) {
+  console.log("Predikat C");
+} else if (nilai >= 80) {
+  console.log("Predikat B");
+} else if (nilai >= 90) {
+  console.log("Predikat A");
+}</textarea></div>
+                <p class="content-text"><strong>Perbaikan:</strong> urutkan dari yang paling ketat: <code>&gt;= 90</code>, lalu <code>&gt;= 80</code>, lalu <code>&gt;= 70</code>.</p>
+              </div>
+              <div class="tab-panel" id="bug-titikkoma" hidden>
+                <p class="content-text">Titik koma setelah <code>if (...)</code> membuat if-nya "kosong". Blok <code>{ }</code> di bawahnya jadi blok biasa yang <strong>selalu</strong> dijalankan.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+const suhu = 20;
+
+if (suhu > 30); {
+  console.log("Panas sekali!");
+}</textarea></div>
+                <p class="content-text"><strong>Perbaikan:</strong> hapus <code>;</code> setelah tanda kurung kondisi. Ingat: <strong>tidak ada titik koma</strong> di antara <code>)</code> dan <code>{</code>.</p>
+              </div>
+              <div class="tab-panel" id="bug-kurawal" hidden>
+                <p class="content-text">Tanpa kurung kurawal, hanya <strong>satu baris pertama</strong> yang ikut if. Baris berikutnya selalu jalan walau indentasinya menjorok.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+const saldo = 5000;
+
+if (saldo >= 10000)
+  console.log("Pembayaran berhasil");
+  console.log("Saldo dipotong 10000");</textarea></div>
+                <p class="content-text"><strong>Perbaikan:</strong> selalu bungkus isi if dengan <code>{ }</code>, walaupun isinya hanya satu baris.</p>
+              </div>
+            </div>
+            <div class="callout" data-kind="tips">Kalau output-mu aneh, baca kode baris demi baris sambil "menjadi komputer": hitung nilai kondisinya satu per satu, true atau false?</div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 11. STUDI KASUS KASIR ═══════════ -->
+      <article class="step" id="s11">
+        <div class="step-header">
+          <div class="step-number">11</div>
+          <h2><small>Studi Kasus</small>Program Kasir Toko</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="Mesin kasir dengan layar dan struk belanja keluar bertuliskan diskon">
+                <g class="wobble">
+                  <path class="paper" d="M232 4 h70 v88 l-7 -5 l-7 5 l-7 -5 l-7 5 l-7 -5 l-7 5 l-7 -5 l-7 5 l-7 -5 l-6 5 z"/>
+                  <path class="thin" d="M242 34 h50 M242 46 h36 M242 58 h50"/>
+                  <rect x="70" y="38" width="120" height="44" rx="6" class="solid"/>
+                  <path class="ink" d="M130 82 v14"/>
+                  <path class="paper" d="M40 96 h240 l20 64 h-280 z"/>
+                  <rect x="70" y="106" width="22" height="14" rx="3" class="paper"/><rect x="100" y="106" width="22" height="14" rx="3" class="paper"/><rect x="130" y="106" width="22" height="14" rx="3" class="paper"/><rect x="160" y="106" width="22" height="14" rx="3" class="paper"/>
+                  <rect x="66" y="128" width="22" height="14" rx="3" class="paper"/><rect x="96" y="128" width="22" height="14" rx="3" class="paper"/><rect x="126" y="128" width="22" height="14" rx="3" class="paper"/><rect x="156" y="128" width="22" height="14" rx="3" class="solid"/>
+                  <rect x="20" y="160" width="300" height="44" rx="6" class="soft"/>
+                  <path class="ink" d="M140 182 h60"/>
+                </g>
+                <text x="130" y="67" text-anchor="middle" font-size="16" class="mono inv">Rp 90000</text>
+                <text x="267" y="24" text-anchor="middle" font-size="11" class="mono">STRUK</text>
+                <text x="267" y="80" text-anchor="middle" font-size="12" class="mono">-10%</text>
+              </svg>
+              <div class="illus-caption"><span>Diskon otomatis</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <p class="content-text">Saatnya merakit semua yang sudah dipelajari menjadi program nyata: <strong>kasir toko</strong> yang menentukan diskon secara otomatis. Sebelum menulis kode, pecah masalahnya dulu:</p>
+            <div class="mini-grid">
+              <div class="mini-card"><h4><span class="letter-badge">1</span>Data apa?</h4><p><code>totalBelanja</code> (number) dan <code>isMember</code> (boolean).</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">2</span>Aturan apa?</h4><p>Urutkan dari yang paling ketat: belanja besar dulu, baru status member, terakhir sisanya.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">3</span>Output apa?</h4><p>Persentase diskon dan jumlah yang harus dibayar.</p></div>
+            </div>
+            <div class="callout" data-kind="tips">Polanya: siapkan variabel hasil dengan nilai awal (<code>let diskon = 0;</code>), ubah nilainya di dalam percabangan, lalu pakai setelah percabangan selesai.</div>
+            <div data-challenge="17:p3"></div>
+            <p class="content-text">Sudah lancar? Versi lengkapnya (dengan nested if &amp; voucher) menunggu di bagian <a href="#tes">Tes Pengetahuan</a>.</p>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 12. RANGKUMAN ═══════════ -->
+      <article class="step" id="s12">
+        <div class="step-header">
+          <div class="step-number">12</div>
+          <h2><small>Ringkas</small>Rangkuman</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Struktur</th><th>Fungsi</th><th>Contoh Singkat</th></tr></thead>
+                <tbody>
+                  <tr><td><code>if</code></td><td>Jalankan blok hanya jika kondisi <code>true</code></td><td><code>if (suhu &gt; 30) { ... }</code></td></tr>
+                  <tr><td><code>if-else</code></td><td>Dua jalur: benar atau salah</td><td><code>if (...) { ... } else { ... }</code></td></tr>
+                  <tr><td><code>else if</code></td><td>Banyak jalur, diperiksa berurutan</td><td><code>if ... else if ... else</code></td></tr>
+                  <tr><td>Kondisi majemuk</td><td>Gabungkan syarat dengan <code>&amp;&amp;</code>, <code>||</code>, <code>!</code></td><td><code>if (a &gt;= 75 &amp;&amp; b &gt;= 80)</code></td></tr>
+                  <tr><td>Nested if</td><td><code>if</code> di dalam <code>if</code></td><td>Login: cek username lalu password</td></tr>
+                  <tr><td>Truthy / Falsy</td><td>Nilai apa pun bisa dipakai sebagai kondisi</td><td><code>if (nama) { ... }</code></td></tr>
+                  <tr><td>Ternary</td><td>Versi singkat <code>if-else</code> untuk 2 jalur</td><td><code>a ? b : c</code></td></tr>
+                  <tr><td><code>switch</code></td><td>Satu nilai dicocokkan dengan banyak <code>case</code></td><td><code>switch (hari) { case 1: ... }</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="important-banner">
+              <h3>Ingat selalu</h3>
+              <ul>
+                <li>Bandingkan dengan <code>===</code>, bukan <code>=</code>.</li>
+                <li>Urutkan <code>else if</code> dari kondisi paling ketat.</li>
+                <li>Tidak ada <code>;</code> di antara <code>)</code> dan <code>{</code>, dan selalu pakai <code>{ }</code>.</li>
+                <li>Falsy hanya 6: <code>false</code>, <code>0</code>, <code>""</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ TES PENGETAHUAN ═══════════ -->
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Tes Pengetahuan</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+            <div data-kuis="17" data-judul="Kuis Percabangan"></div>
+            <div data-challenge="17:t1"></div>
+            <div data-challenge="17:t2"></div>
+            <div data-challenge="17:t3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a class="prev" href="16-operator.html"><small>Sebelumnya</small><b>← #16 Operator</b></a>
+        <a class="next" href="18-perulangan.html"><small>Berikutnya</small><b>#18 Perulangan →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/xml.min.js"></script>
+  <script src="../assets/vendor/codemirror/css.min.js"></script>
+  <script src="../assets/vendor/codemirror/htmlmixed.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-17.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/widgets/w17.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

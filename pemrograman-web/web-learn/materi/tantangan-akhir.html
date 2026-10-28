@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tantangan Akhir — Coret.js</title>
+  <meta name="description" content="Tantangan akhir gabungan materi JavaScript #15–#19: lima level koding dari konversi suhu sampai segitiga bintang, plus kuis campuran acak.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    .level-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: .4rem; }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+<body data-materi="akhir">
+  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
+        <a href="16-operator.html" data-nav="16">#16 Operator</a>
+        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
+        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
+        <a href="19-function.html" data-nav="19">#19 Function</a>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Gabungan #15 – #19</span>
+      <h1>Tantangan <span class="highlight">Akhir</span></h1>
+      <p class="hero-subtitle">Lima level koding yang memakai semua yang sudah kamu pelajari: variabel, operator, percabangan, perulangan, dan function. Kalahkan boss-nya, lalu tutup dengan kuis campuran!</p>
+      <p class="tujuan-title">Yang diuji:</p>
+      <ul class="tujuan">
+        <li>Menulis function dengan parameter dan <code>return</code></li>
+        <li>Memakai operator aritmatika, perbandingan, logika, dan ternary</li>
+        <li>Menyusun <code>if</code> / <code>else if</code> dengan urutan yang benar</li>
+        <li>Memakai pola akumulator dan nested loop</li>
+      </ul>
+      <a href="#cara-main" class="hero-cta">Mulai Tantangan
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Tangga lima level dengan bendera boss di puncak">
+          <g class="wobble">
+            <path class="paper" d="M20 230 h64 v-36 h64 v-36 h64 v-36 h64 v-36 h64 v180 h-320 z"/>
+            <path class="thin" d="M84 230 v-36 M148 230 v-72 M212 230 v-108 M276 230 v-144"/>
+            <path class="ink" d="M318 86 v-62"/>
+            <path class="solid" d="M318 24 l34 12 l-34 12 z"/>
+            <path class="dash" d="M44 186 q30 -50 66 -30 q30 -50 66 -30 q30 -50 66 -30 q26 -44 60 -40"/>
+          </g>
+          <text x="52" y="218" text-anchor="middle" font-size="16" class="mono">1</text>
+          <text x="116" y="218" text-anchor="middle" font-size="16" class="mono">2</text>
+          <text x="180" y="218" text-anchor="middle" font-size="16" class="mono">3</text>
+          <text x="244" y="218" text-anchor="middle" font-size="16" class="mono">4</text>
+          <text x="306" y="218" text-anchor="middle" font-size="14">BOSS</text>
+          <g transform="translate(12 120) scale(.8)">
+            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4"/>
+            <g class="wobble">
+              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6"/>
+              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8"/>
+              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8"/>
+              <rect x="25" y="24" width="50" height="60" rx="17" class="paper"/>
+              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5"/>
+              <circle cx="41" cy="46" r="3.3" class="solid"/><circle cx="59" cy="46" r="3.3" class="solid"/>
+              <path class="ink" d="M42 58 q8 8 16 0"/>
+            </g>
+            <text x="50" y="77" text-anchor="middle" font-size="9" class="mono">JS</text>
+          </g>
+        </svg>
+        <div class="illus-caption"><span>Naik level satu per satu</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <article class="step" id="cara-main">
+        <div class="step-header">
+          <div class="step-number">0</div>
+          <h2><small>Aturan</small>Cara Main</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="mini-grid">
+              <div class="mini-card"><h4><span class="letter-badge">1</span>Baca soal</h4><p>Setiap level meminta kamu melengkapi sebuah function. Perhatikan nama function dan parameternya — harus sama persis.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">2</span>Coba jalankan</h4><p>Tekan <strong>Jalankan</strong> untuk melihat output-mu sendiri. Tambahkan <code>console.log</code> untuk mengecek hasil.</p></div>
+              <div class="mini-card"><h4><span class="letter-badge">3</span>Periksa</h4><p><strong>Periksa Jawaban</strong> menguji function-mu dengan banyak data sekaligus, termasuk kasus batas.</p></div>
+            </div>
+            <div class="important-banner">
+              <h3>Penilaian</h3>
+              <p>Nilai Tantangan Akhir = <strong>50% kuis campuran</strong> + <strong>50% level yang lulus</strong>. Level yang kamu selesaikan setelah membuka <em>Lihat Solusi</em> tidak mendapat poin — jadi pakai <strong>Petunjuk</strong> dulu kalau buntu.</p>
+            </div>
+            <div class="callout" data-kind="tips">Lupa materinya? Buka lagi <a href="15-dasar-javascript.html">#15</a>, <a href="16-operator.html">#16</a>, <a href="17-percabangan.html">#17</a>, <a href="18-perulangan.html">#18</a>, atau <a href="19-function.html">#19</a>. Progres di halaman ini tidak akan hilang.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" id="level-1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Operator · return</small>Konversi Suhu</h2>
+          <span class="step-tag">Dinilai</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="level-meta"><span class="chip">#16 Operator</span><span class="chip">#19 Function</span></div>
+            <div data-challenge="akhir:l1"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" id="level-2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Percabangan</small>Predikat Nilai</h2>
+          <span class="step-tag">Dinilai</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="level-meta"><span class="chip">#17 else if</span><span class="chip">#16 Logika</span><span class="chip">#19 return</span></div>
+            <div data-challenge="akhir:l2"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" id="level-3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Perulangan</small>Jumlah Bilangan Genap</h2>
+          <span class="step-tag">Dinilai</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="level-meta"><span class="chip">#18 Akumulator</span><span class="chip">#16 Modulus %</span><span class="chip">#17 if</span></div>
+            <div data-challenge="akhir:l3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" id="level-4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Studi kasus</small>Kasir Kantin Sekolah</h2>
+          <span class="step-tag">Dinilai</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="level-meta"><span class="chip">#17 else if</span><span class="chip">#16 Ternary</span><span class="chip">#19 Parameter</span></div>
+            <div data-challenge="akhir:l4"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" id="boss">
+        <div class="step-header">
+          <div class="step-number">★</div>
+          <h2><small>Level terakhir</small>Boss: Segitiga Bintang</h2>
+          <span class="step-tag">Dinilai</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="level-meta"><span class="chip">#18 Nested loop</span><span class="chip">#15 String</span><span class="chip">#19 Function</span></div>
+            <div data-challenge="akhir:boss"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Kuis Campuran</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">15 soal diambil <strong>acak</strong> dari kuis pertemuan 15–19. Setiap kali mengulang, soalnya berbeda — nilai terbaik yang disimpan.</p>
+            <div data-kuis="akhir" data-acak="15" data-judul="Kuis Campuran #15–#19"></div>
+            <div class="callout" data-kind="fakta" data-label="Sudah selesai?">Buka <a href="../rapor.html">Rapor</a>, isi nama &amp; kelasmu, lalu cetak atau screenshot kartu hasilnya untuk dikumpulkan ke guru.</div>
+          </div>
+        </div></div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a href="19-function.html"><small>Sebelumnya</small><b>← #19 Function</b></a>
+        <a class="next" href="../rapor.html"><small>Selesai</small><b>Lihat Rapor →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-15.js"></script>
+  <script src="../assets/data/bank-16.js"></script>
+  <script src="../assets/data/bank-17.js"></script>
+  <script src="../assets/data/bank-18.js"></script>
+  <script src="../assets/data/bank-19.js"></script>
+  <script src="../assets/data/bank-akhir.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
