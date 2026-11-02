@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo DOM Manipulation</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #222222;
+            --primary: #4A90E2;
+            --hijau: #2ecc71;
+        }
+
+        body.dark-mode {
+            --bg: #16181d;
+            --card: #262a33;
+            --text: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header,
+        main,
+        footer {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        main {
+            display: grid;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            transition: background-color 0.3s ease;
+        }
+
+        .card h2 {
+            margin: 0 0 4px;
+            font-size: 1.1rem;
+        }
+
+        .catatan {
+            margin: 0 0 14px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #999;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: #fff;
+            color: #222;
+        }
+
+        .kotak {
+            padding: 20px;
+            background: var(--primary);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .kotak.aktif {
+            background: var(--hijau);
+        }
+
+        .kotak.besar {
+            font-size: 1.6rem;
+            padding: 40px 20px;
+        }
+
+        #angka {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 0 14px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li button {
+            margin-left: 8px;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            background: #e74c3c;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="judul">Demo DOM Manipulation</h1>
+        <button id="btnTema">🌙 Mode Gelap</button>
+    </header>
+
+    <main>
+
+        <!-- DEMO 1: MENGUBAH TEKS -->
+        <section class="card">
+            <h2>1. Mengubah Teks</h2>
+            <p class="catatan">querySelector • .value • textContent</p>
+            <input id="inputNama" type="text" placeholder="Ketik namamu...">
+            <button id="btnSapa">Sapa Aku</button>
+            <p id="pesan">Halo, siapa namamu?</p>
+        </section>
+
+        <!-- DEMO 2: MENGUBAH STYLE / CLASS -->
+        <section class="card">
+            <h2>2. Mengubah Tampilan (Class)</h2>
+            <p class="catatan">classList.toggle</p>
+            <div id="kotakWarna" class="kotak">Aku sebuah kotak</div>
+            <button id="btnWarna">Ganti Warna</button>
+            <button id="btnBesar">Besar / Kecil</button>
+        </section>
+
+        <!-- DEMO 3: COUNTER -->
+        <section class="card">
+            <h2>3. Penghitung (Counter)</h2>
+            <p class="catatan">addEventListener • variabel • textContent</p>
+            <button id="btnKurang">−</button>
+            <span id="angka">0</span>
+            <button id="btnTambah1">+</button>
+            <button id="btnReset">Reset</button>
+        </section>
+
+        <!-- DEMO 4: MEMBUAT & MENGHAPUS ELEMEN -->
+        <section class="card">
+            <h2>4. Daftar Tugas</h2>
+            <p class="catatan">createElement • append • remove</p>
+            <input id="inputTugas" type="text" placeholder="Tulis tugas...">
+            <button id="btnTambahTugas">Tambah</button>
+            <ul id="daftarTugas"></ul>
+            <p>Jumlah tugas: <b id="jumlahTugas">0</b></p>
+        </section>
+
+    </main>
+
+    <footer>
+        Tips: buka DevTools (F12) → tab <b>Elements</b> untuk melihat HTML berubah secara langsung.
+    </footer>
+
+    <script>
+        // =====================================================
+        // 0. MODE GELAP  →  classList.toggle pada <body>
+        // =====================================================
+        const btnTema = document.querySelector("#btnTema");
+
+        btnTema.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+
+            if (document.body.classList.contains("dark-mode")) {
+                btnTema.textContent = "☀️ Mode Terang";
+            } else {
+                btnTema.textContent = "🌙 Mode Gelap";
+            }
+        });
+
+        // =====================================================
+        // 1. MENGUBAH TEKS  →  textContent
+        // =====================================================
+        const inputNama = document.querySelector("#inputNama");
+        const btnSapa = document.querySelector("#btnSapa");
+        const pesan = document.querySelector("#pesan");
+
+        btnSapa.addEventListener("click", () => {
+            const nama = inputNama.value;   // .value = isi dari input
+
+            if (nama === "") {
+                pesan.textContent = "Nama belum diisi!";
+            } else {
+                pesan.textContent = `Halo, ${nama}! `;
+            }
+        });
+
+        // =====================================================
+        // 2. MENGUBAH TAMPILAN  →  classList.toggle
+        // =====================================================
+        const kotakWarna = document.querySelector("#kotakWarna");
+        const btnWarna = document.querySelector("#btnWarna");
+        const btnBesar = document.querySelector("#btnBesar");
+
+        btnWarna.addEventListener("click", () => {
+            kotakWarna.classList.toggle("aktif");
+        });
+
+        btnBesar.addEventListener("click", () => {
+            kotakWarna.classList.toggle("besar");
+        });
+
+        // =====================================================
+        // 3. COUNTER  →  variabel + textContent
+        // =====================================================
+        const angka = document.querySelector("#angka");
+        const btnKurang = document.querySelector("#btnKurang");
+        const btnTambah1 = document.querySelector("#btnTambah1");
+        const btnReset = document.querySelector("#btnReset");
+        let hitung = 0;
+
+        btnTambah1.addEventListener("click", () => {
+            hitung++;
+            angka.textContent = hitung;
+        });
+
+        btnKurang.addEventListener("click", () => {
+            hitung--;
+            angka.textContent = hitung;
+        });
+
+        btnReset.addEventListener("click", () => {
+            hitung = 0;
+            angka.textContent = hitung;
+        });
+
+        // =====================================================
+        // 4. DAFTAR TUGAS  →  createElement, append, remove
+        // =====================================================
+        const inputTugas = document.querySelector("#inputTugas");
+        const btnTambahTugas = document.querySelector("#btnTambahTugas");
+        const daftarTugas = document.querySelector("#daftarTugas");
+        const jumlahTugas = document.querySelector("#jumlahTugas");
+
+        function perbaruiJumlah() {
+            jumlahTugas.textContent = daftarTugas.querySelectorAll("li").length;
+        }
+
+        btnTambahTugas.addEventListener("click", () => {
+            const teks = inputTugas.value;
+
+            if (teks === "") {
+                return;   // jika kosong, berhenti di sini
+            }
+
+            // 1. BUAT elemen
+            const li = document.createElement("li");
+            li.textContent = teks;
+
+            const btnHapus = document.createElement("button");
+            btnHapus.textContent = "Hapus";
+
+            // tombol Hapus: hapus <li> dari halaman
+            btnHapus.addEventListener("click", () => {
+                li.remove();
+                perbaruiJumlah();
+            });
+
+            // 2. MASUKKAN ke halaman
+            li.append(btnHapus);
+            daftarTugas.append(li);
+
+            inputTugas.value = "";   // kosongkan input
+            perbaruiJumlah();
+        });
+    </script>
+</body>
+
+</html>

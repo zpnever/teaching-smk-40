@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Manipulation</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .kotak {
+            width: 220px;
+            margin: 15px 0;
+            padding: 20px;
+            background-color: #4A90E2;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .aktif {
+            background-color: #2ecc71;
+        }
+
+        .besar {
+            font-size: 28px;
+        }
+
+        .sembunyi {
+            display: none;
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="judul">Belajar DOM</h1>
+    <p class="deskripsi">Ini paragraf pertama.</p>
+    <p class="deskripsi">Ini paragraf kedua.</p>
+
+    <ul id="daftar">
+        <li>Satu</li>
+        <li>Dua</li>
+        <li>Tiga</li>
+    </ul>
+
+    <div id="kotak" class="kotak">Kotak</div>
+
+    <a id="tautan" href="https://www.google.com">Ke Google</a>
+    <br><br>
+    <input id="nama" type="text" placeholder="Ketik nama...">
+    <br><br>
+    <button id="tombol1">Tombol 1</button>
+    <button id="tombol2">Tombol 2</button>
+    <button id="tombol3">Tombol 3</button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
