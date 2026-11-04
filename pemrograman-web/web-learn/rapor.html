@@ -80,6 +80,8 @@
         <a href="materi/17-percabangan.html">#17 Percabangan</a>
         <a href="materi/18-perulangan.html">#18 Perulangan</a>
         <a href="materi/19-function.html">#19 Function</a>
+        <a href="materi/20-array-object.html">#20 Array &amp; Object</a>
+        <a href="materi/21-dom.html">#21 DOM</a>
         <a href="materi/tantangan-akhir.html">Tantangan Akhir</a>
         <a href="rapor.html" aria-current="page">Rapor</a>
       </nav>
@@ -152,6 +154,8 @@
   <script src="assets/data/bank-17.js"></script>
   <script src="assets/data/bank-18.js"></script>
   <script src="assets/data/bank-19.js"></script>
+  <script src="assets/data/bank-20.js"></script>
+  <script src="assets/data/bank-21.js"></script>
   <script src="assets/data/bank-akhir.js"></script>
   <script>
     (function () {
@@ -162,6 +166,8 @@
         { id: '17', nama: '#17 Percabangan', url: 'materi/17-percabangan.html' },
         { id: '18', nama: '#18 Perulangan', url: 'materi/18-perulangan.html' },
         { id: '19', nama: '#19 Function', url: 'materi/19-function.html' },
+        { id: '20', nama: '#20 Array & Object', url: 'materi/20-array-object.html' },
+        { id: '21', nama: '#21 DOM', url: 'materi/21-dom.html' },
         { id: 'akhir', nama: 'Tantangan Akhir', url: 'materi/tantangan-akhir.html' }
       ];
       var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -190,7 +196,7 @@
         var pesan, mood;
         if (!adaNilai) { pesan = 'Belum ada nilai. Mulai dari pertemuan 15, ya!'; mood = 'mikir'; }
         else if (adaNilai < DAFTAR.length) { pesan = adaNilai + ' dari ' + DAFTAR.length + ' pos sudah dinilai. Selesaikan sisanya untuk menaikkan rata-rata.'; mood = 'senang'; }
-        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu siap lanjut ke DOM.'; mood = 'bangga'; }
+        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu sudah menguasai dasar JavaScript sampai DOM.'; mood = 'bangga'; }
         else { pesan = 'Semua pos sudah dikerjakan. Ulangi kuis atau tantangan yang belum maksimal untuk menaikkan nilai.'; mood = 'senang'; }
         document.querySelector('[data-out="pesan"]').textContent = pesan;
         document.querySelector('[data-mascot-rapor]').innerHTML = Illus.maskot(mood);

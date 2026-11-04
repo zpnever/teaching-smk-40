@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#21 DOM — Coret.js</title>
+  <meta name="description" content="Pertemuan 21: DOM manipulation — memilih elemen, textContent & innerHTML, style & classList, atribut, membuat & menghapus elemen, lalu event listener yang sering dipakai (click, input, change, submit, keydown, mouseenter, DOMContentLoaded), form, event delegation, timer, dan localStorage. Lengkap dengan editor + Preview langsung.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    /* Halaman tiruan (meniru style.css slide 3) di dalam widget */
+    .mock-hal { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #1a1a1a; background: #fff; border: 2px solid var(--ink); border-radius: var(--radius-md); padding: 14px 16px; }
+    .mock-hal h1 { font-size: 1.5rem; margin: 0 0 .5rem; }
+    .mock-hal p { margin: .35rem 0; }
+    .mock-hal ul { margin: .4rem 0 .4rem 1.4rem; }
+    .mock-hal .kotak { width: 180px; margin: 10px 0; padding: 14px; background: #4A90E2; color: #fff; border-radius: 8px; }
+    .mock-hal input { padding: 3px 6px; border: 1px solid #999; font: inherit; }
+    .mock-hal button { padding: 3px 8px; font: inherit; }
+    .mock-hal a { color: #0645ad; }
+    .mock-hal * { cursor: pointer; transition: outline-color .2s, box-shadow .2s; }
+    .mock-sorot { outline: 3px dashed #e8590c !important; outline-offset: 3px; box-shadow: 0 0 0 6px rgba(232, 89, 12, .15); }
+
+    .pd-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; margin: .4rem 0 .9rem; }
+    .pd-pohon { font-family: var(--font-mono); font-size: .8rem; border: 2px solid var(--ink); border-radius: var(--radius-md); background: var(--bg-card-alt); padding: .6rem .4rem; overflow-x: auto; }
+    .pd-node { padding: 2px 6px; border-radius: 6px; white-space: nowrap; cursor: pointer; }
+    .pd-node.akar { color: var(--ink-lighter); cursor: default; }
+    .pd-node:not(.akar):hover { background: var(--accent-soft); }
+    .pd-node.on { background: var(--ink); color: var(--bg); }
+    @media (max-width: 760px) { .pd-grid { grid-template-columns: 1fr; } }
+
+    .lab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+    .lab-arena { display: grid; gap: .8rem; align-content: start; padding: 1rem; border: 2.5px dashed var(--ink); border-radius: var(--radius-md); background: var(--bg-card); }
+    .lab-kotak { padding: 1rem; text-align: center; border: 2.5px solid var(--ink); border-radius: var(--radius-sm); background: var(--bg-card-alt); font-weight: 700; user-select: none; transition: background-color .2s, color .2s; }
+    .lab-kotak.on { background: var(--ink); color: var(--bg); }
+    .lab-cek { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; }
+    .lab-form { display: flex; gap: 6px; }
+    .lab-form .input { flex: 1; min-width: 0; }
+    .lab-kanan { display: grid; gap: .6rem; align-content: start; }
+    .lab-log { height: 300px; overflow: auto; margin: 0; font-size: .78rem; }
+    @media (max-width: 760px) { .lab-grid { grid-template-columns: 1fr; } .lab-log { height: 220px; } }
+
+    .gl-luar, .gl-tengah, .gl-dalam { position: relative; border: 2.5px solid var(--ink); border-radius: var(--radius-md); padding: 2rem 1rem 1rem; cursor: pointer; transition: background-color .25s; }
+    .gl-luar { background: var(--bg-card); margin: .4rem 0 .8rem; }
+    .gl-tengah { background: var(--bg-card-alt); border-style: dashed; }
+    .gl-dalam { background: var(--bg-card); text-align: center; padding: 1rem; font-weight: 700; }
+    .gl-luar > span, .gl-tengah > span { position: absolute; top: 6px; left: 12px; font-family: var(--font-mono); font-size: .72rem; font-weight: 800; }
+    .gl-dalam > span { font-family: var(--font-mono); font-size: .85rem; }
+    .nyala { animation: nyala .7s ease-out; }
+    @keyframes nyala { 0% { background-color: #1a1a1a; color: #fff; } 100% { } }
+
+    .tabel td code { white-space: nowrap; }
+    .event-tabel td:first-child { white-space: nowrap; }
+    .banding2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'DomRunner': 'dom-runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Playground': 'playground.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+<body data-materi="21">
+  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
+        <a href="16-operator.html" data-nav="16">#16 Operator</a>
+        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
+        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
+        <a href="19-function.html" data-nav="19">#19 Function</a>
+        <a href="20-array-object.html" data-nav="20">#20 Array &amp; Object</a>
+        <a href="21-dom.html" data-nav="21">#21 DOM</a>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Pertemuan 21</span>
+      <h1>DOM: Mengubah <span class="highlight">Halaman Web</span> dari JavaScript</h1>
+      <p class="hero-subtitle">Selama ini hasil kodemu hanya muncul di Console, yang cuma dilihat developer. Sekarang JavaScript akan mengubah tulisan, warna, dan isi halaman yang dilihat pengguna — dan bereaksi saat pengguna mengklik, mengetik, atau mengirim form.</p>
+      <p class="tujuan-title">Setelah ini kamu bisa:</p>
+      <ul class="tujuan">
+        <li><span>Menjelaskan apa itu DOM dan memilih elemen dengan <code>querySelector</code></span></li>
+        <li><span>Mengubah isi (<code>textContent</code>, <code>innerHTML</code>), tampilan (<code>style</code>, <code>classList</code>), dan atribut</span></li>
+        <li><span>Membuat &amp; menghapus elemen dengan <code>createElement</code>, <code>append</code>, <code>remove</code></span></li>
+        <li><span>Memakai event yang sering dipakai: <code>click</code>, <code>input</code>, <code>change</code>, <code>submit</code>, <code>keydown</code>, <code>mouseenter</code>, dll.</span></li>
+        <li><span>Membaca input form, memakai <code>e.target</code>, <code>preventDefault</code>, dan event delegation</span></li>
+      </ul>
+      <a href="#s1" class="hero-cta">Mulai Belajar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Pohon DOM: document, html, body bercabang ke h1, p, dan button; sebuah tangan JavaScript menarik tali ke elemen h1">
+          <g class="wobble">
+            <rect x="140" y="14" width="80" height="30" rx="8" class="solid"/>
+            <path class="ink" d="M180 44 v16"/>
+            <rect x="150" y="60" width="60" height="28" rx="8" class="paper"/>
+            <path class="ink" d="M180 88 v16"/>
+            <rect x="148" y="104" width="64" height="28" rx="8" class="paper"/>
+            <path class="ink" d="M180 132 v14 M80 146 h200 M80 146 v14 M180 146 v14 M280 146 v14"/>
+            <rect x="46" y="160" width="68" height="30" rx="8" class="paper"/>
+            <rect x="146" y="160" width="68" height="30" rx="8" class="paper"/>
+            <rect x="246" y="160" width="68" height="30" rx="8" class="paper"/>
+            <path class="dash" d="M80 190 q-10 40 40 50"/>
+            <rect x="120" y="222" width="126" height="30" rx="15" class="soft"/>
+          </g>
+          <text x="180" y="34" text-anchor="middle" font-size="12" class="mono inv">document</text>
+          <text x="180" y="79" text-anchor="middle" font-size="12" class="mono">html</text>
+          <text x="180" y="123" text-anchor="middle" font-size="12" class="mono">body</text>
+          <text x="80" y="180" text-anchor="middle" font-size="12" class="mono">h1</text>
+          <text x="180" y="180" text-anchor="middle" font-size="12" class="mono">p</text>
+          <text x="280" y="180" text-anchor="middle" font-size="12" class="mono">button</text>
+          <text x="183" y="242" text-anchor="middle" font-size="11" class="mono">querySelector()</text>
+        </svg>
+        <div class="illus-caption"><span>HTML + CSS + JS bersatu</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <!-- ═══════════ 1. APA ITU DOM ═══════════ -->
+      <article class="step" id="s1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Pengenalan</small>Setup &amp; Apa Itu DOM?</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="callout" data-kind="mikir" data-label="Pemantik">Selama ini JavaScript kita hanya menampilkan hasil di <strong>Console</strong>. Bagaimana caranya <strong>mengubah tulisan, warna, dan isi halaman web</strong> yang dilihat pengguna langsung dari JavaScript? Jawabannya: <strong>DOM Manipulation</strong> — titik di mana HTML, CSS, dan JavaScript akhirnya bersatu.</div>
+            <div class="def-box"><strong>Definisi</strong><b>DOM (Document Object Model)</b> adalah representasi halaman HTML dalam bentuk <b>pohon objek</b> yang dibuat browser, sehingga JavaScript bisa <b>membaca dan mengubah</b> isi halaman.</div>
+
+            <div class="subsection">
+              <div class="section-label">Setup: HTML &amp; CSS disediakan</div>
+              <p class="content-text">Kali ini kita memakai <strong>satu halaman HTML dan satu file CSS yang sudah jadi</strong>. Kamu <strong>hanya menulis <code>script.js</code></strong>. Di editor di bawah, buka tab <code>index.html</code> dan <code>style.css</code> untuk melihat isinya (bertanda gembok = tidak perlu diubah), lalu lihat hasilnya di <strong>Preview</strong>.</p>
+              <div data-playground data-preset="dasar" data-aktif="html" data-tinggi="330"><textarea data-lang="js">
+console.log("DOM siap!");</textarea></div>
+              <div class="callout" data-kind="awas" data-label="Ingat!">Tag <code>&lt;script&gt;</code> diletakkan di <strong>bawah</strong> sebelum <code>&lt;/body&gt;</code> agar semua elemen sudah ada saat JavaScript berjalan. Dan setiap kali halaman di-<em>refresh</em>, halaman <strong>kembali seperti semula</strong> — DOM hanya berubah di memori browser, bukan di file HTML-mu.</div>
+            </div>
+
+            <div class="subsection">
+              <div class="section-label">Halaman = pohon</div>
+              <pre class="snippet">document
+ └── html
+      └── body
+           ├── h1#judul
+           ├── p.deskripsi
+           ├── p.deskripsi
+           ├── ul#daftar
+           │    ├── li
+           │    ├── li
+           │    └── li
+           ├── div#kotak
+           ├── a#tautan
+           ├── input#nama
+           └── button#tombol1, #tombol2, #tombol3</pre>
+              <div data-widget="pohon-dom"></div>
+              <div class="callout" data-kind="fakta" data-label="Kaitan dengan materi sebelumnya">Setiap elemen HTML di JavaScript adalah sebuah <strong>object</strong> (pertemuan 20). Elemen punya <strong>property</strong> (<code>textContent</code>, <code>style</code>, …) dan <strong>method</strong> (<code>remove()</code>, <code>append()</code>, …).</div>
+              <div class="callout" data-kind="tips">Di browser asli, buka <kbd>F12</kbd> → tab <strong>Elements</strong> untuk melihat pohon DOM halamanmu. Saat JavaScript mengubah sesuatu, tab Elements ikut berubah secara langsung.</div>
+            </div>
+            <div data-challenge="21:p1"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 2. MEMILIH ELEMEN ═══════════ -->
+      <article class="step" id="s2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Langkah Pertama</small>Memilih Elemen</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Sebelum mengubah elemen, kita harus <strong>memilihnya</strong> terlebih dahulu.</p>
+            <div data-playground data-preset="dasar"><textarea data-lang="js">
+// 1. Berdasarkan id
+const judul = document.getElementById("judul");
+console.log(judul);
+
+// 2. querySelector → SATU elemen pertama yang cocok (pakai selector CSS)
+const kotak = document.querySelector("#kotak");
+const paragrafPertama = document.querySelector(".deskripsi");
+console.log(kotak, paragrafPertama);
+
+// 3. querySelectorAll → SEMUA elemen yang cocok (hasilnya seperti array)
+const semuaParagraf = document.querySelectorAll(".deskripsi");
+console.log(semuaParagraf.length);   // 2
+console.log(semuaParagraf[1]);       // paragraf kedua</textarea></div>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Method</th><th>Hasil</th></tr></thead>
+                <tbody>
+                  <tr><td><code>getElementById("judul")</code></td><td><strong>Satu</strong> elemen (tanpa <code>#</code>)</td></tr>
+                  <tr><td><code>querySelector("#judul")</code></td><td><strong>Satu</strong> elemen pertama yang cocok</td></tr>
+                  <tr><td><code>querySelectorAll(".deskripsi")</code></td><td><strong>Daftar</strong> semua elemen yang cocok (akses lewat index, ada <code>length</code>)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Selector sama dengan CSS</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Selector</th><th>Memilih</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>"#judul"</code></td><td>Elemen dengan <code>id="judul"</code></td></tr>
+                    <tr><td><code>".deskripsi"</code></td><td>Elemen dengan <code>class="deskripsi"</code></td></tr>
+                    <tr><td><code>"p"</code></td><td>Semua tag <code>&lt;p&gt;</code></td></tr>
+                    <tr><td><code>"#daftar li"</code></td><td>Semua <code>&lt;li&gt;</code> di dalam <code>#daftar</code></td></tr>
+                    <tr><td><code>"input[type='text']"</code></td><td>Tambahan: selector atribut, sama seperti di CSS</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div data-widget="uji-selector"></div>
+            <div class="callout" data-kind="tips"><strong>Rekomendasi:</strong> pakai <code>querySelector</code> dan <code>querySelectorAll</code> sebagai kebiasaan utama, karena selector-nya sama dengan CSS yang sudah kamu kuasai. Jika elemen <strong>tidak ditemukan</strong>, hasilnya adalah <code>null</code>.</div>
+            <div data-challenge="21:p2"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 3. TEXTCONTENT & INNERHTML ═══════════ -->
+      <article class="step" id="s3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Mengubah Isi</small>textContent &amp; innerHTML</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">textContent: mengubah teks biasa</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const judul = document.querySelector("#judul");
+judul.textContent = "Belajar DOM itu Seru!";
+
+const paragraf = document.querySelectorAll(".deskripsi");
+paragraf[1].textContent = "Paragraf kedua sudah diganti.";
+
+// textContent juga bisa DIBACA
+console.log(judul.textContent);</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">innerHTML: mengubah isi dengan tag HTML</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const kotak = document.querySelector("#kotak");
+kotak.innerHTML = "Halo <b>Dunia</b>";       // tag diproses → "Dunia" jadi tebal
+// kotak.textContent = "Halo <b>Dunia</b>";  // tag TIDAK diproses → tampil apa adanya
+
+const daftar = document.querySelector("#daftar");
+daftar.innerHTML = "<li>Apel</li><li>Jeruk</li><li>Mangga</li>";</textarea></div>
+              <p class="content-text">Coba hapus <code>//</code> di baris ketiga, lalu jalankan lagi. Bandingkan tampilan kotak di Preview.</p>
+            </div>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th></th><th><code>textContent</code></th><th><code>innerHTML</code></th></tr></thead>
+                <tbody>
+                  <tr><td>Isi yang dimasukkan</td><td><strong>Teks biasa</strong></td><td>Teks <strong>dan tag HTML</strong></td></tr>
+                  <tr><td>Tag HTML diproses?</td><td>❌ Tampil sebagai teks</td><td>✅ Menjadi elemen sungguhan</td></tr>
+                  <tr><td>Keamanan</td><td>✅ Aman</td><td>⚠️ Berisiko jika isinya dari input pengguna</td></tr>
+                  <tr><td>Dipakai untuk</td><td>Mengubah teks</td><td>Mengganti seluruh isi/struktur di dalam elemen</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="important-banner">
+              <h3>Aturan praktis</h3>
+              <p>Pakai <strong>textContent</strong> jika hanya mengubah teks. Pakai <strong>innerHTML</strong> hanya jika memang perlu menyisipkan tag HTML, dan <strong>jangan</strong> memasukkan input pengguna langsung ke <code>innerHTML</code> — orang iseng bisa menyisipkan kode berbahaya.</p>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Template literal sangat membantu</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const nama = "Budi";
+const umur = 16;
+document.querySelector("#kotak").innerHTML = `<b>${nama}</b>, umur ${umur} tahun`;</textarea></div>
+            </div>
+            <div data-tebak data-dom="dasar" data-banding="#kotak" data-judul="A5 — Apa yang tampil?" data-q="Tulis teks yang akan <strong>tampil di halaman</strong> pada <code>#kotak</code> (persis seperti terlihat)."><textarea>
+document.querySelector("#kotak").textContent = "Halo <b>Dunia</b>";</textarea></div>
+            <div data-tebak data-dom="dasar" data-banding="#kotak" data-judul="A6 — Bedakan dengan A5" data-q="Sekarang pakai <code>innerHTML</code>. Teks apa yang <strong>tampil</strong> di <code>#kotak</code>?"><textarea>
+document.querySelector("#kotak").innerHTML = "Halo <b>Dunia</b>";</textarea></div>
+            <div data-challenge="21:p3"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 4. STYLE & CLASSLIST ═══════════ -->
+      <article class="step" id="s4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Mengubah Tampilan</small>style &amp; classList</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">1) style: mengubah CSS langsung</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const kotak = document.querySelector("#kotak");
+
+kotak.style.backgroundColor = "tomato";
+kotak.style.color = "white";
+kotak.style.fontSize = "24px";
+kotak.style.borderRadius = "20px";</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Aturan penulisan style</th><th>Salah ❌</th><th>Benar ✅</th></tr></thead>
+                  <tbody>
+                    <tr><td>Nama property ditulis <strong>camelCase</strong> (tanpa <code>-</code>)</td><td><code>style.background-color</code></td><td><code>style.backgroundColor</code></td></tr>
+                    <tr><td>Nilai berupa <strong>string</strong></td><td><code>style.fontSize = 24</code></td><td><code>style.fontSize = "24px"</code></td></tr>
+                    <tr><td>Satuan wajib ditulis</td><td><code>"24"</code></td><td><code>"24px"</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div data-challenge="21:p4"></div>
+            <div class="subsection">
+              <div class="section-label">2) classList: mengelola class (lebih rapi)</div>
+              <p class="content-text">Class <code>aktif</code>, <code>besar</code>, dan <code>sembunyi</code> <strong>sudah dibuat</strong> di <code>style.css</code> (cek tab-nya).</p>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const kotak = document.querySelector("#kotak");
+
+kotak.classList.add("aktif");        // tambah class
+kotak.classList.add("besar");
+kotak.classList.remove("aktif");     // hapus class
+kotak.classList.toggle("sembunyi");  // ada → dihapus, tidak ada → ditambahkan
+console.log(kotak.classList.contains("besar"));   // true / false
+console.log(kotak.classList);</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Method</th><th>Fungsi</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>add("x")</code></td><td>Menambahkan class <code>x</code></td></tr>
+                    <tr><td><code>remove("x")</code></td><td>Menghapus class <code>x</code></td></tr>
+                    <tr><td><code>toggle("x")</code></td><td><strong>Bolak-balik</strong>: ditambah jika belum ada, dihapus jika sudah ada</td></tr>
+                    <tr><td><code>contains("x")</code></td><td>Mengecek apakah class <code>x</code> ada (<code>true</code>/<code>false</code>)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="callout" data-kind="awas">Tulis nama class <strong>tanpa titik</strong>: <code>add("aktif")</code>, <strong>bukan</strong> <code>add(".aktif")</code>.</div>
+            </div>
+            <div class="mini-grid">
+              <div class="mini-card mini-card--ink"><h4>classList (disarankan)</h4><p>Aturan tampilan tetap di <strong>CSS</strong>; JavaScript hanya menentukan <strong>kapan</strong> class dipakai.</p></div>
+              <div class="mini-card"><h4>style</h4><p>Cocok untuk nilai yang <strong>dihitung</strong> program, misalnya lebar dari angka: <code>bar.style.width = persen + "%"</code>.</p></div>
+            </div>
+            <div class="callout" data-kind="fakta" data-label="Kaitan dengan materi CSS">Teknik <strong>Dark Mode</strong> yang dulu kamu copy-paste sebenarnya hanyalah <code>document.body.classList.toggle("dark-mode")</code>. Sekarang kamu paham maksud baris itu!</div>
+            <div data-challenge="21:p5"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 5. ATRIBUT ═══════════ -->
+      <article class="step" id="s5">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <h2><small>Mengubah Atribut</small>getAttribute &amp; setAttribute</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Atribut adalah bagian di dalam tag HTML, misalnya <code>href</code>, <code>placeholder</code>, <code>src</code>, <code>id</code>.</p>
+            <div data-playground data-preset="dasar"><textarea data-lang="js">
+const tautan = document.querySelector("#tautan");
+
+console.log(tautan.getAttribute("href"));                  // https://www.google.com
+tautan.setAttribute("href", "https://www.youtube.com");    // ubah / tambah atribut
+tautan.textContent = "Ke YouTube";                         // ubah teks tautan sekalian
+
+const input = document.querySelector("#nama");
+input.setAttribute("placeholder", "Nama lengkap...");</textarea></div>
+            <p class="content-text">Klik tautannya di Preview: Console akan memberi tahu ke mana tautan itu menuju.</p>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Method</th><th>Fungsi</th></tr></thead>
+                <tbody>
+                  <tr><td><code>getAttribute("nama")</code></td><td><strong>Membaca</strong> nilai atribut</td></tr>
+                  <tr><td><code>setAttribute("nama", "nilai")</code></td><td><strong>Mengubah/menambah</strong> atribut</td></tr>
+                  <tr><td><code>removeAttribute("nama")</code></td><td><strong>Menghapus</strong> atribut</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Tambahan: property langsung &amp; dataset</div>
+              <p class="content-text">Atribut umum juga tersedia sebagai <strong>property</strong>, jadi bisa ditulis lebih singkat. Untuk atribut buatan sendiri, HTML menyediakan <code>data-*</code> yang dibaca lewat <code>dataset</code>.</p>
+              <div data-playground data-edit="html,js"><textarea data-lang="html">
+<button id="btnBeli" data-produk="Buku Tulis" data-harga="5000">Beli</button>
+<input id="kode" placeholder="Kode promo">
+<img id="foto" alt="foto" width="80">
+
+<script src="script.js"></script></textarea><textarea data-lang="js">
+const btn = document.querySelector("#btnBeli");
+
+// property langsung (lebih singkat dari get/setAttribute)
+document.querySelector("#kode").placeholder = "Masukkan kode...";
+document.querySelector("#foto").src = "https://placehold.co/80x80/png";
+
+// dataset: membaca atribut data-*
+console.log(btn.dataset.produk);            // Buku Tulis
+console.log(Number(btn.dataset.harga));     // 5000
+
+// boolean attribute
+btn.addEventListener("click", () => {
+  btn.disabled = true;                      // tombol tidak bisa diklik lagi
+  btn.textContent = `${btn.dataset.produk} dibeli!`;
+});</textarea></div>
+            </div>
+            <div data-challenge="21:p6"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 6. MEMBUAT & MENGHAPUS ═══════════ -->
+      <article class="step" id="s6">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <h2><small>Mengubah Struktur</small>Membuat &amp; Menghapus Elemen</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-image">
+            <div class="illus-frame">
+              <svg class="doodle" viewBox="0 0 360 170" role="img" aria-label="Tiga langkah: buat elemen li, isi teksnya, lalu masukkan ke dalam daftar ul">
+                <g class="wobble">
+                  <rect x="14" y="56" width="90" height="58" rx="10" class="paper"/>
+                  <rect x="134" y="56" width="90" height="58" rx="10" class="paper"/>
+                  <rect x="254" y="30" width="94" height="112" rx="10" class="paper"/>
+                  <rect x="266" y="44" width="70" height="18" rx="4" class="soft"/>
+                  <rect x="266" y="68" width="70" height="18" rx="4" class="soft"/>
+                  <rect x="266" y="92" width="70" height="18" rx="4" class="solid"/>
+                  <path class="ink" d="M108 85 h20 M120 78 l8 7 l-8 7 M228 85 h20 M240 78 l8 7 l-8 7"/>
+                </g>
+                <text x="59" y="82" text-anchor="middle" font-size="11" class="mono">1. create</text>
+                <text x="59" y="98" text-anchor="middle" font-size="11" class="mono">&lt;li&gt;</text>
+                <text x="179" y="82" text-anchor="middle" font-size="11" class="mono">2. isi</text>
+                <text x="179" y="98" text-anchor="middle" font-size="11" class="mono">"Empat"</text>
+                <text x="301" y="105" text-anchor="middle" font-size="10" class="mono inv">Empat</text>
+                <text x="301" y="160" text-anchor="middle" font-size="11" class="mono">3. append</text>
+              </svg>
+              <div class="illus-caption"><span>Buat → isi → masukkan</span></div>
+            </div>
+          </div>
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Membuat elemen baru: 3 langkah</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const daftar = document.querySelector("#daftar");
+
+// 1. BUAT elemen
+const itemBaru = document.createElement("li");
+
+// 2. ISI elemen
+itemBaru.textContent = "Empat";
+
+// 3. MASUKKAN ke halaman
+daftar.append(itemBaru);       // tambah di AKHIR daftar
+
+const itemAwal = document.createElement("li");
+itemAwal.textContent = "Nol";
+daftar.prepend(itemAwal);      // tambah di AWAL daftar</textarea></div>
+              <div class="callout" data-kind="awas">Elemen yang baru dibuat <strong>belum tampil</strong> di halaman sampai dimasukkan dengan <code>append</code> atau <code>prepend</code>.</div>
+            </div>
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Method</th><th>Fungsi</th></tr></thead>
+                <tbody>
+                  <tr><td><code>createElement("tag")</code></td><td>Membuat elemen baru (belum tampil)</td></tr>
+                  <tr><td><code>induk.append(elemen)</code></td><td>Memasukkan elemen di <strong>akhir</strong> induk</td></tr>
+                  <tr><td><code>induk.prepend(elemen)</code></td><td>Memasukkan elemen di <strong>awal</strong> induk</td></tr>
+                  <tr><td><code>elemen.remove()</code></td><td><strong>Menghapus</strong> elemen dari halaman</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Menghapus elemen</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const semuaItem = document.querySelectorAll("#daftar li");
+semuaItem[1].remove();         // hapus item kedua ("Dua")</textarea></div>
+              <div class="callout" data-kind="fakta" data-label="Kaitan dengan array method"><code>append</code>/<code>prepend</code> mirip <code>push</code>/<code>unshift</code> pada array, sedangkan <code>remove()</code> mirip menghapus elemen. Bedanya, di sini yang berubah adalah <strong>tampilan halaman</strong>.</div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Tambahan: menyisipkan di posisi lain</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const judul = document.querySelector("#judul");
+const kotak = document.querySelector("#kotak");
+
+// before / after: sebelum atau sesudah elemen (sebagai saudara)
+const info = document.createElement("p");
+info.textContent = "↓ Ini disisipkan sebelum kotak";
+kotak.before(info);
+
+// insertAdjacentHTML: sisipkan potongan HTML tanpa menimpa isi lama
+judul.insertAdjacentHTML("afterend", "<small>(subjudul baru)</small>");
+
+// replaceChildren: kosongkan lalu isi ulang
+const daftar = document.querySelector("#daftar");
+const satu = document.createElement("li");
+satu.textContent = "Hanya aku sekarang";
+daftar.replaceChildren(satu);</textarea></div>
+            </div>
+            <div data-challenge="21:p7"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 7. KLIK PERTAMA ═══════════ -->
+      <article class="step" id="s7">
+        <div class="step-header">
+          <div class="step-number">7</div>
+          <h2><small>Interaksi</small>Memicu Perubahan dengan Klik</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Semua perubahan tadi terjadi <strong>otomatis saat halaman dibuka</strong>. Agar perubahan terjadi <strong>saat pengguna melakukan sesuatu</strong> (misalnya klik tombol), kita pakai <strong>event listener</strong>.</p>
+            <pre class="snippet" data-hl>const tombol = document.querySelector("#tombol1");
+
+tombol.addEventListener("click", () => {
+  // kode di sini dijalankan SETIAP KALI tombol diklik
+});</pre>
+            <p class="content-text">Bagian <code>() =&gt; { ... }</code> adalah <strong>arrow function</strong> yang sudah kamu pelajari. Function ini <strong>tidak dipanggil langsung</strong>, tetapi <strong>dijalankan browser saat tombol diklik</strong> — inilah <em>callback</em> dari pertemuan 19.</p>
+            <div class="subsection">
+              <div class="section-label">Contoh: penghitung klik</div>
+              <div data-playground data-preset="dasar" data-tinggi="300"><textarea data-lang="js">
+const tombol = document.querySelector("#tombol1");
+const kotak = document.querySelector("#kotak");
+let hitung = 0;
+
+tombol.addEventListener("click", () => {
+  hitung++;
+  tombol.textContent = `Diklik ${hitung} kali`;
+  kotak.classList.toggle("aktif");
+});</textarea></div>
+              <p class="content-text">Klik <strong>Tombol 1</strong> di Preview berkali-kali. Variabel <code>hitung</code> dibuat <strong>di luar</strong> function agar nilainya <strong>tetap tersimpan</strong> di antara klik (ingat materi scope).</p>
+            </div>
+            <div data-challenge="21:p8"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 8. ANATOMI EVENT ═══════════ -->
+      <article class="step" id="s8">
+        <div class="step-header">
+          <div class="step-number">8</div>
+          <h2><small>Event</small>Anatomi Event &amp; Event Object</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="def-box"><strong>Event</strong>Sesuatu yang <b>terjadi</b> di halaman: tombol diklik, tombol keyboard ditekan, isi input berubah, form dikirim, halaman selesai dimuat. JavaScript bisa "mendengarkan" event dan menjalankan function saat event itu terjadi.</div>
+            <pre class="snippet" data-hl>elemen.addEventListener("jenisEvent", callback);
+//       ↑ siapa yang didengar   ↑ apa      ↑ function yang dijalankan</pre>
+            <div class="subsection">
+              <div class="section-label">Callback dikirim, bukan dipanggil</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+function sapa() {
+  console.log("Halo! Tombol 1 diklik.");
+}
+
+const tombol = document.querySelector("#tombol1");
+
+tombol.addEventListener("click", sapa);      // ✅ benar: kirim function-nya
+// tombol.addEventListener("click", sapa());  // ❌ salah: sapa langsung jalan SEKARANG</textarea></div>
+              <p class="content-text">Coba hapus <code>//</code> di baris terakhir: "Halo!" langsung muncul tanpa diklik, dan kliknya tidak bekerja dengan benar. Ini kesalahan yang sangat sering terjadi!</p>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Event object: informasi tentang kejadiannya</div>
+              <p class="content-text">Browser mengirim sebuah object ke callback — biasanya dinamai <code>e</code> atau <code>event</code>. Isinya informasi tentang event tersebut.</p>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const kotak = document.querySelector("#kotak");
+
+kotak.addEventListener("click", (e) => {
+  console.log(e);                 // seluruh event object
+  console.log(e.type);            // "click"
+  console.log(e.target);          // elemen yang diklik
+  console.log(e.clientX, e.clientY);  // posisi mouse
+});</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Property / method</th><th>Isinya</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>e.type</code></td><td>Jenis event: <code>"click"</code>, <code>"input"</code>, …</td></tr>
+                    <tr><td><code>e.target</code></td><td>Elemen yang <strong>memicu</strong> event (yang benar-benar diklik/diketik)</td></tr>
+                    <tr><td><code>e.currentTarget</code></td><td>Elemen yang <strong>dipasangi</strong> listener</td></tr>
+                    <tr><td><code>e.key</code></td><td>Tombol keyboard yang ditekan (khusus event keyboard)</td></tr>
+                    <tr><td><code>e.preventDefault()</code></td><td>Mencegah aksi bawaan browser (misalnya form reload, tautan pindah halaman)</td></tr>
+                    <tr><td><code>e.stopPropagation()</code></td><td>Menghentikan event agar tidak "naik" ke elemen induk</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div data-widget="lab-event"></div>
+            <div class="subsection">
+              <div class="section-label">Melepas listener &amp; onclick</div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const tombol = document.querySelector("#tombol1");
+const kotak = document.querySelector("#kotak");
+
+function sekaliSaja() {
+  kotak.textContent = "Tombol hanya bisa dipakai sekali!";
+  tombol.removeEventListener("click", sekaliSaja);   // harus function yang SAMA
+}
+tombol.addEventListener("click", sekaliSaja);
+
+// Cara lama: onclick hanya bisa menyimpan SATU function
+const tombol2 = document.querySelector("#tombol2");
+tombol2.onclick = () => console.log("pertama");
+tombol2.onclick = () => console.log("kedua");      // menimpa yang pertama!
+
+// addEventListener bisa banyak
+const tombol3 = document.querySelector("#tombol3");
+tombol3.addEventListener("click", () => console.log("listener A"));
+tombol3.addEventListener("click", () => console.log("listener B"));</textarea></div>
+              <div class="callout" data-kind="tips">Biasakan memakai <code>addEventListener</code>. <code>removeEventListener</code> hanya bisa melepas function yang <strong>punya nama</strong> (arrow function tanpa nama tidak bisa dilepas).</div>
+            </div>
+            <div data-challenge="21:p9"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 9. EVENT YANG SERING DIPAKAI ═══════════ -->
+      <article class="step" id="s9">
+        <div class="step-header">
+          <div class="step-number">9</div>
+          <h2><small>Event</small>Event yang Sering Dipakai</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="table-wrap">
+              <table class="tabel event-tabel">
+                <thead><tr><th>Event</th><th>Terjadi saat…</th><th>Contoh pemakaian</th></tr></thead>
+                <tbody>
+                  <tr><td><code>click</code></td><td>Elemen diklik (atau di-tap di HP)</td><td>Tombol, kartu, menu</td></tr>
+                  <tr><td><code>dblclick</code></td><td>Diklik dua kali cepat</td><td>Edit teks, "like" foto</td></tr>
+                  <tr><td><code>mouseenter</code> / <code>mouseleave</code></td><td>Kursor masuk / keluar elemen</td><td>Tooltip, efek hover, pratinjau</td></tr>
+                  <tr><td><code>keydown</code> / <code>keyup</code></td><td>Tombol keyboard ditekan / dilepas</td><td>Enter untuk kirim, Escape untuk tutup, shortcut</td></tr>
+                  <tr><td><code>input</code></td><td>Isi input berubah, <strong>setiap ketikan</strong></td><td>Pencarian langsung, hitung karakter</td></tr>
+                  <tr><td><code>change</code></td><td>Nilai selesai diubah (select, checkbox, input setelah lepas fokus)</td><td>Pilih kelas, centang setuju</td></tr>
+                  <tr><td><code>focus</code> / <code>blur</code></td><td>Input mendapat / kehilangan fokus</td><td>Sorot kolom aktif, validasi saat keluar</td></tr>
+                  <tr><td><code>submit</code></td><td>Form dikirim (klik tombol submit / Enter)</td><td>Login, pendaftaran — wajib <code>preventDefault()</code></td></tr>
+                  <tr><td><code>DOMContentLoaded</code></td><td>HTML selesai dibaca browser</td><td>Menjalankan kode yang ada di <code>&lt;head&gt;</code></td></tr>
+                  <tr><td><code>scroll</code> / <code>resize</code></td><td>Halaman digulir / ukuran jendela berubah</td><td>Tombol "ke atas", navbar lengket</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="tabs">
+              <div class="tabs-nav" role="tablist">
+                <button class="tab-btn" aria-selected="true" aria-controls="ev-mouse">Mouse</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="ev-keyboard">Keyboard</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="ev-form">Input &amp; Form</button>
+                <button class="tab-btn" aria-selected="false" aria-controls="ev-halaman">Halaman</button>
+              </div>
+              <div class="tab-panel" id="ev-mouse">
+                <p class="content-text">Arahkan mouse ke kotak, klik ganda judul, dan klik kanan kotak di Preview.</p>
+                <div data-playground data-preset="dasar"><textarea data-lang="js">
+const kotak = document.querySelector("#kotak");
+const judul = document.querySelector("#judul");
+
+kotak.addEventListener("mouseenter", () => {
+  kotak.classList.add("aktif");
+  kotak.textContent = "Mouse di dalam!";
+});
+
+kotak.addEventListener("mouseleave", () => {
+  kotak.classList.remove("aktif");
+  kotak.textContent = "Kotak";
+});
+
+judul.addEventListener("dblclick", () => {
+  judul.classList.toggle("besar");
+  console.log("judul diklik dua kali");
+});
+
+kotak.addEventListener("contextmenu", (e) => {
+  e.preventDefault();               // cegah menu klik-kanan bawaan
+  console.log("klik kanan di kotak");
+});</textarea></div>
+                <div class="callout" data-kind="tips"><code>mouseenter/mouseleave</code> hanya terpicu sekali saat masuk/keluar elemen. Versi lama <code>mouseover/mouseout</code> ikut terpicu lagi setiap kursor melewati elemen anak di dalamnya — biasanya kurang diinginkan.</div>
+              </div>
+              <div class="tab-panel" id="ev-keyboard" hidden>
+                <p class="content-text">Ketik di input lalu tekan <kbd>Enter</kbd> atau <kbd>Escape</kbd>.</p>
+                <div data-playground data-preset="dasar"><textarea data-lang="js">
+const input = document.querySelector("#nama");
+const daftar = document.querySelector("#daftar");
+
+input.addEventListener("keydown", (e) => {
+  console.log("tombol:", e.key);
+
+  if (e.key === "Enter" && input.value.trim() !== "") {
+    const li = document.createElement("li");
+    li.textContent = input.value.trim();
+    daftar.append(li);
+    input.value = "";
+  }
+
+  if (e.key === "Escape") {
+    input.value = "";                // Escape = batal
+  }
+});</textarea></div>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead><tr><th>Tombol</th><th><code>e.key</code></th></tr></thead>
+                    <tbody>
+                      <tr><td>Enter / Escape / Spasi</td><td><code>"Enter"</code>, <code>"Escape"</code>, <code>" "</code></td></tr>
+                      <tr><td>Panah</td><td><code>"ArrowUp"</code>, <code>"ArrowDown"</code>, <code>"ArrowLeft"</code>, <code>"ArrowRight"</code></td></tr>
+                      <tr><td>Huruf / angka</td><td><code>"a"</code>, <code>"A"</code> (dengan Shift), <code>"7"</code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div data-challenge="21:p11"></div>
+              </div>
+              <div class="tab-panel" id="ev-form" hidden>
+                <p class="content-text">Ketik nama, pilih kelas, dan centang kotak. Perhatikan beda <code>input</code> (setiap ketikan) dan <code>change</code> (setelah selesai).</p>
+                <div data-playground data-edit="html,css,js" data-tinggi="260"><textarea data-lang="html">
+<label>Nama <input id="nama" placeholder="ketik nama..."></label>
+<p id="sapaan">Halo, ...!</p>
+<p><small id="hitung">0 / 20 karakter</small></p>
+
+<label>Kelas
+  <select id="kelas">
+    <option>X RPL</option>
+    <option>XI RPL</option>
+    <option>XII RPL</option>
+  </select>
+</label>
+
+<label><input type="checkbox" id="setuju"> Saya setuju</label>
+<button id="btnLanjut" disabled>Lanjut</button>
+
+<script src="script.js"></script></textarea><textarea data-lang="css">
+body { font-family: Arial, sans-serif; padding: 16px; }
+label { display: block; margin: 8px 0; }
+input:focus { outline: 3px solid #4A90E2; }
+.penuh { color: red; font-weight: bold; }</textarea><textarea data-lang="js">
+const nama = document.querySelector("#nama");
+const sapaan = document.querySelector("#sapaan");
+const hitung = document.querySelector("#hitung");
+
+// input: setiap ketikan
+nama.addEventListener("input", () => {
+  sapaan.textContent = `Halo, ${nama.value || "..."}!`;
+  hitung.textContent = `${nama.value.length} / 20 karakter`;
+  hitung.classList.toggle("penuh", nama.value.length > 20);
+});
+
+// focus & blur
+nama.addEventListener("focus", () => console.log("input nama aktif"));
+nama.addEventListener("blur", () => console.log("input nama ditinggalkan"));
+
+// change pada select
+document.querySelector("#kelas").addEventListener("change", (e) => {
+  console.log("kelas dipilih:", e.target.value);
+});
+
+// change pada checkbox → .checked (true/false)
+const setuju = document.querySelector("#setuju");
+setuju.addEventListener("change", () => {
+  document.querySelector("#btnLanjut").disabled = !setuju.checked;
+});</textarea></div>
+                <div data-challenge="21:p10"></div>
+              </div>
+              <div class="tab-panel" id="ev-halaman" hidden>
+                <div class="subsection">
+                  <div class="section-label">DOMContentLoaded &amp; defer</div>
+                  <p class="content-text">Kalau <code>&lt;script&gt;</code> terpaksa diletakkan di <code>&lt;head&gt;</code>, elemen di body belum ada saat kode berjalan. Ada dua solusi: bungkus kode dengan event <code>DOMContentLoaded</code>, atau beri atribut <code>defer</code>. Lihat tab <code>index.html</code>: script-nya ada di head!</p>
+                  <div data-playground data-edit="html,js"><textarea data-lang="html">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <script src="script.js"></script>
+  <!-- alternatif: <script src="script.js" defer></script> -->
+&lt;/head&gt;
+<body>
+  <h1 id="judul">Belajar DOM</h1>
+&lt;/body&gt;
+</html></textarea><textarea data-lang="js">
+console.log(document.querySelector("#judul"));   // null — body belum dibaca!
+
+document.addEventListener("DOMContentLoaded", () => {
+  // dijalankan setelah SELURUH HTML selesai dibaca
+  const judul = document.querySelector("#judul");
+  judul.textContent = "Sekarang judulnya ketemu!";
+  console.log(judul);
+});</textarea></div>
+                </div>
+                <div class="subsection">
+                  <div class="section-label">scroll: tombol kembali ke atas</div>
+                  <div data-playground data-edit="html,css,js" data-tinggi="260"><textarea data-lang="html">
+<h1>Gulir ke bawah ↓</h1>
+<p id="posisi">scrollY: 0</p>
+<div style="height: 1500px; background: repeating-linear-gradient(#fff 0 40px, #eef 40px 80px)"></div>
+<button id="keAtas">↑ Ke atas</button>
+
+<script src="script.js"></script></textarea><textarea data-lang="css">
+body { font-family: Arial, sans-serif; padding: 16px; }
+#posisi { position: fixed; top: 8px; right: 12px; background: #1a1a1a; color: #fff; padding: 4px 10px; border-radius: 6px; }
+#keAtas { position: fixed; bottom: 12px; right: 12px; padding: 8px 12px; display: none; }
+#keAtas.tampil { display: block; }</textarea><textarea data-lang="js">
+const posisi = document.querySelector("#posisi");
+const keAtas = document.querySelector("#keAtas");
+
+window.addEventListener("scroll", () => {
+  posisi.textContent = `scrollY: ${Math.round(window.scrollY)}`;
+  keAtas.classList.toggle("tampil", window.scrollY > 300);
+});
+
+keAtas.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});</textarea></div>
+                  <div class="callout" data-kind="tips"><code>classList.toggle("tampil", kondisi)</code> — argument kedua (true/false) memaksa class ditambah atau dihapus sesuai kondisi. Praktis!</div>
+                </div>
+              </div>
+            </div>
+            <div data-challenge="21:p12"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 10. FORM & INPUT ═══════════ -->
+      <article class="step" id="s10">
+        <div class="step-header">
+          <div class="step-number">10</div>
+          <h2><small>Event</small>Membaca Input &amp; Mengolah Form</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>Elemen</th><th>Membaca nilainya</th><th>Catatan</th></tr></thead>
+                <tbody>
+                  <tr><td><code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code></td><td><code>el.value</code></td><td>Selalu <strong>string</strong> — termasuk <code>type="number"</code></td></tr>
+                  <tr><td><code>&lt;select&gt;</code></td><td><code>el.value</code></td><td>Nilai option yang dipilih</td></tr>
+                  <tr><td>checkbox / radio</td><td><code>el.checked</code></td><td><code>true</code> / <code>false</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout" data-kind="awas" data-label="Jebakan klasik"><code>"5" + "7"</code> = <code>"57"</code>, bukan 12! Ubah dulu dengan <code>Number(input.value)</code> sebelum menghitung. Dan pakai <code>.trim()</code> untuk membuang spasi di awal/akhir sebelum mengecek apakah input kosong.</div>
+            <div data-challenge="21:p13"></div>
+            <div class="subsection">
+              <div class="section-label">submit &amp; preventDefault</div>
+              <p class="content-text">Aksi bawaan form adalah <strong>mengirim data lalu memuat ulang halaman</strong> — semua perubahan DOM hilang. Karena itu listener <code>submit</code> hampir selalu diawali <code>e.preventDefault()</code>. Coba beri <code>//</code> pada baris <code>e.preventDefault()</code> lalu kirim form: Console memperingatkan dan halaman dimuat ulang.</p>
+              <div data-playground data-preset="form" data-tinggi="320"><textarea data-lang="js">
+const form = document.querySelector("#formDaftar");
+const pesan = document.querySelector("#pesan");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();             // ⬅ cegah halaman reload
+
+  const nama = document.querySelector("#nama").value.trim();
+  const umur = Number(document.querySelector("#umur").value);
+  const kelas = document.querySelector("#kelas").value;
+
+  // validasi sederhana
+  if (nama === "") {
+    pesan.textContent = "Nama belum diisi!";
+    pesan.className = "error";
+    return;
+  }
+
+  pesan.textContent = `${nama} (${umur} th) dari ${kelas} berhasil daftar.`;
+  pesan.className = "sukses";
+  form.reset();                   // kosongkan semua isian form
+});</textarea></div>
+              <div class="callout" data-kind="tips">Memakai event <code>submit</code> pada <code>&lt;form&gt;</code> (bukan <code>click</code> pada tombol) lebih baik: form juga terkirim saat pengguna menekan <kbd>Enter</kbd> di dalam input.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 11. BANYAK ELEMEN ═══════════ -->
+      <article class="step" id="s11">
+        <div class="step-header">
+          <div class="step-number">11</div>
+          <h2><small>Event</small>Banyak Elemen, Delegation &amp; Penelusuran DOM</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Mengolah semua hasil querySelectorAll</div>
+              <p class="content-text"><code>querySelectorAll</code> menghasilkan <strong>NodeList</strong> yang bisa diulang dengan <code>forEach</code> atau <code>for...of</code> (pertemuan 20).</p>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const semuaItem = document.querySelectorAll("#daftar li");
+
+semuaItem.forEach((li, i) => {
+  li.textContent = `${i + 1}. ${li.textContent}`;
+});
+
+// pasang listener ke SEMUA tombol sekaligus
+for (const tombol of document.querySelectorAll("button")) {
+  tombol.addEventListener("click", () => {
+    tombol.classList.toggle("aktif");
+    console.log(`${tombol.textContent} diklik`);
+  });
+}</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Menampilkan array of object ke halaman</div>
+              <div data-playground data-edit="html,css,js" data-tinggi="280"><textarea data-lang="html">
+<h1>Daftar Nilai XI RPL</h1>
+<div id="kartu"></div>
+
+<script src="script.js"></script></textarea><textarea data-lang="css">
+body { font-family: Arial, sans-serif; padding: 16px; }
+#kartu { display: flex; flex-wrap: wrap; gap: 10px; }
+.siswa { border: 2px solid #1a1a1a; border-radius: 10px; padding: 10px 14px; min-width: 110px; }
+.siswa b { display: block; }
+.lulus { background: #dff5e6; }
+.remedial { background: #fde2e1; }</textarea><textarea data-lang="js">
+const daftarSiswa = [
+  { nama: "Budi", nilai: 85 },
+  { nama: "Ani", nilai: 90 },
+  { nama: "Citra", nilai: 70 },
+  { nama: "Doni", nilai: 76 }
+];
+
+const wadah = document.querySelector("#kartu");
+
+daftarSiswa.forEach((siswa) => {
+  const kartu = document.createElement("div");
+  kartu.className = "siswa " + (siswa.nilai >= 75 ? "lulus" : "remedial");
+  kartu.innerHTML = `<b>${siswa.nama}</b>Nilai: ${siswa.nilai}`;
+  wadah.append(kartu);
+});</textarea></div>
+              <div class="callout" data-kind="fakta">Begitulah cara aplikasi sungguhan menampilkan data: data dari server (array of object) diulang, lalu setiap item dijadikan elemen HTML.</div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Bubbling: event naik ke induk</div>
+              <div data-widget="gelembung"></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Event delegation: satu listener untuk banyak anak</div>
+              <p class="content-text">Daripada memasang listener ke setiap <code>&lt;li&gt;</code> (termasuk yang dibuat belakangan), pasang <strong>satu</strong> listener di induknya. Dari <code>e.target</code> kita tahu anak mana yang diklik; <code>closest("li")</code> mencari <code>li</code> terdekat ke atas.</p>
+              <div data-playground data-preset="todo" data-tinggi="280"><textarea data-lang="js">
+const input = document.querySelector("#inputTugas");
+const daftar = document.querySelector("#daftarTugas");
+const jumlah = document.querySelector("#jumlahTugas");
+
+function tambah() {
+  if (input.value.trim() === "") return;
+  daftar.insertAdjacentHTML("beforeend",
+    `<li><span></span><button class="hapus">Hapus</button></li>`);
+  daftar.lastElementChild.querySelector("span").textContent = input.value.trim();
+  input.value = "";
+  jumlah.textContent = daftar.children.length;
+}
+
+document.querySelector("#btnTambah").addEventListener("click", tambah);
+input.addEventListener("keydown", (e) => { if (e.key === "Enter") tambah(); });
+
+// SATU listener untuk semua item, termasuk yang baru dibuat
+daftar.addEventListener("click", (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+  if (e.target.matches(".hapus")) {
+    li.remove();
+    jumlah.textContent = daftar.children.length;
+  } else {
+    li.classList.toggle("selesai");
+  }
+});</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Penelusuran DOM (traversal)</div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Property / method</th><th>Mengambil</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>el.parentElement</code></td><td>Induk langsung</td></tr>
+                    <tr><td><code>el.children</code></td><td>Daftar anak (HTMLCollection)</td></tr>
+                    <tr><td><code>el.firstElementChild</code> / <code>lastElementChild</code></td><td>Anak pertama / terakhir</td></tr>
+                    <tr><td><code>el.nextElementSibling</code> / <code>previousElementSibling</code></td><td>Saudara sesudah / sebelum</td></tr>
+                    <tr><td><code>el.closest("selector")</code></td><td>Diri sendiri atau leluhur terdekat yang cocok</td></tr>
+                    <tr><td><code>el.matches("selector")</code></td><td><code>true</code> jika elemen cocok dengan selector</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div data-playground data-preset="dasar"><textarea data-lang="js">
+const dua = document.querySelectorAll("#daftar li")[1];
+
+console.log(dua.parentElement);            // ul#daftar
+console.log(dua.previousElementSibling);   // <li>Satu</li>
+console.log(dua.nextElementSibling);       // <li>Tiga</li>
+console.log(dua.parentElement.children);   // semua li
+console.log(dua.closest("body"));          // naik terus sampai body
+console.log(dua.matches("#daftar li"));    // true</textarea></div>
+            </div>
+            <div data-challenge="21:p14"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 12. TIMER & LOCALSTORAGE ═══════════ -->
+      <article class="step" id="s12">
+        <div class="step-header">
+          <div class="step-number">12</div>
+          <h2><small>Bonus</small>Timer &amp; Menyimpan Data di Browser</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">setInterval &amp; clearInterval: jam &amp; hitung mundur</div>
+              <p class="content-text"><code>setTimeout(fn, ms)</code> menjalankan function <strong>sekali</strong> setelah jeda. <code>setInterval(fn, ms)</code> menjalankannya <strong>berulang-ulang</strong> sampai dihentikan dengan <code>clearInterval(id)</code>.</p>
+              <div data-playground data-edit="html,css,js" data-tinggi="230"><textarea data-lang="html">
+<h1 id="jam">--:--:--</h1>
+<p>Hitung mundur: <b id="sisa">10</b> detik</p>
+<button id="mulai">Mulai</button>
+<button id="stop">Stop</button>
+
+<script src="script.js"></script></textarea><textarea data-lang="css">
+body { font-family: Arial, sans-serif; padding: 16px; }
+#jam { font-family: monospace; font-size: 40px; margin: 0 0 8px; }
+.habis { color: red; }</textarea><textarea data-lang="js">
+// Jam digital: perbarui setiap 1000 ms
+const jam = document.querySelector("#jam");
+function tampilkanJam() {
+  jam.textContent = new Date().toLocaleTimeString("id-ID");
+}
+tampilkanJam();
+setInterval(tampilkanJam, 1000);
+
+// Hitung mundur
+const sisa = document.querySelector("#sisa");
+let detik = 10;
+let idTimer = null;
+
+document.querySelector("#mulai").addEventListener("click", () => {
+  if (idTimer !== null) return;          // jangan dobel timer
+  idTimer = setInterval(() => {
+    detik--;
+    sisa.textContent = detik;
+    if (detik <= 0) {
+      clearInterval(idTimer);             // hentikan
+      idTimer = null;
+      sisa.textContent = "Waktu habis!";
+      sisa.classList.add("habis");
+    }
+  }, 1000);
+});
+
+document.querySelector("#stop").addEventListener("click", () => {
+  clearInterval(idTimer);
+  idTimer = null;
+});</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">localStorage: mengingat pilihan pengguna</div>
+              <p class="content-text">Ingat "refresh = kembali semula"? <code>localStorage</code> menyimpan data kecil (berupa string) di browser sehingga tetap ada setelah refresh. Nyalakan mode gelap, lalu tekan <strong>Refresh</strong> di Preview.</p>
+              <div data-playground data-preset="dasar" data-id="bonus-dark"><textarea data-lang="js">
+const tombol = document.querySelector("#tombol2");
+
+// 1. saat halaman dibuka: baca pilihan terakhir
+if (localStorage.getItem("tema") === "gelap") {
+  document.body.classList.add("dark-mode");
+}
+tombol.textContent = "Ganti tema";
+
+// 2. saat tombol diklik: ganti & simpan
+tombol.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  const gelap = document.body.classList.contains("dark-mode");
+  localStorage.setItem("tema", gelap ? "gelap" : "terang");
+  console.log("tersimpan:", localStorage.getItem("tema"));
+});</textarea></div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead><tr><th>Method</th><th>Fungsi</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>localStorage.setItem("kunci", "nilai")</code></td><td>Menyimpan</td></tr>
+                    <tr><td><code>localStorage.getItem("kunci")</code></td><td>Membaca (<code>null</code> jika belum ada)</td></tr>
+                    <tr><td><code>localStorage.removeItem("kunci")</code></td><td>Menghapus satu data</td></tr>
+                    <tr><td><code>JSON.stringify(obj)</code> / <code>JSON.parse(teks)</code></td><td>Mengubah array/object ↔ string agar bisa disimpan</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="callout" data-kind="fakta">Website Coret.js ini juga memakai <code>localStorage</code> untuk menyimpan progres dan nilaimu! Di editor ini <code>localStorage</code> disimulasikan per contoh, tapi cara pakainya sama persis dengan di browser asli.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 13. KESALAHAN UMUM ═══════════ -->
+      <article class="step" id="s13">
+        <div class="step-header">
+          <div class="step-number">13</div>
+          <h2><small>Debugging</small>Kesalahan Umum &amp; Latihan C</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="table-wrap">
+              <table class="tabel">
+                <thead><tr><th>No</th><th>Kesalahan</th><th>Akibat</th><th>Perbaikan</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Selector salah: <code>querySelector("judul")</code> (lupa <code>#</code> atau <code>.</code>)</td><td>Hasil <code>null</code>, lalu <code>TypeError: Cannot set properties of null</code></td><td><code>querySelector("#judul")</code></td></tr>
+                  <tr><td>2</td><td><code>&lt;script&gt;</code> diletakkan <strong>sebelum</strong> elemennya dibuat</td><td>Elemen tidak ditemukan (<code>null</code>)</td><td>Letakkan <code>&lt;script&gt;</code> di bawah <code>&lt;body&gt;</code> (atau <code>defer</code>)</td></tr>
+                  <tr><td>3</td><td>Memperlakukan <code>querySelectorAll</code> seperti satu elemen: <code>semua.textContent = "x"</code></td><td><strong>Tidak ada perubahan</strong> di halaman</td><td><code>semua[0].textContent = "x"</code> atau <code>forEach</code></td></tr>
+                  <tr><td>4</td><td><code>style.background-color = "red"</code></td><td><code>SyntaxError</code></td><td><code>style.backgroundColor = "red"</code></td></tr>
+                  <tr><td>5</td><td><code>style.fontSize = 24</code> (tanpa satuan, bukan string)</td><td>Tidak berpengaruh</td><td><code>style.fontSize = "24px"</code></td></tr>
+                  <tr><td>6</td><td><code>classList.add(".aktif")</code> (pakai titik)</td><td>Class bernama <code>.aktif</code> ditambahkan, tidak ada efek</td><td><code>classList.add("aktif")</code></td></tr>
+                  <tr><td>7</td><td>Elemen dibuat tapi lupa dimasukkan</td><td>Tidak tampil di halaman</td><td>Tambahkan <code>append()</code> atau <code>prepend()</code></td></tr>
+                  <tr><td>8</td><td><code>addEventListener("click", sapa())</code></td><td>Function langsung jalan, klik tidak bekerja</td><td><code>addEventListener("click", sapa)</code></td></tr>
+                  <tr><td>9</td><td>Lupa <code>e.preventDefault()</code> di <code>submit</code></td><td>Halaman reload, hasil hilang</td><td>Panggil <code>e.preventDefault()</code> di awal</td></tr>
+                  <tr><td>10</td><td>Menjumlah <code>input.value</code> langsung</td><td><code>"5" + "7"</code> = <code>"57"</code></td><td><code>Number(input.value)</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="content-text">Kesalahan nomor 2 bisa kamu lihat sendiri: di editor ini script dipindah ke <code>&lt;head&gt;</code>. Jalankan dan baca error-nya, lalu perbaiki dengan memindahkan baris <code>&lt;script&gt;</code> ke bawah body (atau tambahkan <code>defer</code>).</p>
+            <div data-playground data-edit="html,js" data-aktif="html"><textarea data-lang="html">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <script src="script.js"></script>
+&lt;/head&gt;
+<body>
+  <h1 id="judul">Belajar DOM</h1>
+&lt;/body&gt;
+</html></textarea><textarea data-lang="js">
+const judul = document.querySelector("#judul");
+judul.textContent = "Halo!";</textarea></div>
+            <div class="subsection">
+              <div class="section-label">Latihan C — Cari &amp; Perbaiki Kesalahan</div>
+              <p class="content-text">Jalankan tiap kode, tulis di komentar <strong>apa kesalahannya</strong>, lalu perbaiki sampai pemeriksaan lulus.</p>
+              <div data-challenge="21:c1"></div>
+              <div data-challenge="21:c2"></div>
+              <div data-challenge="21:c3"></div>
+              <div data-challenge="21:c4"></div>
+              <div data-challenge="21:c5"></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 14. RANGKUMAN ═══════════ -->
+      <article class="step" id="s14">
+        <div class="step-header">
+          <div class="step-number">14</div>
+          <h2><small>Ringkas</small>Rangkuman (Contekan)</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="banding2">
+              <div>
+                <div class="section-label">DOM</div>
+                <pre class="snippet" data-hl>// MEMILIH
+document.getElementById("judul");
+document.querySelector("#kotak");          // satu
+document.querySelectorAll(".deskripsi");   // banyak → [0], .length
+
+// TEKS
+el.textContent = "teks biasa";
+el.innerHTML = "teks &lt;b&gt;dengan tag&lt;/b&gt;";
+
+// TAMPILAN
+el.style.backgroundColor = "tomato";       // camelCase, string + satuan
+el.classList.add("aktif");
+el.classList.remove("aktif");
+el.classList.toggle("aktif");
+el.classList.contains("aktif");            // true/false
+
+// ATRIBUT
+el.getAttribute("href");
+el.setAttribute("href", "https://...");
+el.removeAttribute("href");
+
+// MEMBUAT & MENGHAPUS
+const baru = document.createElement("li");
+baru.textContent = "Isi";
+induk.append(baru);                        // akhir
+induk.prepend(baru);                       // awal
+el.remove();</pre>
+              </div>
+              <div>
+                <div class="section-label">Event</div>
+                <pre class="snippet" data-hl>// POLA DASAR
+tombol.addEventListener("click", (e) => {
+  // dijalankan setiap klik
+  console.log(e.target);
+});
+
+// YANG SERING DIPAKAI
+"click"  "dblclick"  "mouseenter"  "mouseleave"
+"keydown" (e.key)    "input"       "change"
+"focus"  "blur"      "submit"      "DOMContentLoaded"
+
+// FORM
+form.addEventListener("submit", (e) => {
+  e.preventDefault();                      // jangan reload
+  const n = Number(input.value.trim());
+});
+
+// BANYAK ELEMEN
+document.querySelectorAll("li").forEach((li) => { ... });
+
+// DELEGATION
+daftar.addEventListener("click", (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+});</pre>
+              </div>
+            </div>
+            <div class="important-banner">
+              <h3>Pola kerja DOM</h3>
+              <ol>
+                <li><strong>Pilih</strong> elemennya (<code>querySelector</code>) — cek tidak <code>null</code>.</li>
+                <li><strong>Dengarkan</strong> event-nya (<code>addEventListener</code>) bila perubahan harus menunggu aksi pengguna.</li>
+                <li><strong>Ubah</strong> isi / class / atribut / struktur di dalam callback.</li>
+              </ol>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 15. LATIHAN A & B ═══════════ -->
+      <article class="step" id="s15">
+        <div class="step-header">
+          <div class="step-number">15</div>
+          <h2><small>Porsi Utama</small>Latihan A &amp; B</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <div class="subsection">
+              <div class="section-label">Latihan A — Tebak output / hasil</div>
+              <p class="content-text">Semua soal memakai HTML pada bagian 1. Tulis <strong>prediksi</strong> dulu, baru cek. Jika hasilnya berbeda, cari tahu <strong>alasannya</strong>. (A5 dan A6 ada di bagian 3.)</p>
+              <div data-tebak data-dom="dasar" data-judul="A1"><textarea>
+console.log(document.querySelector("#judul").textContent);</textarea></div>
+              <div data-tebak data-dom="dasar" data-judul="A2"><textarea>
+console.log(document.querySelectorAll(".deskripsi").length);</textarea></div>
+              <div data-tebak data-dom="dasar" data-judul="A3"><textarea>
+console.log(document.querySelectorAll("#daftar li")[1].textContent);</textarea></div>
+              <div data-tebak data-dom="dasar" data-judul="A4"><textarea>
+console.log(document.querySelector("#tidakAda"));</textarea></div>
+              <div data-tebak data-dom="dasar" data-judul="A7"><textarea>
+const kotak = document.querySelector("#kotak");
+kotak.classList.add("aktif");
+kotak.classList.toggle("aktif");
+console.log(kotak.classList.contains("aktif"));</textarea></div>
+              <div data-tebak data-dom="dasar" data-judul="A8"><textarea>
+const daftar = document.querySelector("#daftar");
+const li = document.createElement("li");
+li.textContent = "Empat";
+console.log(daftar.querySelectorAll("li").length);
+daftar.append(li);
+console.log(daftar.querySelectorAll("li").length);</textarea></div>
+            </div>
+            <div class="subsection">
+              <div class="section-label">Latihan B — Koding bertahap</div>
+              <p class="content-text">HTML dan CSS <strong>tidak diubah</strong>; jawaban ditulis di <code>script.js</code>. Di sini setiap soal punya halaman sendiri, jadi perubahan antar soal tidak saling menumpuk. B9–B12 ada di <a href="#tes">Tes Pengetahuan</a> sebagai tantangan yang dinilai.</p>
+              <div data-challenge="21:b1"></div>
+              <div data-challenge="21:b2"></div>
+              <div data-challenge="21:b3"></div>
+              <div data-challenge="21:b4"></div>
+              <div data-challenge="21:b5"></div>
+              <div data-challenge="21:b6"></div>
+              <div data-challenge="21:b7"></div>
+              <div data-challenge="21:b8"></div>
+              <div class="callout" data-kind="tips">Mengerjakan di komputer sendiri? Bungkus tiap soal dengan kurung kurawal <code>{ ... }</code> agar nama variabel antar soal tidak bentrok, dan ambil screenshot halaman setiap selesai satu soal.</div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+
+      <!-- ═══════════ 16. TES PENGETAHUAN ═══════════ -->
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Tes Pengetahuan</h2>
+        </div>
+        <div class="step-body"><div class="step-inner">
+          <div class="step-content">
+            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Tantangan diperiksa otomatis dengan <strong>mensimulasikan</strong> klik, ketikan, tombol Enter, dan pengiriman form pada halamanmu. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+            <div data-kuis="21" data-judul="Kuis DOM &amp; Event"></div>
+            <div data-challenge="21:t1"></div>
+            <div data-challenge="21:t2"></div>
+            <div data-challenge="21:t3"></div>
+            <div data-challenge="21:t4"></div>
+            <div data-challenge="21:t5"></div>
+          </div>
+        </div></div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a class="prev" href="20-array-object.html"><small>Sebelumnya</small><b>← #20 Array &amp; Object</b></a>
+        <a class="next" href="tantangan-akhir.html"><small>Berikutnya</small><b>Tantangan Akhir →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/xml.min.js"></script>
+  <script src="../assets/vendor/codemirror/css.min.js"></script>
+  <script src="../assets/vendor/codemirror/htmlmixed.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/dom-runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-21.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/playground.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/widgets/w21.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script>
+    document.querySelectorAll('pre[data-hl]').forEach(function (pre) { window.Editor.highlight(pre.textContent, pre); });
+  </script>
+</body>
+</html>

@@ -93,6 +93,9 @@
 
   /** Kelompokkan tes berdasarkan data input supaya satu run bisa dipakai banyak tes. */
   function rencanaRun(soal) {
+    // Soal DOM: setiap tes yang memanggil sesuatu dijalankan di halaman segar,
+    // supaya klik/ketik di satu tes tidak memengaruhi tes lainnya.
+    if (soal.tesTerpisah || soal.mode === 'dom') return rencanaTerpisah(soal);
     var grup = {};
     var urutan = [];
     (soal.tes || []).forEach(function (t, i) {
@@ -104,10 +107,27 @@
     return urutan.map(function (input) {
       var idx = grup[input];
       var harness = idx.filter(function (i) { return soal.tes[i].panggil; }).map(function (i) {
-        return '__cek(' + i + ', function () { return (' + soal.tes[i].panggil + '); });';
+        return harnessTes(soal, i);
       }).join('\n');
       return { input: input, harness: harness, tes: idx };
     });
+  }
+
+  function harnessTes(soal, i) {
+    return '__cek(' + i + ', function () { return (' + soal.tes[i].panggil + '); });';
+  }
+
+  function rencanaTerpisah(soal) {
+    var biasa = { input: inputKeKode(soal.input), harness: '', tes: [] };
+    var hasil = [biasa];
+    (soal.tes || []).forEach(function (t, i) {
+      var input = inputKeKode(t.input !== undefined ? t.input : soal.input);
+      if (t.panggil) hasil.push({ input: input, harness: harnessTes(soal, i), tes: [i] });
+      else if (input === biasa.input) biasa.tes.push(i);
+      else hasil.push({ input: input, harness: '', tes: [i] });
+    });
+    if (!biasa.tes.length && hasil.length > 1) hasil.shift();
+    return hasil;
   }
 
   function nilaiTes(t, run, kode) {
@@ -132,31 +152,34 @@
       return 'Output baru ' + logs.length + ' baris, minimal ' + t.minBaris + ' baris.' + (logs.length === 0 ? ' Sudah pakai console.log()?' : '');
     }
     if (t.panggil) {
+      // Soal DOM: ekspresi pemeriksa berisi helper internal (__klik, __ketik, …) — jangan ditampilkan ke siswa
+      var label = t.__dom ? '' : t.panggil;
       var c = null;
       for (var j = 0; j < run.cek.length; j++) if (run.cek[j].i === t.__i) c = run.cek[j];
-      if (!c) return 'Ekspresi ' + t.panggil + ' tidak sempat dijalankan.';
+      if (!c) return t.__dom ? 'Pemeriksaan tidak sempat dijalankan (halaman error atau terlalu lama).' : 'Ekspresi ' + t.panggil + ' tidak sempat dijalankan.';
       if (!c.ok) {
         var e = c.error || {};
         var hint = (root.JSRunner && root.JSRunner.terjemahkan(e.name, e.message)) || '';
-        return 'Saat memanggil ' + t.panggil + ' terjadi ' + e.name + ': ' + e.message + (hint ? '\n' + hint : '');
+        return (t.__dom ? 'Saat pemeriksaan ini dijalankan di halamanmu terjadi ' : 'Saat memanggil ' + t.panggil + ' terjadi ') + e.name + ': ' + e.message + (hint ? '\n' + hint : '') + (t.pesan ? '\n' + t.pesan : '');
       }
       ctx.hasil = c.value;
       ctx.hasilLogs = c.logs;
       if (t.hasOwnProperty('hasil') && !samaNilai(t.hasil, c.value)) {
-        var s = t.panggil + ' → diharapkan ' + tampil(t.hasil) + ', hasil kamu ' + tampil(c.value) + '.';
+        if (t.__dom) return 'Diharapkan ' + tampil(t.hasil) + ', di halamanmu: ' + tampil(c.value) + '.' + (t.pesan ? '\n' + t.pesan : '');
+        var s = label + ' → diharapkan ' + tampil(t.hasil) + ', hasil kamu ' + tampil(c.value) + '.';
         if (c.value === undefined && t.hasil !== undefined) s += '\nFunction mengembalikan undefined — lupa menulis return?';
         else if (typeof t.hasil !== typeof c.value && c.value !== undefined) s += '\nTipe datanya berbeda (' + typeof t.hasil + ' vs ' + typeof c.value + ').';
         return s;
       }
       if (t.hasilOutput) {
         var beda2 = bandingkanOutput(t.hasilOutput, c.logs);
-        if (beda2) return t.panggil + ': ' + beda2;
+        if (beda2) return (label ? label + ': ' : '') + beda2;
       }
     }
     if (typeof t.cek === 'function') {
       var r;
       try { r = t.cek(ctx); } catch (err) { r = 'Pemeriksaan gagal: ' + err.message; }
-      if (r !== true) return typeof r === 'string' ? r : 'Belum sesuai.';
+      if (r !== true) return (typeof r === 'string' ? r : 'Belum sesuai.') + (t.pesan ? '\n' + t.pesan : '');
     }
     return null;
   }
@@ -186,7 +209,7 @@
       var hasilTes = [];
       rencana.forEach(function (r, k) {
         r.tes.forEach(function (i) {
-          var t = Object.assign({ __i: i }, soal.tes[i]);
+          var t = Object.assign({ __i: i, __dom: soal.mode === 'dom' }, soal.tes[i]);
           var gagal = nilaiTes(t, hasilRun[k], kode);
           hasilTes[i] = { nama: t.nama, lulus: !gagal, detail: gagal || '' };
         });

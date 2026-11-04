@@ -62,7 +62,7 @@
   /* ── Terjemahan error ─────────────────────── */
   var POLA_ERROR = [
     [/^(\S+) is not defined$/, function (m) {
-      if (m[1] === 'document' || m[1] === 'window') return '"' + m[1] + '" tidak tersedia di editor latihan ini (tidak ada halaman HTML). Coba kode DOM di file index.html kamu sendiri.';
+      if (m[1] === 'document' || m[1] === 'window') return '"' + m[1] + '" tidak tersedia di editor ini (tidak ada halaman HTML). Kode DOM bisa dicoba di editor ber-Preview pada materi #21, atau di file index.html kamu sendiri.';
       return 'Variabel/function "' + m[1] + '" belum dibuat, atau salah ketik. Ingat: JavaScript membedakan huruf besar & kecil (nama ≠ Nama).';
     }],
     [/^Assignment to constant variable/, function () {
@@ -75,7 +75,13 @@
       return 'Variabel "' + m[1] + '" sudah pernah dibuat (atau sudah disediakan di Data Input). Hapus let/const yang kedua; untuk mengubah nilainya cukup tulis ' + m[1] + ' = nilaiBaru;';
     }],
     [/^(.+) is not a function/, function (m) {
-      return '"' + m[1] + '" bukan function, jadi tidak bisa dipanggil dengan tanda kurung (). Cek ejaan nama function-nya.';
+      var nama = m[1];
+      if (/\.(addEventListener|textContent|classList|setAttribute|getAttribute|remove|append|prepend)$/.test(nama) && !/^document\./.test(nama)) {
+        if (/\.addEventListener$/.test(nama)) return '"' + nama + '" bukan function. addEventListener hanya ada pada SATU elemen. Kalau variabelnya hasil querySelectorAll (daftar), pilih satu dengan [0] atau pasang ke setiap elemen memakai forEach.';
+      }
+      if (/\.(textContent|innerHTML|innerText|value|length|className|id|href|src|checked)$/.test(nama)) return '"' + nama.split('.').pop() + '" adalah property, bukan function. Tulis tanpa tanda kurung, contoh: elemen.textContent = "Halo";';
+      if (/\.(push|pop|shift|unshift|includes|indexOf|join|forEach|map|filter|find|slice|splice)$/.test(nama)) return '"' + nama + '" bukan function: method ' + nama.split('.').pop() + '() hanya dimiliki array. Pastikan variabel itu benar-benar array (ditulis dengan [ ]), bukan object atau string.';
+      return '"' + nama + '" bukan function, jadi tidak bisa dipanggil dengan tanda kurung (). Cek ejaan nama function-nya.';
     }],
     [/^Missing initializer in const declaration/, function () {
       return 'Variabel const wajib langsung diberi nilai saat dibuat, contoh: const PI = 3.14;';
@@ -108,7 +114,7 @@
       return 'Template literal (backtick) di posisi yang tidak terduga. Mungkin lupa tanda + atau koma sebelumnya.';
     }],
     [/^Invalid left-hand side in assignment/, function () {
-      return 'Sisi kiri tanda = harus berupa variabel. Kalau maksudnya membandingkan, gunakan === (bukan =).';
+      return 'Sisi kiri tanda = harus berupa variabel atau property. Kalau maksudnya membandingkan, gunakan === (bukan =). Untuk CSS lewat JavaScript, nama property ditulis camelCase: style.backgroundColor, bukan style.background-color.';
     }],
     [/^Illegal return statement/, function () {
       return 'return hanya boleh dipakai di dalam function.';
@@ -116,8 +122,29 @@
     [/^Illegal (break|continue) statement/, function (m) {
       return m[1] + ' hanya boleh dipakai di dalam perulangan (for/while/do...while)' + (m[1] === 'break' ? ' atau switch.' : '.');
     }],
+    [/^Cannot (read|set) properties of null \((?:reading|setting) '([^']+)'\)/, function (m) {
+      return 'Mencoba ' + (m[1] === 'read' ? 'membaca' : 'mengubah') + ' "' + m[2] + '" dari nilai null. Di DOM ini biasanya berarti elemennya TIDAK DITEMUKAN: cek selector (# untuk id, . untuk class) dan ejaannya, serta pastikan <script> diletakkan di bawah elemen (sebelum </body>).';
+    }],
+    [/^Cannot (read|set) properties of undefined \((?:reading|setting) '([^']+)'\)/, function (m) {
+      return 'Mencoba ' + (m[1] === 'read' ? 'membaca' : 'mengubah') + ' property "' + m[2] + '" dari nilai undefined. Sering terjadi karena index array di luar jangkauan (misal data[5] padahal hanya ada 3 elemen), nama property salah ketik, atau variabelnya belum diberi nilai.';
+    }],
     [/^Cannot read properties of (undefined|null)/, function (m) {
       return 'Mencoba membaca isi dari nilai ' + m[1] + '. Pastikan variabelnya sudah diberi nilai.';
+    }],
+    [/is not a valid selector/, function () {
+      return 'Selector CSS-nya tidak valid. Cek penulisannya: "#id", ".kelas", "tag", atau "#daftar li" — tanpa tanda yang tertinggal atau spasi aneh.';
+    }],
+    [/parameter 1 is not of type 'Node'/, function () {
+      return 'Yang dimasukkan bukan elemen. Buat elemennya dulu dengan document.createElement("tag"), baru masukkan dengan append/appendChild.';
+    }],
+    [/contains HTML space characters/, function () {
+      return 'Nama class tidak boleh mengandung spasi. Tambahkan satu per satu, misalnya classList.add("aktif", "besar").';
+    }],
+    [/^(.+) is not iterable/, function (m) {
+      return '"' + m[1] + '" bukan array/daftar, jadi tidak bisa diulang dengan for...of. Pastikan nilainya array.';
+    }],
+    [/^Cannot convert undefined or null to object/, function () {
+      return 'Object.keys()/Object.values() butuh sebuah object, tetapi yang dikirim bernilai undefined/null. Cek nama variabelnya.';
     }],
     [/^Maximum call stack size exceeded/, function () {
       return 'Function memanggil dirinya sendiri tanpa henti. Pastikan ada kondisi berhenti.';

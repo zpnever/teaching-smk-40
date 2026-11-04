@@ -14,7 +14,7 @@
 
   var HURUF = 'ABCDEFGH';
   var IKON_KUIS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg>';
-  var MATERI_SEMUA = ['15', '16', '17', '18', '19'];
+  var MATERI_SEMUA = ['15', '16', '17', '18', '19', '20', '21'];
 
   function esc(s) { return window.Editor.esc(s); }
   function md(s) {

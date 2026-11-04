@@ -114,7 +114,8 @@
   }
 
   /* ── Console ─────────────────────────────── */
-  function buatConsole(host) {
+  function buatConsole(host, opsiK) {
+    opsiK = opsiK || {};
     var el = document.createElement('div');
     el.className = 'editor-console';
     el.hidden = true;
@@ -126,6 +127,8 @@
     el.querySelector('button').addEventListener('click', function () { el.hidden = true; lines.innerHTML = ''; });
 
     function baris(level, teks) {
+      var kosong = lines.querySelector('.console-empty');
+      if (kosong) kosong.remove();
       var d = document.createElement('div');
       d.className = 'console-line ' + level;
       d.textContent = teks;
@@ -150,13 +153,23 @@
         if (!hasil.logs.length && !hasil.error && !hasil.timeout) {
           var k = document.createElement('div');
           k.className = 'console-empty';
-          k.textContent = 'Kode berjalan tanpa output. Tampilkan sesuatu dengan console.log().';
+          k.textContent = opsiK.kosong || 'Kode berjalan tanpa output. Tampilkan sesuatu dengan console.log().';
           lines.appendChild(k);
         }
         waktu.textContent = hasil.timeout ? 'dihentikan' : 'selesai · ' + hasil.ms + ' ms';
         lines.scrollTop = lines.scrollHeight;
       },
-      pesan: function (level, teks) { el.hidden = false; baris(level, teks); },
+      pesan: function (level, teks) {
+        el.hidden = false;
+        baris(level, teks);
+        lines.scrollTop = lines.scrollHeight;
+      },
+      error: function (e) {
+        el.hidden = false;
+        baris('error', 'Uncaught ' + e.name + ': ' + e.message + (e.line ? '   (baris ' + e.line + ')' : ''));
+        if (e.hint) baris('hint', e.hint);
+        lines.scrollTop = lines.scrollHeight;
+      },
       bersihkan: function () { lines.innerHTML = ''; el.hidden = true; }
     };
   }
@@ -339,14 +352,26 @@
     var hasilEl = document.createElement('div');
     body.appendChild(hasilEl);
 
+    var preset = el.getAttribute('data-dom');
+    var banding = el.getAttribute('data-banding'); // selector: bandingkan tebakan dengan teks yang TAMPIL di elemen ini
+    function jalankanTebak() {
+      if (preset !== null && window.DomRunner) {
+        var hal = window.DomRunner.preset(preset);
+        var harness = banding ? '__cek(0, function () { var e = document.querySelector(' + JSON.stringify(banding) + '); return e ? e.innerText : null; });' : '';
+        return window.DomRunner.run(kode, { html: hal.html, css: hal.css, harness: harness });
+      }
+      return window.JSRunner.run(kode);
+    }
+
     aksi.querySelector('button').addEventListener('click', function () {
       var b = this;
       b.disabled = true;
-      window.JSRunner.run(kode).then(function (hasil) {
+      jalankanTebak().then(function (hasil) {
         b.disabled = false;
         hasilEl.innerHTML = '';
         var tebakan = ta.value.trim();
         var keluaran = hasil.logs.map(function (l) { return l.text; }).join('\n');
+        if (banding && hasil.cek && hasil.cek[0] && hasil.cek[0].ok) keluaran = String(hasil.cek[0].value);
         if (hasil.error) keluaran += (keluaran ? '\n' : '') + 'Uncaught ' + hasil.error.name + ': ' + hasil.error.message;
         if (tebakan) {
           var benar = normal(tebakan) === normal(keluaran);
@@ -360,6 +385,11 @@
         box.className = 'editor';
         box.style.marginBottom = '0';
         hasilEl.appendChild(box);
+        if (preset !== null && window.Playground) {
+          var hal2 = window.DomRunner.preset(preset);
+          window.Playground.create(box, { html: hal2.html, css: hal2.css, js: kode, label: 'hasil asli — lihat Preview, silakan ubah & jalankan lagi', autorun: true });
+          return;
+        }
         var ed = create(box, { value: kode, file: 'coba-ubah.js', label: 'output asli di bawah — silakan ubah & jalankan lagi' });
         ed.console.tampilkan(hasil);
       });
@@ -371,7 +401,7 @@
     (ruang || document).querySelectorAll('[data-tebak]').forEach(tebak);
   }
 
-  window.Editor = { create: create, init: init, highlight: highlight, dedent: dedent, esc: esc, IKON: IKON, semua: semua };
+  window.Editor = { create: create, init: init, highlight: highlight, dedent: dedent, esc: esc, IKON: IKON, semua: semua, buatCM: buatCM, buatConsole: buatConsole, MAC: MAC, tebak: tebak };
 
   function mulai() {
     init();

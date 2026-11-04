@@ -8,7 +8,7 @@
   var IKON_KODE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>';
   var IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   var IKON_LAMPU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>';
-  var LABEL = { praktik: 'Praktik', tantangan: 'Tantangan', 'studi-kasus': 'Studi Kasus' };
+  var LABEL = { praktik: 'Praktik', latihan: 'Latihan', perbaiki: 'Cari & Perbaiki', tantangan: 'Tantangan', 'studi-kasus': 'Studi Kasus' };
 
   function esc(s) { return window.Editor.esc(s); }
 
@@ -34,6 +34,12 @@
     if (soal.input) tambah('Data contoh', soal.input);
     (soal.tes || []).forEach(function (t, i) { if (t.input) tambah('Tes ' + (i + 1) + ': ' + t.nama, t.input); });
     return daftar;
+  }
+
+  /** HTML & CSS untuk soal DOM: dari soal.html/css atau preset HALAMAN_DOM */
+  function halamanSoal(soal) {
+    var p = window.DomRunner.preset(soal.preset || 'dasar');
+    return { html: soal.html !== undefined ? soal.html : p.html, css: soal.css !== undefined ? soal.css : p.css };
   }
 
   function render(el) {
@@ -65,8 +71,19 @@
       '<div class="challenge-extra"></div>' +
       '</div>';
 
-    var pilihan = pilihanInput(soal);
-    var ed = window.Editor.create(el.querySelector('.challenge-editor'), {
+    var dom = soal.mode === 'dom';
+    var halaman = dom ? halamanSoal(soal) : null;
+    var pilihan = dom ? [] : pilihanInput(soal);
+    var ed = dom ? window.Playground.create(el.querySelector('.challenge-editor'), {
+      html: halaman.html,
+      css: halaman.css,
+      js: soal.starter || '',
+      edit: soal.edit || ['js'],
+      input: window.Checker.inputKeKode(soal.input),
+      tinggi: soal.tinggi || 0,
+      simpanKe: kunci,
+      simpanId: 'soal-' + kunci
+    }) : window.Editor.create(el.querySelector('.challenge-editor'), {
       value: soal.starter || '',
       file: soal.file || 'script.js',
       input: pilihan.length ? pilihan[0].kode : '',
@@ -74,6 +91,11 @@
       placeholder: '// Tulis kodemu di sini…',
       simpanKe: kunci
     });
+    function runFn(k, o) {
+      if (!dom) return window.JSRunner.run(k, o);
+      var f = ed.getFiles();
+      return window.DomRunner.run(k, { html: f.html, css: f.css, input: o.input, harness: o.harness });
+    }
 
     var pill = el.querySelector('.status-pill');
     var hasilEl = el.querySelector('.challenge-hasil');
@@ -99,10 +121,11 @@
       btnPeriksa.disabled = true;
       hasilEl.innerHTML = '<p class="content-text" style="margin-top:1rem">Memeriksa…</p>';
       var kode = ed.getValue();
-      window.Checker.periksa(soal, kode, function (k, o) { return window.JSRunner.run(k, o); }).then(function (r) {
+      window.Checker.periksa(soal, kode, runFn).then(function (r) {
         btnPeriksa.disabled = false;
         tampilkanHasil(r);
-        if (r.run) ed.console.tampilkan(r.run);
+        if (dom) ed.jalankan();
+        else if (r.run) ed.console.tampilkan(r.run);
         if (r.lulus) {
           if (info.dinilai) window.Progress.setTantangan(materi, soal.id, { lulus: true, percobaan: true });
           else window.Progress.setPraktik(materi, soal.id);
@@ -162,7 +185,8 @@
       extra.appendChild(box);
       var wadah = document.createElement('div');
       box.appendChild(wadah);
-      window.Editor.create(wadah, { value: soal.solusi, file: 'solusi.js', readOnly: true, input: ed.getInput() });
+      if (dom) window.Playground.create(wadah, { html: halaman.html, css: halaman.css, js: soal.solusi, edit: [], input: ed.getInput(), label: 'Contoh solusi — jalankan & coba di Preview', simpanId: 'solusi-' + kunci });
+      else window.Editor.create(wadah, { value: soal.solusi, file: 'solusi.js', readOnly: true, input: ed.getInput() });
       btnSolusi.hidden = true;
     });
   }
@@ -171,7 +195,7 @@
     (ruang || document).querySelectorAll('[data-challenge]').forEach(render);
   }
 
-  window.Challenge = { init: init };
+  window.Challenge = { init: init, halamanSoal: halamanSoal };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(); });
   else init();
 })();
