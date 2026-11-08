@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Event</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1 id="judul">Belajar Event</h1>
+
+    <section>
+        <button id="tombol1">Tombol 1</button>
+        <button id="tombol2">Tombol 2</button>
+        <button id="tombol3">Tombol 3</button>
+    </section>
+
+    <section>
+        <div id="kotak" class="kotak">Arahkan kursor atau klik aku</div>
+    </section>
+
+    <section>
+        <p>Nama: <input id="nama" type="text" placeholder="Ketik namamu..."></p>
+        <p id="hasil">Halo, siapa namamu?</p>
+        <p>Jumlah karakter: <span id="jumlahKarakter">0</span></p>
+    </section>
+
+    <section>
+        <p>
+            Warna favorit:
+            <select id="pilihWarna">
+                <option value="">-- pilih --</option>
+                <option value="tomato">Merah</option>
+                <option value="seagreen">Hijau</option>
+                <option value="royalblue">Biru</option>
+            </select>
+        </p>
+        <label><input type="checkbox" id="setuju"> Saya setuju dengan syarat dan ketentuan</label>
+        <form id="formDaftar" novalidate>
+            <input id="email" type="email" placeholder="Email kamu">
+            <button id="btnDaftar" type="submit">Daftar</button>
+        </form>
+        <p id="pesanForm"></p>
+    </section>
+
+    <section>
+        <input id="angka1" type="number" placeholder="Angka 1">
+        <select id="pilihOperator">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">×</option>
+            <option value="/">÷</option>
+        </select>
+        <input id="angka2" type="number" placeholder="Angka 2">
+        <button id="btnHitung">Hitung</button>
+        <p id="hasilHitung"></p>
+    </section>
+
+    <section>
+        <input id="inputTugas" type="text" placeholder="Tulis tugas...">
+        <button id="btnTugas">Tambah</button>
+        <ul id="daftarTugas"></ul>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
