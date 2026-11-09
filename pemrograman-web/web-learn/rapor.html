@@ -82,6 +82,7 @@
         <a href="materi/19-function.html">#19 Function</a>
         <a href="materi/20-array-object.html">#20 Array &amp; Object</a>
         <a href="materi/21-dom.html">#21 DOM</a>
+        <a href="materi/22-event.html">#22 Event</a>
         <a href="materi/tantangan-akhir.html">Tantangan Akhir</a>
         <a href="rapor.html" aria-current="page">Rapor</a>
       </nav>
@@ -136,7 +137,7 @@
       <ul class="catatan">
         <li>Nilai per materi = 50% nilai kuis terbaik + 50% tantangan koding yang lulus.</li>
         <li>Tantangan yang diselesaikan setelah membuka "Lihat Solusi" tidak dihitung.</li>
-        <li>Rata-rata dihitung dari 6 pos; pos yang belum dikerjakan bernilai 0.</li>
+        <li>Rata-rata dihitung dari 9 pos; pos yang belum dikerjakan bernilai 0.</li>
       </ul>
       <div class="paraf"><div>Paraf siswa</div><div>Paraf guru</div></div>
     </section>
@@ -156,6 +157,7 @@
   <script src="assets/data/bank-19.js"></script>
   <script src="assets/data/bank-20.js"></script>
   <script src="assets/data/bank-21.js"></script>
+  <script src="assets/data/bank-22.js"></script>
   <script src="assets/data/bank-akhir.js"></script>
   <script>
     (function () {
@@ -168,6 +170,7 @@
         { id: '19', nama: '#19 Function', url: 'materi/19-function.html' },
         { id: '20', nama: '#20 Array & Object', url: 'materi/20-array-object.html' },
         { id: '21', nama: '#21 DOM', url: 'materi/21-dom.html' },
+        { id: '22', nama: '#22 Event', url: 'materi/22-event.html' },
         { id: 'akhir', nama: 'Tantangan Akhir', url: 'materi/tantangan-akhir.html' }
       ];
       var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -196,7 +199,7 @@
         var pesan, mood;
         if (!adaNilai) { pesan = 'Belum ada nilai. Mulai dari pertemuan 15, ya!'; mood = 'mikir'; }
         else if (adaNilai < DAFTAR.length) { pesan = adaNilai + ' dari ' + DAFTAR.length + ' pos sudah dinilai. Selesaikan sisanya untuk menaikkan rata-rata.'; mood = 'senang'; }
-        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu sudah menguasai dasar JavaScript sampai DOM.'; mood = 'bangga'; }
+        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu sudah menguasai dasar JavaScript sampai DOM & Event.'; mood = 'bangga'; }
         else { pesan = 'Semua pos sudah dikerjakan. Ulangi kuis atau tantangan yang belum maksimal untuk menaikkan nilai.'; mood = 'senang'; }
         document.querySelector('[data-out="pesan"]').textContent = pesan;
         document.querySelector('[data-mascot-rapor]').innerHTML = Illus.maskot(mood);
