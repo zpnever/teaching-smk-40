@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+h3 {
+    margin: 0 0 8px;
+}
+
+button {
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+input,
+select {
+    padding: 6px;
+}
+
+ul {
+    margin: 8px 0 0;
+}
+
+#gambarAnjing {
+    display: block;
+    margin-top: 8px;
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+#gambarAnjing:not([src]) {
+    display: none;
+}
