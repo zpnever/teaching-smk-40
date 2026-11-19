@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>#15 Dasar JavaScript — Coret.js</title>
-  <meta name="description" content="Pertemuan 15: apa itu JavaScript, cara menghubungkan ke HTML, console.log, variabel let & const, aturan penamaan, tipe data, dan typeof — lengkap dengan editor kode, praktik, dan kuis.">
+  <meta name="description"
+    content="Pertemuan 15: apa itu JavaScript, cara menghubungkan ke HTML, console.log, variabel let & const, aturan penamaan, tipe data, dan typeof — lengkap dengan editor kode, praktik, dan kuis.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/editor.css">
@@ -24,21 +28,42 @@
     }, 6000);
   </script>
 </head>
+
 <body data-materi="15">
-  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
       <nav class="topnav" aria-label="Materi">
-        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
-        <a href="16-operator.html" data-nav="16">#16 Operator</a>
-        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
-        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
-        <a href="19-function.html" data-nav="19">#19 Function</a>
-        <a href="20-array-object.html" data-nav="20">#20 Array &amp; Object</a>
-        <a href="21-dom.html" data-nav="21">#21 DOM</a>
-        <a href="22-event.html" data-nav="22">#22 Event</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar JavaScript</a>
+            </li>
+            <li><a href="16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp; Object</a></li>
+            <li><a href="21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a></li>
+          </ul>
+        </div>
         <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
         <a href="../rapor.html" data-nav="rapor">Rapor</a>
       </nav>
@@ -50,7 +75,8 @@
     <div class="hero-text">
       <span class="hero-badge">Pertemuan 15</span>
       <h1>Kenalan dengan <span class="highlight">JavaScript</span></h1>
-      <p class="hero-subtitle">Bahasa yang membuat halaman web jadi hidup. Di sini kamu belajar menulis kode pertama, menyimpan data di variabel, dan mengenal tipe-tipe datanya.</p>
+      <p class="hero-subtitle">Bahasa yang membuat halaman web jadi hidup. Di sini kamu belajar menulis kode pertama,
+        menyimpan data di variabel, dan mengenal tipe-tipe datanya.</p>
       <p class="tujuan-title">Setelah ini kamu bisa:</p>
       <ul class="tujuan">
         <li>Menjelaskan apa itu JavaScript dan perannya di web</li>
@@ -60,36 +86,42 @@
         <li>Mengenali tipe data dasar dan memakai <code>typeof</code></li>
       </ul>
       <a href="#s1" class="hero-cta">Mulai Belajar
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
       </a>
     </div>
     <div class="hero-art">
       <div class="illus-frame">
-        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Maskot Kurawal di depan laptop yang menampilkan kode JavaScript">
+        <svg class="doodle" viewBox="0 0 360 260" role="img"
+          aria-label="Maskot Kurawal di depan laptop yang menampilkan kode JavaScript">
           <g class="wobble">
-            <path class="paper" d="M70 40 h220 a10 10 0 0 1 10 10 v140 h-240 v-140 a10 10 0 0 1 10 -10z"/>
-            <rect x="74" y="54" width="212" height="128" rx="4" class="soft"/>
-            <path class="paper" d="M30 190 h300 l-18 26 h-264 z"/>
-            <path class="ink" d="M150 203 h60"/>
-            <path class="ink" d="M92 76 l-10 10 l10 10 M118 76 l10 10 l-10 10"/>
-            <path class="thin" d="M138 80 h80 M138 92 h120 M96 112 h60 M166 112 h70 M96 126 h110 M96 140 h40 M146 140 h90 M96 154 h70"/>
-            <rect x="96" y="164" width="12" height="4" class="solid"/>
+            <path class="paper" d="M70 40 h220 a10 10 0 0 1 10 10 v140 h-240 v-140 a10 10 0 0 1 10 -10z" />
+            <rect x="74" y="54" width="212" height="128" rx="4" class="soft" />
+            <path class="paper" d="M30 190 h300 l-18 26 h-264 z" />
+            <path class="ink" d="M150 203 h60" />
+            <path class="ink" d="M92 76 l-10 10 l10 10 M118 76 l10 10 l-10 10" />
+            <path class="thin"
+              d="M138 80 h80 M138 92 h120 M96 112 h60 M166 112 h70 M96 126 h110 M96 140 h40 M146 140 h90 M96 154 h70" />
+            <rect x="96" y="164" width="12" height="4" class="solid" />
           </g>
           <g transform="translate(250 120) scale(1.05)">
-            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4"/>
+            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4" />
             <g class="wobble">
-              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6"/>
-              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8"/>
-              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8"/>
-              <rect x="25" y="24" width="50" height="60" rx="17" class="paper"/>
-              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5"/>
-              <path class="ink" d="M37 47 q4 -5 8 0 M55 47 q4 -5 8 0"/>
-              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch"/><ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch"/>
-              <path class="paper" d="M41 56 q9 12 18 0 z"/>
+              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6" />
+              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8" />
+              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8" />
+              <rect x="25" y="24" width="50" height="60" rx="17" class="paper" />
+              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5" />
+              <path class="ink" d="M37 47 q4 -5 8 0 M55 47 q4 -5 8 0" />
+              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch" />
+              <ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch" />
+              <path class="paper" d="M41 56 q9 12 18 0 z" />
             </g>
             <text x="50" y="77" text-anchor="middle" font-size="9" class="mono">JS</text>
           </g>
-          <path class="dash" d="M226 34 q20 -20 46 -6"/>
+          <path class="dash" d="M226 34 q20 -20 46 -6" />
           <text x="282" y="30" font-size="15">Halo!</text>
         </svg>
         <div class="illus-caption"><span>Kode pertamamu</span></div>
@@ -114,60 +146,103 @@
           <div class="step-number">1</div>
           <h2><small>Pengenalan</small>Apa Itu JavaScript?</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="Jendela browser dengan tombol yang diklik lalu memunculkan pesan">
-                <g class="wobble">
-                  <rect x="20" y="16" width="320" height="188" rx="14" class="paper"/>
-                  <path class="ink" d="M20 46 h320"/>
-                  <circle cx="40" cy="31" r="5" class="paper"/><circle cx="56" cy="31" r="5" class="paper"/><circle cx="72" cy="31" r="5" class="solid"/>
-                  <rect x="92" y="23" width="200" height="16" rx="8" class="soft"/>
-                  <path class="thin" d="M44 70 h120 M44 84 h90 M44 98 h105"/>
-                  <rect x="48" y="122" width="116" height="38" rx="19" class="solid"/>
-                  <path class="paper" d="M146 148 l0 34 l9 -8 l7 15 l8 -3 l-7 -15 l12 -1 z"/>
-                  <path class="ink" d="M180 120 l10 -8 M184 136 l14 0 M176 104 l5 -11"/>
-                  <path class="paper" d="M232 132 l-14 18 l30 -18"/>
-                  <rect x="208" y="66" width="114" height="68" rx="12" class="paper"/>
-                  <path class="thin" d="M224 112 h82 M224 122 h50"/>
-                </g>
-                <text x="106" y="146" text-anchor="middle" font-size="14" class="inv">Klik aku</text>
-                <text x="265" y="97" text-anchor="middle" font-size="16">Halo!</text>
-              </svg>
-              <div class="illus-caption"><span>JS membuat web hidup</span></div>
-            </div>
-          </div>
-          <div class="step-content">
-            <div class="def-box"><strong>Definisi</strong><b>JavaScript (JS)</b> adalah bahasa pemrograman yang berjalan di browser (dan juga di server lewat Node.js) yang digunakan untuk membuat halaman web menjadi <b>dinamis</b> dan <b>interaktif</b>.</div>
-
-            <div class="subsection">
-              <div class="section-label">Yang bisa dilakukan JavaScript</div>
-              <div class="mini-grid">
-                <div class="mini-card"><h4><span class="letter-badge">1</span>Merespons pengguna</h4><p>Bereaksi saat tombol diklik, teks diketik, atau mouse digerakkan.</p></div>
-                <div class="mini-card"><h4><span class="letter-badge">2</span>Mengubah halaman</h4><p>Mengganti isi & tampilan secara langsung tanpa reload.</p></div>
-                <div class="mini-card"><h4><span class="letter-badge">3</span>Validasi form</h4><p>Misalnya mengecek email yang diisi valid atau tidak.</p></div>
-                <div class="mini-card"><h4><span class="letter-badge">4</span>Ambil data server</h4><p>Mengambil data dari API: cuaca, berita, jadwal, dll.</p></div>
-                <div class="mini-card"><h4><span class="letter-badge">5</span>Game &amp; aplikasi</h4><p>Membuat game, animasi kompleks, sampai aplikasi web lengkap.</p></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 220" role="img"
+                  aria-label="Jendela browser dengan tombol yang diklik lalu memunculkan pesan">
+                  <g class="wobble">
+                    <rect x="20" y="16" width="320" height="188" rx="14" class="paper" />
+                    <path class="ink" d="M20 46 h320" />
+                    <circle cx="40" cy="31" r="5" class="paper" />
+                    <circle cx="56" cy="31" r="5" class="paper" />
+                    <circle cx="72" cy="31" r="5" class="solid" />
+                    <rect x="92" y="23" width="200" height="16" rx="8" class="soft" />
+                    <path class="thin" d="M44 70 h120 M44 84 h90 M44 98 h105" />
+                    <rect x="48" y="122" width="116" height="38" rx="19" class="solid" />
+                    <path class="paper" d="M146 148 l0 34 l9 -8 l7 15 l8 -3 l-7 -15 l12 -1 z" />
+                    <path class="ink" d="M180 120 l10 -8 M184 136 l14 0 M176 104 l5 -11" />
+                    <path class="paper" d="M232 132 l-14 18 l30 -18" />
+                    <rect x="208" y="66" width="114" height="68" rx="12" class="paper" />
+                    <path class="thin" d="M224 112 h82 M224 122 h50" />
+                  </g>
+                  <text x="106" y="146" text-anchor="middle" font-size="14" class="inv">Klik aku</text>
+                  <text x="265" y="97" text-anchor="middle" font-size="16">Halo!</text>
+                </svg>
+                <div class="illus-caption"><span>JS membuat web hidup</span></div>
               </div>
             </div>
-
-            <div class="subsection">
-              <div class="section-label">Analogi: HTML, CSS, JavaScript</div>
-              <div class="table-wrap">
-                <table class="tabel">
-                  <thead><tr><th>Bahasa</th><th>Ibarat rumah</th><th>Tugasnya</th></tr></thead>
-                  <tbody>
-                    <tr><td>HTML</td><td>Kerangka &amp; tembok</td><td>Struktur dan isi halaman</td></tr>
-                    <tr><td>CSS</td><td>Cat &amp; dekorasi</td><td>Tampilan: warna, ukuran, tata letak</td></tr>
-                    <tr><td>JavaScript</td><td>Listrik &amp; saklar</td><td>Perilaku: apa yang terjadi saat ada interaksi</td></tr>
-                  </tbody>
-                </table>
+            <div class="step-content">
+              <div class="def-box"><strong>Definisi</strong><b>JavaScript (JS)</b> adalah bahasa pemrograman yang
+                berjalan di browser (dan juga di server lewat Node.js) yang digunakan untuk membuat halaman web menjadi
+                <b>dinamis</b> dan <b>interaktif</b>.
               </div>
-            </div>
 
-            <div class="callout" data-kind="fakta">JavaScript <strong>bukan</strong> Java! Namanya mirip karena strategi pemasaran tahun 1995, tapi keduanya bahasa yang sangat berbeda — seperti "mobil" dan "mobil-mobilan".</div>
+              <div class="subsection">
+                <div class="section-label">Yang bisa dilakukan JavaScript</div>
+                <div class="mini-grid">
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">1</span>Merespons pengguna</h4>
+                    <p>Bereaksi saat tombol diklik, teks diketik, atau mouse digerakkan.</p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">2</span>Mengubah halaman</h4>
+                    <p>Mengganti isi & tampilan secara langsung tanpa reload.</p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">3</span>Validasi form</h4>
+                    <p>Misalnya mengecek email yang diisi valid atau tidak.</p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">4</span>Ambil data server</h4>
+                    <p>Mengambil data dari API: cuaca, berita, jadwal, dll.</p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">5</span>Game &amp; aplikasi</h4>
+                    <p>Membuat game, animasi kompleks, sampai aplikasi web lengkap.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Analogi: HTML, CSS, JavaScript</div>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th>Bahasa</th>
+                        <th>Ibarat rumah</th>
+                        <th>Tugasnya</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>HTML</td>
+                        <td>Kerangka &amp; tembok</td>
+                        <td>Struktur dan isi halaman</td>
+                      </tr>
+                      <tr>
+                        <td>CSS</td>
+                        <td>Cat &amp; dekorasi</td>
+                        <td>Tampilan: warna, ukuran, tata letak</td>
+                      </tr>
+                      <tr>
+                        <td>JavaScript</td>
+                        <td>Listrik &amp; saklar</td>
+                        <td>Perilaku: apa yang terjadi saat ada interaksi</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="callout" data-kind="fakta">JavaScript <strong>bukan</strong> Java! Namanya mirip karena
+                strategi pemasaran tahun 1995, tapi keduanya bahasa yang sangat berbeda — seperti "mobil" dan
+                "mobil-mobilan".</div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 2. MENGHUBUNGKAN JS KE HTML ═══════════ -->
@@ -176,60 +251,71 @@
           <div class="step-number">2</div>
           <h2><small>Setup</small>Menghubungkan JavaScript ke HTML</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="File index.html memanggil file script.js lewat tag script">
-                <g class="wobble">
-                  <path class="paper" d="M36 22 h100 l24 24 v152 h-124 z"/>
-                  <path class="ink" d="M136 22 v24 h24"/>
-                  <path class="thin" d="M54 92 h84 M54 106 h60 M54 120 h74"/>
-                  <rect x="48" y="146" width="104" height="28" rx="6" class="solid"/>
-                  <path class="paper" d="M208 22 h100 l24 24 v152 h-124 z"/>
-                  <path class="ink" d="M308 22 v24 h24"/>
-                  <path class="thin" d="M226 92 h86 M226 106 h56 M236 120 h70 M226 134 h40"/>
-                  <path class="dash" d="M154 160 C 182 160, 178 112, 202 112"/>
-                  <path class="ink" d="M194 105 l9 7 l-9 7"/>
-                </g>
-                <text x="98" y="72" text-anchor="middle" font-size="13" class="mono">index.html</text>
-                <text x="100" y="164" text-anchor="middle" font-size="10" class="mono inv">&lt;script src&gt;</text>
-                <text x="270" y="72" text-anchor="middle" font-size="13" class="mono">script.js</text>
-                <text x="270" y="178" text-anchor="middle" font-size="24" class="mono">{ }</text>
-              </svg>
-              <div class="illus-caption"><span>HTML memanggil script.js</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 220" role="img"
+                  aria-label="File index.html memanggil file script.js lewat tag script">
+                  <g class="wobble">
+                    <path class="paper" d="M36 22 h100 l24 24 v152 h-124 z" />
+                    <path class="ink" d="M136 22 v24 h24" />
+                    <path class="thin" d="M54 92 h84 M54 106 h60 M54 120 h74" />
+                    <rect x="48" y="146" width="104" height="28" rx="6" class="solid" />
+                    <path class="paper" d="M208 22 h100 l24 24 v152 h-124 z" />
+                    <path class="ink" d="M308 22 v24 h24" />
+                    <path class="thin" d="M226 92 h86 M226 106 h56 M236 120 h70 M226 134 h40" />
+                    <path class="dash" d="M154 160 C 182 160, 178 112, 202 112" />
+                    <path class="ink" d="M194 105 l9 7 l-9 7" />
+                  </g>
+                  <text x="98" y="72" text-anchor="middle" font-size="13" class="mono">index.html</text>
+                  <text x="100" y="164" text-anchor="middle" font-size="10" class="mono inv">&lt;script src&gt;</text>
+                  <text x="270" y="72" text-anchor="middle" font-size="13" class="mono">script.js</text>
+                  <text x="270" y="178" text-anchor="middle" font-size="24" class="mono">{ }</text>
+                </svg>
+                <div class="illus-caption"><span>HTML memanggil script.js</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Ada <strong>3 cara</strong> menaruh JavaScript di halaman HTML. Klik tiap tab untuk melihat contohnya.</p>
-            <div class="tabs">
-              <div class="tabs-nav" role="tablist">
-                <button class="tab-btn" aria-selected="true" aria-controls="cara-inline">1. Inline</button>
-                <button class="tab-btn" aria-selected="false" aria-controls="cara-internal">2. Internal</button>
-                <button class="tab-btn" aria-selected="false" aria-controls="cara-eksternal">3. Eksternal ★</button>
-              </div>
-              <div class="tab-panel" id="cara-inline">
-                <p class="content-text"><strong>Inline</strong> — langsung di atribut tag HTML. <em>Tidak disarankan</em>: kode bercampur dengan HTML dan sulit dirawat.</p>
-                <div class="editor" data-editor data-mode="html"><textarea class="editor-src">&lt;button onclick="console.log('Halo!')"&gt;Klik&lt;/button&gt;</textarea></div>
-              </div>
-              <div class="tab-panel" id="cara-internal" hidden>
-                <p class="content-text"><strong>Internal</strong> — di dalam tag <code>&lt;script&gt;</code> pada file HTML. Lumayan untuk kode pendek.</p>
-                <div class="editor" data-editor data-mode="html"><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text">Ada <strong>3 cara</strong> menaruh JavaScript di halaman HTML. Klik tiap tab
+                untuk melihat contohnya.</p>
+              <div class="tabs">
+                <div class="tabs-nav" role="tablist">
+                  <button class="tab-btn" aria-selected="true" aria-controls="cara-inline">1. Inline</button>
+                  <button class="tab-btn" aria-selected="false" aria-controls="cara-internal">2. Internal</button>
+                  <button class="tab-btn" aria-selected="false" aria-controls="cara-eksternal">3. Eksternal ★</button>
+                </div>
+                <div class="tab-panel" id="cara-inline">
+                  <p class="content-text"><strong>Inline</strong> — langsung di atribut tag HTML. <em>Tidak
+                      disarankan</em>: kode bercampur dengan HTML dan sulit dirawat.</p>
+                  <div class="editor" data-editor data-mode="html"><textarea
+                      class="editor-src">&lt;button onclick="console.log('Halo!')"&gt;Klik&lt;/button&gt;</textarea>
+                  </div>
+                </div>
+                <div class="tab-panel" id="cara-internal" hidden>
+                  <p class="content-text"><strong>Internal</strong> — di dalam tag <code>&lt;script&gt;</code> pada file
+                    HTML. Lumayan untuk kode pendek.</p>
+                  <div class="editor" data-editor data-mode="html"><textarea class="editor-src">
 &lt;script&gt;
   console.log("Halo dari Internal!");
 &lt;/script&gt;</textarea></div>
+                </div>
+                <div class="tab-panel" id="cara-eksternal" hidden>
+                  <p class="content-text"><strong>Eksternal</strong> — file <code>.js</code> terpisah. <em>Paling
+                      disarankan</em>: HTML tetap rapi dan satu file JS bisa dipakai banyak halaman.</p>
+                  <div class="editor" data-editor data-mode="html"><textarea
+                      class="editor-src">&lt;script src="script.js"&gt;&lt;/script&gt;</textarea></div>
+                </div>
               </div>
-              <div class="tab-panel" id="cara-eksternal" hidden>
-                <p class="content-text"><strong>Eksternal</strong> — file <code>.js</code> terpisah. <em>Paling disarankan</em>: HTML tetap rapi dan satu file JS bisa dipakai banyak halaman.</p>
-                <div class="editor" data-editor data-mode="html"><textarea class="editor-src">&lt;script src="script.js"&gt;&lt;/script&gt;</textarea></div>
-              </div>
-            </div>
 
-            <div class="sep"></div>
+              <div class="sep"></div>
 
-            <div class="subsection">
-              <div class="section-label">Posisi tag &lt;script&gt;</div>
-              <p class="content-text">Letakkan di <strong>bagian bawah <code>&lt;body&gt;</code></strong>. Alasannya: browser membaca HTML dari atas ke bawah. Jika script diletakkan di atas sebelum elemen HTML selesai dimuat, script bisa gagal menemukan elemen tersebut (akan sangat terasa nanti saat belajar DOM).</p>
-              <div class="editor" data-editor data-mode="html"><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Posisi tag &lt;script&gt;</div>
+                <p class="content-text">Letakkan di <strong>bagian bawah <code>&lt;body&gt;</code></strong>. Alasannya:
+                  browser membaca HTML dari atas ke bawah. Jika script diletakkan di atas sebelum elemen HTML selesai
+                  dimuat, script bisa gagal menemukan elemen tersebut (akan sangat terasa nanti saat belajar DOM).</p>
+                <div class="editor" data-editor data-mode="html"><textarea class="editor-src">
 &lt;body&gt;
 
   &lt;h1&gt;Belajar JavaScript&lt;/h1&gt;
@@ -237,13 +323,21 @@
   &lt;!-- Script diletakkan di bawah, sebelum penutup body --&gt;
   &lt;script src="script.js"&gt;&lt;/script&gt;
 &lt;/body&gt;</textarea></div>
-              <div class="callout" data-kind="tips">Ada cara lain: taruh script di <code>&lt;head&gt;</code> tapi tambahkan atribut <code>defer</code>, misalnya <code>&lt;script src="script.js" defer&gt;&lt;/script&gt;</code>. Browser akan menunggu HTML selesai dibaca sebelum menjalankan script.</div>
-            </div>
+                <div class="callout" data-kind="tips">Ada cara lain: taruh script di <code>&lt;head&gt;</code> tapi
+                  tambahkan atribut <code>defer</code>, misalnya
+                  <code>&lt;script src="script.js" defer&gt;&lt;/script&gt;</code>. Browser akan menunggu HTML selesai
+                  dibaca sebelum menjalankan script.
+                </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Setup praktik</div>
-              <p class="content-text">Buat sebuah folder proyek berisi 2 file: <code>index.html</code> dan <code>script.js</code>. Buka <code>index.html</code> di browser, tekan <kbd>F12</kbd> → tab <strong>Console</strong>. Jika muncul tulisan <code>Halo, JavaScript!</code>, berarti JavaScript kalian sudah berjalan.</p>
-              <div class="editor" data-editor data-mode="html" data-file="index.html"><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Setup praktik</div>
+                <p class="content-text">Buat sebuah folder proyek berisi 2 file: <code>index.html</code> dan
+                  <code>script.js</code>. Buka <code>index.html</code> di browser, tekan <kbd>F12</kbd> → tab
+                  <strong>Console</strong>. Jika muncul tulisan <code>Halo, JavaScript!</code>, berarti JavaScript
+                  kalian sudah berjalan.
+                </p>
+                <div class="editor" data-editor data-mode="html" data-file="index.html"><textarea class="editor-src">
 &lt;!DOCTYPE html&gt;
 &lt;html lang="id"&gt;
 &lt;head&gt;
@@ -256,11 +350,15 @@
   &lt;script src="script.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</textarea></div>
-              <p class="content-text">Di website ini kamu tidak perlu repot membuat file: setiap kotak kode bertanda <strong>script.js</strong> bisa langsung kamu ubah dan jalankan. Output-nya muncul di panel <strong>Console</strong> di bawah editor.</p>
-              <div data-challenge="15:setup"></div>
+                <p class="content-text">Di website ini kamu tidak perlu repot membuat file: setiap kotak kode bertanda
+                  <strong>script.js</strong> bisa langsung kamu ubah dan jalankan. Output-nya muncul di panel
+                  <strong>Console</strong> di bawah editor.
+                </p>
+                <div data-challenge="15:setup"></div>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 3. CONSOLE.LOG & KOMENTAR ═══════════ -->
@@ -270,21 +368,25 @@
           <h2><small>Output</small>console.log() &amp; Komentar</h2>
           <span class="step-tag">Tambahan</span>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Menampilkan output</div>
-              <p class="content-text"><code>console.log()</code> menampilkan isi di dalam kurungnya ke tab Console. Ini alat paling penting untuk melihat apa yang terjadi di dalam program. Boleh menampilkan beberapa nilai sekaligus, dipisah koma.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Menampilkan output</div>
+                <p class="content-text"><code>console.log()</code> menampilkan isi di dalam kurungnya ke tab Console.
+                  Ini alat paling penting untuk melihat apa yang terjadi di dalam program. Boleh menampilkan beberapa
+                  nilai sekaligus, dipisah koma.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 console.log("Halo, JavaScript!");
 console.log(17);
 console.log("Umur saya", 17, "tahun");
 console.log(10 + 5);</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Komentar</div>
-              <p class="content-text">Komentar adalah catatan untuk manusia — <strong>tidak dijalankan</strong> oleh JavaScript. Pakai untuk menjelaskan kode atau "mematikan" baris sementara.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Komentar</div>
+                <p class="content-text">Komentar adalah catatan untuk manusia — <strong>tidak dijalankan</strong> oleh
+                  JavaScript. Pakai untuk menjelaskan kode atau "mematikan" baris sementara.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 // Ini komentar satu baris
 console.log("Baris ini jalan");
 // console.log("Baris ini tidak jalan");
@@ -294,10 +396,14 @@ console.log("Baris ini jalan");
   beberapa baris
 */
 console.log("Selesai!");</textarea></div>
-              <div class="callout" data-kind="tips">Shortcut di VS Code: blok beberapa baris lalu tekan <kbd>Ctrl</kbd> + <kbd>/</kbd> (Mac: <kbd>Cmd</kbd> + <kbd>/</kbd>) untuk menjadikannya komentar sekaligus.</div>
+                <div class="callout" data-kind="tips">Shortcut di VS Code: blok beberapa baris lalu tekan
+                  <kbd>Ctrl</kbd> + <kbd>/</kbd> (Mac: <kbd>Cmd</kbd> + <kbd>/</kbd>) untuk menjadikannya komentar
+                  sekaligus.
+                </div>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 4. VARIABEL & LET ═══════════ -->
@@ -306,61 +412,96 @@ console.log("Selesai!");</textarea></div>
           <div class="step-number">4</div>
           <h2><small>Variabel</small>Apa Itu Variabel? &amp; let</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 230" role="img" aria-label="Kertas bertuliskan Budi dimasukkan ke kardus berlabel nama">
-                <g class="wobble">
-                  <path class="soft" d="M100 104 l-34 -30 h70 l22 30 z"/>
-                  <path class="soft" d="M260 104 l34 -30 h-70 l-22 30 z"/>
-                  <rect x="100" y="104" width="160" height="104" rx="5" class="paper"/>
-                  <path class="ink" d="M100 124 h160"/>
-                  <rect x="134" y="146" width="92" height="36" rx="7" class="solid"/>
-                  <g transform="rotate(-9 180 44)"><rect x="138" y="22" width="84" height="44" rx="4" class="paper"/></g>
-                  <path class="dash" d="M236 34 C 270 44, 268 70, 244 86"/>
-                  <path class="ink" d="M242 76 l1 11 l10 -3"/>
-                  <path class="thin" d="M70 164 h56 M320 46 h-80"/>
-                </g>
-                <text x="180" y="170" text-anchor="middle" font-size="17" class="mono inv">nama</text>
-                <text x="180" y="51" text-anchor="middle" font-size="16" class="mono" transform="rotate(-9 180 44)">"Budi"</text>
-                <text x="18" y="168" font-size="12">label</text>
-                <text x="326" y="50" font-size="12">isi</text>
-              </svg>
-              <div class="illus-caption"><span>Variabel = kotak berlabel</span></div>
-            </div>
-          </div>
-          <div class="step-content">
-            <div class="def-box"><strong>Definisi</strong><b>Variabel</b> adalah "wadah bernama" untuk menyimpan data di dalam memori komputer, sehingga data tersebut bisa dipakai dan diubah berkali-kali dalam program.</div>
-            <p class="content-text">Bayangkan variabel seperti <strong>kotak berlabel</strong>: <b>label</b> → nama variabel, <b>isi kotak</b> → nilai yang disimpan.</p>
-
-            <div class="subsection">
-              <div class="section-label">Mendeklarasikan variabel: let</div>
-              <p class="content-text"><code>let</code> digunakan untuk membuat variabel yang nilainya <strong>boleh diubah</strong> di kemudian hari.</p>
-              <div class="table-wrap">
-                <table class="tabel">
-                  <thead><tr><th>Bagian</th><th>Contoh</th><th>Artinya</th></tr></thead>
-                  <tbody>
-                    <tr><td>Kata kunci deklarasi</td><td><code>let</code></td><td>"Tolong buatkan kotak baru"</td></tr>
-                    <tr><td>Nama variabel</td><td><code>nama</code></td><td>Label kotaknya</td></tr>
-                    <tr><td>Operator penugasan</td><td><code>=</code></td><td>"Masukkan ke dalam kotak" (bukan sama dengan!)</td></tr>
-                    <tr><td>Nilai</td><td><code>"Budi"</code></td><td>Isi kotaknya</td></tr>
-                  </tbody>
-                </table>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 230" role="img"
+                  aria-label="Kertas bertuliskan Budi dimasukkan ke kardus berlabel nama">
+                  <g class="wobble">
+                    <path class="soft" d="M100 104 l-34 -30 h70 l22 30 z" />
+                    <path class="soft" d="M260 104 l34 -30 h-70 l-22 30 z" />
+                    <rect x="100" y="104" width="160" height="104" rx="5" class="paper" />
+                    <path class="ink" d="M100 124 h160" />
+                    <rect x="134" y="146" width="92" height="36" rx="7" class="solid" />
+                    <g transform="rotate(-9 180 44)">
+                      <rect x="138" y="22" width="84" height="44" rx="4" class="paper" />
+                    </g>
+                    <path class="dash" d="M236 34 C 270 44, 268 70, 244 86" />
+                    <path class="ink" d="M242 76 l1 11 l10 -3" />
+                    <path class="thin" d="M70 164 h56 M320 46 h-80" />
+                  </g>
+                  <text x="180" y="170" text-anchor="middle" font-size="17" class="mono inv">nama</text>
+                  <text x="180" y="51" text-anchor="middle" font-size="16" class="mono"
+                    transform="rotate(-9 180 44)">"Budi"</text>
+                  <text x="18" y="168" font-size="12">label</text>
+                  <text x="326" y="50" font-size="12">isi</text>
+                </svg>
+                <div class="illus-caption"><span>Variabel = kotak berlabel</span></div>
               </div>
-              <div class="editor" data-editor><textarea class="editor-src">
+            </div>
+            <div class="step-content">
+              <div class="def-box"><strong>Definisi</strong><b>Variabel</b> adalah "wadah bernama" untuk menyimpan data
+                di dalam memori komputer, sehingga data tersebut bisa dipakai dan diubah berkali-kali dalam program.
+              </div>
+              <p class="content-text">Bayangkan variabel seperti <strong>kotak berlabel</strong>: <b>label</b> → nama
+                variabel, <b>isi kotak</b> → nilai yang disimpan.</p>
+
+              <div class="subsection">
+                <div class="section-label">Mendeklarasikan variabel: let</div>
+                <p class="content-text"><code>let</code> digunakan untuk membuat variabel yang nilainya <strong>boleh
+                    diubah</strong> di kemudian hari.</p>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th>Bagian</th>
+                        <th>Contoh</th>
+                        <th>Artinya</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Kata kunci deklarasi</td>
+                        <td><code>let</code></td>
+                        <td>"Tolong buatkan kotak baru"</td>
+                      </tr>
+                      <tr>
+                        <td>Nama variabel</td>
+                        <td><code>nama</code></td>
+                        <td>Label kotaknya</td>
+                      </tr>
+                      <tr>
+                        <td>Operator penugasan</td>
+                        <td><code>=</code></td>
+                        <td>"Masukkan ke dalam kotak" (bukan sama dengan!)</td>
+                      </tr>
+                      <tr>
+                        <td>Nilai</td>
+                        <td><code>"Budi"</code></td>
+                        <td>Isi kotaknya</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="editor" data-editor><textarea class="editor-src">
 let nama = "Budi";
 console.log(nama);   // Budi
 
 nama = "Andi";       // nilai diubah
 console.log(nama);   // Andi</textarea></div>
-              <div class="callout" data-kind="awas">Saat <strong>mengubah</strong> nilai, jangan tulis <code>let</code> lagi. <code>let nama = "Andi";</code> untuk kedua kalinya akan error karena kotak bernama <code>nama</code> sudah ada. Cukup <code>nama = "Andi";</code></div>
+                <div class="callout" data-kind="awas">Saat <strong>mengubah</strong> nilai, jangan tulis
+                  <code>let</code> lagi. <code>let nama = "Andi";</code> untuk kedua kalinya akan error karena kotak
+                  bernama <code>nama</code> sudah ada. Cukup <code>nama = "Andi";</code>
+                </div>
+              </div>
+
+              <div data-widget="kotak-variabel"></div>
+
+              <div data-challenge="15:p1"></div>
             </div>
-
-            <div data-widget="kotak-variabel"></div>
-
-            <div data-challenge="15:p1"></div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 5. CONST ═══════════ -->
@@ -369,69 +510,92 @@ console.log(nama);   // Andi</textarea></div>
           <div class="step-number">5</div>
           <h2><small>Variabel</small>const &amp; Kapan Pakai let vs const</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Kotak let terbuka bisa diganti isinya, kotak const tertutup dan digembok">
-                <g class="wobble">
-                  <path class="soft" d="M40 92 l-20 -24 h52 l14 24 z"/>
-                  <path class="soft" d="M150 92 l20 -24 h-52 l-14 24 z"/>
-                  <rect x="40" y="92" width="110" height="86" rx="5" class="paper"/>
-                  <path class="ink" d="M64 52 a30 30 0 0 1 52 -4"/>
-                  <path class="ink" d="M110 40 l7 9 l-11 2"/>
-                  <rect x="210" y="84" width="110" height="94" rx="5" class="paper"/>
-                  <rect x="204" y="74" width="122" height="14" rx="3" class="solid"/>
-                  <path class="ink" d="M254 124 v-10 a11 11 0 0 1 22 0 v10"/>
-                  <rect x="246" y="122" width="38" height="30" rx="5" class="solid"/>
-                  <path class="ink" d="M232 44 l18 18 M250 44 l-18 18"/>
-                </g>
-                <circle cx="265" cy="135" r="3.5" fill="#fff"/>
-                <text x="95" y="128" text-anchor="middle" font-size="16" class="mono">10 → 20</text>
-                <text x="95" y="198" text-anchor="middle" font-size="13" class="mono">let skor</text>
-                <text x="265" y="198" text-anchor="middle" font-size="13" class="mono">const PI</text>
-                <text x="290" y="58" font-size="12">tidak bisa!</text>
-              </svg>
-              <div class="illus-caption"><span>let bisa diubah, const terkunci</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 210" role="img"
+                  aria-label="Kotak let terbuka bisa diganti isinya, kotak const tertutup dan digembok">
+                  <g class="wobble">
+                    <path class="soft" d="M40 92 l-20 -24 h52 l14 24 z" />
+                    <path class="soft" d="M150 92 l20 -24 h-52 l-14 24 z" />
+                    <rect x="40" y="92" width="110" height="86" rx="5" class="paper" />
+                    <path class="ink" d="M64 52 a30 30 0 0 1 52 -4" />
+                    <path class="ink" d="M110 40 l7 9 l-11 2" />
+                    <rect x="210" y="84" width="110" height="94" rx="5" class="paper" />
+                    <rect x="204" y="74" width="122" height="14" rx="3" class="solid" />
+                    <path class="ink" d="M254 124 v-10 a11 11 0 0 1 22 0 v10" />
+                    <rect x="246" y="122" width="38" height="30" rx="5" class="solid" />
+                    <path class="ink" d="M232 44 l18 18 M250 44 l-18 18" />
+                  </g>
+                  <circle cx="265" cy="135" r="3.5" fill="#fff" />
+                  <text x="95" y="128" text-anchor="middle" font-size="16" class="mono">10 → 20</text>
+                  <text x="95" y="198" text-anchor="middle" font-size="13" class="mono">let skor</text>
+                  <text x="265" y="198" text-anchor="middle" font-size="13" class="mono">const PI</text>
+                  <text x="290" y="58" font-size="12">tidak bisa!</text>
+                </svg>
+                <div class="illus-caption"><span>let bisa diubah, const terkunci</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Mendeklarasikan variabel: const</div>
-              <p class="content-text"><code>const</code> (constant) digunakan untuk variabel yang nilainya <strong>tidak boleh diubah</strong> setelah ditetapkan. Jalankan kode di bawah dan lihat error-nya!</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Mendeklarasikan variabel: const</div>
+                <p class="content-text"><code>const</code> (constant) digunakan untuk variabel yang nilainya
+                  <strong>tidak boleh diubah</strong> setelah ditetapkan. Jalankan kode di bawah dan lihat error-nya!
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 const PI = 3.14;
 console.log(PI);   // 3.14
 
 PI = 3.14159;      // ERROR!</textarea></div>
-              <p class="content-text">Console akan menampilkan error: <code>Uncaught TypeError: Assignment to constant variable.</code></p>
-            </div>
-
-            <div class="subsection">
-              <div class="section-label">Kapan pakai let vs const?</div>
-              <div class="table-wrap">
-                <table class="tabel">
-                  <thead><tr><th>Gunakan</th><th>Ketika</th></tr></thead>
-                  <tbody>
-                    <tr><td><code>const</code></td><td>Nilai <strong>tidak akan berubah</strong> (nama sekolah, nilai PI, konfigurasi)</td></tr>
-                    <tr><td><code>let</code></td><td>Nilai <strong>akan berubah</strong> (skor game, counter, input pengguna)</td></tr>
-                  </tbody>
-                </table>
+                <p class="content-text">Console akan menampilkan error:
+                  <code>Uncaught TypeError: Assignment to constant variable.</code>
+                </p>
               </div>
-              <div class="important-banner">
-                <h3>Best practice</h3>
-                <p>Gunakan <code>const</code> sebagai <strong>default</strong>, dan ganti menjadi <code>let</code> hanya jika nilainya memang perlu diubah.</p>
-              </div>
-            </div>
 
-            <div data-tebak data-judul="let atau const?" data-q="Kode ini memakai <code>let</code> untuk <code>skor</code>. Apa output-nya?"><textarea>
+              <div class="subsection">
+                <div class="section-label">Kapan pakai let vs const?</div>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th>Gunakan</th>
+                        <th>Ketika</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>const</code></td>
+                        <td>Nilai <strong>tidak akan berubah</strong> (nama sekolah, nilai PI, konfigurasi)</td>
+                      </tr>
+                      <tr>
+                        <td><code>let</code></td>
+                        <td>Nilai <strong>akan berubah</strong> (skor game, counter, input pengguna)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="important-banner">
+                  <h3>Best practice</h3>
+                  <p>Gunakan <code>const</code> sebagai <strong>default</strong>, dan ganti menjadi <code>let</code>
+                    hanya jika nilainya memang perlu diubah.</p>
+                </div>
+              </div>
+
+              <div data-tebak data-judul="let atau const?"
+                data-q="Kode ini memakai <code>let</code> untuk <code>skor</code>. Apa output-nya?"><textarea>
 let skor = 10;
 skor = skor + 5;
 skor = 50;
 console.log(skor);</textarea></div>
 
-            <div class="callout" data-kind="fakta" data-label="Bagaimana dengan var?">Di tutorial lama kamu akan sering melihat <code>var nama = "Budi";</code>. <code>var</code> adalah cara lama (sebelum 2015) yang punya beberapa perilaku membingungkan, misalnya boleh dibuat dua kali dengan nama sama tanpa error. Sekarang cukup pakai <code>let</code> dan <code>const</code>.</div>
+              <div class="callout" data-kind="fakta" data-label="Bagaimana dengan var?">Di tutorial lama kamu akan
+                sering melihat <code>var nama = "Budi";</code>. <code>var</code> adalah cara lama (sebelum 2015) yang
+                punya beberapa perilaku membingungkan, misalnya boleh dibuat dua kali dengan nama sama tanpa error.
+                Sekarang cukup pakai <code>let</code> dan <code>const</code>.</div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 6. ATURAN PENAMAAN ═══════════ -->
@@ -440,52 +604,71 @@ console.log(skor);</textarea></div>
           <div class="step-number">6</div>
           <h2><small>Variabel</small>Aturan Penamaan Variabel</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Tiga label nama: namaSiswa benar, 2kelas dan nama siswa salah">
-                <g class="wobble">
-                  <g transform="rotate(-6 90 70)"><rect x="24" y="44" width="136" height="52" rx="10" class="paper"/><circle cx="40" cy="70" r="5" class="paper"/></g>
-                  <g transform="rotate(5 260 64)"><rect x="196" y="40" width="130" height="52" rx="10" class="paper"/><circle cx="212" cy="66" r="5" class="paper"/></g>
-                  <g transform="rotate(-3 180 150)"><rect x="104" y="124" width="160" height="52" rx="10" class="paper"/><circle cx="120" cy="150" r="5" class="paper"/></g>
-                  <circle cx="156" cy="40" r="14" class="solid"/>
-                  <path class="ink" d="M149 40 l5 5 l9 -10" style="stroke:#fff"/>
-                  <circle cx="324" cy="40" r="14" class="paper"/>
-                  <path class="ink" d="M318 34 l12 12 M330 34 l-12 12"/>
-                  <circle cx="262" cy="124" r="14" class="paper"/>
-                  <path class="ink" d="M256 118 l12 12 M268 118 l-12 12"/>
-                </g>
-                <text x="98" y="78" text-anchor="middle" font-size="15" class="mono" transform="rotate(-6 90 70)">namaSiswa</text>
-                <text x="266" y="72" text-anchor="middle" font-size="15" class="mono" transform="rotate(5 260 64)">2kelas</text>
-                <text x="190" y="156" text-anchor="middle" font-size="15" class="mono" transform="rotate(-3 180 150)">nama siswa</text>
-              </svg>
-              <div class="illus-caption"><span>Beri nama yang jelas</span></div>
-            </div>
-          </div>
-          <div class="step-content">
-            <div class="mini-grid">
-              <div class="mini-card mini-card--ink">
-                <h4>Aturan wajib <span class="tag">error jika dilanggar</span></h4>
-                <ol class="content-list" style="color:#ccc;margin-bottom:0">
-                  <li>Boleh diawali huruf, <code>_</code> (underscore), atau <code>$</code></li>
-                  <li>Tidak boleh diawali angka</li>
-                  <li>Tidak boleh mengandung spasi</li>
-                  <li>Tidak boleh memakai kata kunci JS (<code>let</code>, <code>const</code>, <code>if</code>, dll.)</li>
-                  <li><em>Case-sensitive</em>: <code>nama</code> dan <code>Nama</code> adalah dua variabel berbeda</li>
-                </ol>
-              </div>
-              <div class="mini-card">
-                <h4>Konvensi <span class="tag">kesepakatan developer</span></h4>
-                <ul class="content-list" style="margin-bottom:0">
-                  <li>Gunakan <strong>camelCase</strong>: <code>namaLengkap</code>, <code>totalHarga</code>, <code>jumlahSiswa</code></li>
-                  <li>Nama harus bermakna: <code>umur</code> lebih baik daripada <code>x</code></li>
-                  <li>Konstanta bernilai tetap boleh HURUF_BESAR: <code>const PI = 3.14;</code></li>
-                </ul>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Tiga label nama: namaSiswa benar, 2kelas dan nama siswa salah">
+                  <g class="wobble">
+                    <g transform="rotate(-6 90 70)">
+                      <rect x="24" y="44" width="136" height="52" rx="10" class="paper" />
+                      <circle cx="40" cy="70" r="5" class="paper" />
+                    </g>
+                    <g transform="rotate(5 260 64)">
+                      <rect x="196" y="40" width="130" height="52" rx="10" class="paper" />
+                      <circle cx="212" cy="66" r="5" class="paper" />
+                    </g>
+                    <g transform="rotate(-3 180 150)">
+                      <rect x="104" y="124" width="160" height="52" rx="10" class="paper" />
+                      <circle cx="120" cy="150" r="5" class="paper" />
+                    </g>
+                    <circle cx="156" cy="40" r="14" class="solid" />
+                    <path class="ink" d="M149 40 l5 5 l9 -10" style="stroke:#fff" />
+                    <circle cx="324" cy="40" r="14" class="paper" />
+                    <path class="ink" d="M318 34 l12 12 M330 34 l-12 12" />
+                    <circle cx="262" cy="124" r="14" class="paper" />
+                    <path class="ink" d="M256 118 l12 12 M268 118 l-12 12" />
+                  </g>
+                  <text x="98" y="78" text-anchor="middle" font-size="15" class="mono"
+                    transform="rotate(-6 90 70)">namaSiswa</text>
+                  <text x="266" y="72" text-anchor="middle" font-size="15" class="mono"
+                    transform="rotate(5 260 64)">2kelas</text>
+                  <text x="190" y="156" text-anchor="middle" font-size="15" class="mono"
+                    transform="rotate(-3 180 150)">nama siswa</text>
+                </svg>
+                <div class="illus-caption"><span>Beri nama yang jelas</span></div>
               </div>
             </div>
-            <div data-widget="cek-nama"></div>
-            <p class="content-text">Coba juga di editor: hapus tanda <code>//</code> di salah satu baris lalu jalankan untuk melihat error-nya.</p>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="mini-grid">
+                <div class="mini-card mini-card--ink">
+                  <h4>Aturan wajib <span class="tag">error jika dilanggar</span></h4>
+                  <ol class="content-list" style="color:#ccc;margin-bottom:0">
+                    <li>Boleh diawali huruf, <code>_</code> (underscore), atau <code>$</code></li>
+                    <li>Tidak boleh diawali angka</li>
+                    <li>Tidak boleh mengandung spasi</li>
+                    <li>Tidak boleh memakai kata kunci JS (<code>let</code>, <code>const</code>, <code>if</code>, dll.)
+                    </li>
+                    <li><em>Case-sensitive</em>: <code>nama</code> dan <code>Nama</code> adalah dua variabel berbeda
+                    </li>
+                  </ol>
+                </div>
+                <div class="mini-card">
+                  <h4>Konvensi <span class="tag">kesepakatan developer</span></h4>
+                  <ul class="content-list" style="margin-bottom:0">
+                    <li>Gunakan <strong>camelCase</strong>: <code>namaLengkap</code>, <code>totalHarga</code>,
+                      <code>jumlahSiswa</code>
+                    </li>
+                    <li>Nama harus bermakna: <code>umur</code> lebih baik daripada <code>x</code></li>
+                    <li>Konstanta bernilai tetap boleh HURUF_BESAR: <code>const PI = 3.14;</code></li>
+                  </ul>
+                </div>
+              </div>
+              <div data-widget="cek-nama"></div>
+              <p class="content-text">Coba juga di editor: hapus tanda <code>//</code> di salah satu baris lalu jalankan
+                untuk melihat error-nya.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
 let namaLengkap = "Budi Santoso";
 let Namalengkap = "Beda variabel!";
 console.log(namaLengkap);
@@ -494,8 +677,9 @@ console.log(Namalengkap);
 // let 2kelas = "XI RPL";
 // let nama siswa = "Andi";
 // let let = 5;</textarea></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 7. STRING & TEMPLATE LITERAL ═══════════ -->
@@ -504,67 +688,99 @@ console.log(Namalengkap);
           <div class="step-number">7</div>
           <h2><small>Tipe Data</small>Tipe Data Dasar &amp; String</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Lima toples berlabel string, number, boolean, undefined, dan null">
-                <g class="wobble">
-                  <g id="toples">
-                    <rect x="14" y="40" width="44" height="10" rx="3" class="solid"/>
-                    <path class="paper" d="M18 50 h36 q6 0 6 8 v80 q0 10 -10 10 h-28 q-10 0 -10 -10 v-80 q0 -8 6 -8z"/>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Lima toples berlabel string, number, boolean, undefined, dan null">
+                  <g class="wobble">
+                    <g id="toples">
+                      <rect x="14" y="40" width="44" height="10" rx="3" class="solid" />
+                      <path class="paper"
+                        d="M18 50 h36 q6 0 6 8 v80 q0 10 -10 10 h-28 q-10 0 -10 -10 v-80 q0 -8 6 -8z" />
+                    </g>
+                    <use href="#toples" x="70" />
+                    <use href="#toples" x="140" />
+                    <use href="#toples" x="210" />
+                    <use href="#toples" x="280" />
+                    <rect x="166" y="98" width="30" height="16" rx="8" class="solid" />
+                    <circle cx="188" cy="106" r="5" fill="#fff" />
+                    <rect x="236" y="72" width="40" height="60" rx="6" class="dash" />
+                    <circle cx="326" cy="104" r="14" class="ink" />
+                    <path class="ink" d="M316 114 l20 -20" />
                   </g>
-                  <use href="#toples" x="70"/>
-                  <use href="#toples" x="140"/>
-                  <use href="#toples" x="210"/>
-                  <use href="#toples" x="280"/>
-                  <rect x="166" y="98" width="30" height="16" rx="8" class="solid"/>
-                  <circle cx="188" cy="106" r="5" fill="#fff"/>
-                  <rect x="236" y="72" width="40" height="60" rx="6" class="dash"/>
-                  <circle cx="326" cy="104" r="14" class="ink"/>
-                  <path class="ink" d="M316 114 l20 -20"/>
-                </g>
-                <text x="36" y="110" text-anchor="middle" font-size="18" class="mono">"Aa"</text>
-                <text x="106" y="110" text-anchor="middle" font-size="20" class="mono">42</text>
-                <text x="256" y="110" text-anchor="middle" font-size="22" class="mono">?</text>
-                <text x="36" y="176" text-anchor="middle" font-size="11" class="mono">string</text>
-                <text x="106" y="176" text-anchor="middle" font-size="11" class="mono">number</text>
-                <text x="178" y="176" text-anchor="middle" font-size="11" class="mono">boolean</text>
-                <text x="248" y="176" text-anchor="middle" font-size="11" class="mono">undefined</text>
-                <text x="318" y="176" text-anchor="middle" font-size="11" class="mono">null</text>
-              </svg>
-              <div class="illus-caption"><span>Lima tipe data dasar</span></div>
+                  <text x="36" y="110" text-anchor="middle" font-size="18" class="mono">"Aa"</text>
+                  <text x="106" y="110" text-anchor="middle" font-size="20" class="mono">42</text>
+                  <text x="256" y="110" text-anchor="middle" font-size="22" class="mono">?</text>
+                  <text x="36" y="176" text-anchor="middle" font-size="11" class="mono">string</text>
+                  <text x="106" y="176" text-anchor="middle" font-size="11" class="mono">number</text>
+                  <text x="178" y="176" text-anchor="middle" font-size="11" class="mono">boolean</text>
+                  <text x="248" y="176" text-anchor="middle" font-size="11" class="mono">undefined</text>
+                  <text x="318" y="176" text-anchor="middle" font-size="11" class="mono">null</text>
+                </svg>
+                <div class="illus-caption"><span>Lima tipe data dasar</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">JavaScript memiliki beberapa <strong>tipe data primitif</strong>:</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Tipe Data</th><th>Keterangan</th><th>Contoh</th></tr></thead>
-                <tbody>
-                  <tr><td><code>string</code></td><td>Teks</td><td><code>"Budi"</code>, <code>'RPL'</code></td></tr>
-                  <tr><td><code>number</code></td><td>Angka (bulat maupun desimal)</td><td><code>16</code>, <code>3.14</code>, <code>-5</code></td></tr>
-                  <tr><td><code>boolean</code></td><td>Benar/salah</td><td><code>true</code>, <code>false</code></td></tr>
-                  <tr><td><code>undefined</code></td><td>Variabel dideklarasikan tapi belum diberi nilai</td><td><code>let x;</code></td></tr>
-                  <tr><td><code>null</code></td><td>Sengaja dikosongkan</td><td><code>let y = null;</code></td></tr>
-                </tbody>
-              </table>
-            </div>
+            <div class="step-content">
+              <p class="content-text">JavaScript memiliki beberapa <strong>tipe data primitif</strong>:</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Tipe Data</th>
+                      <th>Keterangan</th>
+                      <th>Contoh</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>string</code></td>
+                      <td>Teks</td>
+                      <td><code>"Budi"</code>, <code>'RPL'</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>number</code></td>
+                      <td>Angka (bulat maupun desimal)</td>
+                      <td><code>16</code>, <code>3.14</code>, <code>-5</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>boolean</code></td>
+                      <td>Benar/salah</td>
+                      <td><code>true</code>, <code>false</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>undefined</code></td>
+                      <td>Variabel dideklarasikan tapi belum diberi nilai</td>
+                      <td><code>let x;</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>null</code></td>
+                      <td>Sengaja dikosongkan</td>
+                      <td><code>let y = null;</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Tipe data: string</div>
-              <p class="content-text">String adalah teks yang diapit tanda kutip. Ada tiga jenis kutip yang bisa dipakai:</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tipe data: string</div>
+                <p class="content-text">String adalah teks yang diapit tanda kutip. Ada tiga jenis kutip yang bisa
+                  dipakai:</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let nama = "Budi";        // kutip ganda
 let kelas = 'XI RPL';     // kutip tunggal
 let sekolah = `SMK Nusantara`;  // backtick
 
 console.log(nama, kelas, sekolah);</textarea></div>
-            </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Template literal (backtick)</div>
-              <p class="content-text">Backtick <code>`</code> memungkinkan menyisipkan variabel di dalam teks memakai <code>${ }</code>. Bandingkan dengan cara lama yang memakai <code>+</code>:</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Template literal (backtick)</div>
+                <p class="content-text">Backtick <code>`</code> memungkinkan menyisipkan variabel di dalam teks memakai
+                  <code>${ }</code>. Bandingkan dengan cara lama yang memakai <code>+</code>:
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let nama = "Budi";
 let umur = 16;
 
@@ -573,12 +789,14 @@ console.log("Nama saya " + nama + ", umur " + umur + " tahun.");
 
 // Cara modern (template literal)
 console.log(`Nama saya ${nama}, umur ${umur} tahun.`);</textarea></div>
-              <div class="callout" data-kind="tips">Tombol backtick <kbd>`</kbd> ada di kiri atas keyboard, di sebelah kiri angka <kbd>1</kbd>. Jangan tertukar dengan kutip tunggal <kbd>'</kbd>!</div>
-            </div>
+                <div class="callout" data-kind="tips">Tombol backtick <kbd>`</kbd> ada di kiri atas keyboard, di sebelah
+                  kiri angka <kbd>1</kbd>. Jangan tertukar dengan kutip tunggal <kbd>'</kbd>!</div>
+              </div>
 
-            <div data-challenge="15:p2"></div>
+              <div data-challenge="15:p2"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 8. NUMBER, BOOLEAN, UNDEFINED, NULL ═══════════ -->
@@ -587,51 +805,75 @@ console.log(`Nama saya ${nama}, umur ${umur} tahun.`);</textarea></div>
           <div class="step-number">8</div>
           <h2><small>Tipe Data</small>Number, Boolean, undefined &amp; null</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Tipe data: number</div>
-              <p class="content-text">Number di JavaScript <strong>tidak dibedakan</strong> bulat/desimal/negatif — semuanya masuk ke dalam tipe data <code>number</code>.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Tipe data: number</div>
+                <p class="content-text">Number di JavaScript <strong>tidak dibedakan</strong> bulat/desimal/negatif —
+                  semuanya masuk ke dalam tipe data <code>number</code>.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let umur = 16;
 let tinggi = 165.5;
 let suhu = -3;
 
 console.log(umur, tinggi, suhu);</textarea></div>
-              <div class="callout" data-kind="fakta" data-label="Number spesial">Ada dua nilai number yang unik: <code>NaN</code> (<em>Not a Number</em>, hasil hitungan yang tidak masuk akal seperti <code>"abc" * 2</code>) dan <code>Infinity</code> (misalnya <code>10 / 0</code>). Anehnya, <code>typeof NaN</code> tetap <code>"number"</code>!</div>
-            </div>
+                <div class="callout" data-kind="fakta" data-label="Number spesial">Ada dua nilai number yang unik:
+                  <code>NaN</code> (<em>Not a Number</em>, hasil hitungan yang tidak masuk akal seperti
+                  <code>"abc" * 2</code>) dan <code>Infinity</code> (misalnya <code>10 / 0</code>). Anehnya,
+                  <code>typeof NaN</code> tetap <code>"number"</code>!
+                </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Tipe data: boolean</div>
-              <p class="content-text">Hanya punya dua nilai: <code>true</code> atau <code>false</code>. Sangat penting untuk logika program — nanti dipakai di percabangan (pertemuan 17).</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tipe data: boolean</div>
+                <p class="content-text">Hanya punya dua nilai: <code>true</code> atau <code>false</code>. Sangat penting
+                  untuk logika program — nanti dipakai di percabangan (pertemuan 17).</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let sudahLulus = true;
 let punyaSim = false;
 
 console.log(sudahLulus, punyaSim);</textarea></div>
-            </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Tipe data: undefined &amp; null</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tipe data: undefined &amp; null</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 let x;
 console.log(x);      // undefined  → dibuat tapi belum diisi
 
 let y = null;
 console.log(y);      // null       → sengaja dikosongkan</textarea></div>
-              <div class="table-wrap">
-                <table class="tabel">
-                  <thead><tr><th></th><th>undefined</th><th>null</th></tr></thead>
-                  <tbody>
-                    <tr><td>Artinya</td><td>Belum diberi nilai</td><td>Sengaja "kosong"</td></tr>
-                    <tr><td>Diberikan oleh</td><td>JavaScript otomatis</td><td>Programmer</td></tr>
-                  </tbody>
-                </table>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>undefined</th>
+                        <th>null</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Artinya</td>
+                        <td>Belum diberi nilai</td>
+                        <td>Sengaja "kosong"</td>
+                      </tr>
+                      <tr>
+                        <td>Diberikan oleh</td>
+                        <td>JavaScript otomatis</td>
+                        <td>Programmer</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="callout" data-kind="mikir" data-label="Analogi">Gelas <code>undefined</code> = gelas yang
+                  belum pernah diisi apa-apa. Gelas <code>null</code> = gelas yang sengaja dikosongkan dan diberi
+                  tulisan "kosong".</div>
               </div>
-              <div class="callout" data-kind="mikir" data-label="Analogi">Gelas <code>undefined</code> = gelas yang belum pernah diisi apa-apa. Gelas <code>null</code> = gelas yang sengaja dikosongkan dan diberi tulisan "kosong".</div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 9. TYPEOF ═══════════ -->
@@ -640,44 +882,50 @@ console.log(y);      // null       → sengaja dikosongkan</textarea></div>
           <div class="step-number">9</div>
           <h2><small>Tipe Data</small>Operator typeof</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Kaca pembesar memeriksa nilai 16 dalam kutip dan menemukan label string">
-                <g class="wobble">
-                  <rect x="40" y="60" width="110" height="70" rx="10" class="paper"/>
-                  <rect x="200" y="60" width="110" height="70" rx="10" class="paper"/>
-                  <circle cx="118" cy="82" r="38" class="ink"/>
-                  <path class="ink" d="M146 108 l26 26" style="stroke-width:7"/>
-                  <path class="thin" d="M95 128 v20 M255 128 v20"/>
-                  <rect x="56" y="148" width="78" height="26" rx="6" class="solid"/>
-                  <rect x="216" y="148" width="78" height="26" rx="6" class="solid"/>
-                </g>
-                <text x="95" y="103" text-anchor="middle" font-size="24" class="mono">"16"</text>
-                <text x="255" y="103" text-anchor="middle" font-size="24" class="mono">16</text>
-                <text x="95" y="166" text-anchor="middle" font-size="13" class="mono inv">string</text>
-                <text x="255" y="166" text-anchor="middle" font-size="13" class="mono inv">number</text>
-                <text x="180" y="36" text-anchor="middle" font-size="14">mirip, tapi beda tipe!</text>
-              </svg>
-              <div class="illus-caption"><span>typeof mengecek tipe</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Kaca pembesar memeriksa nilai 16 dalam kutip dan menemukan label string">
+                  <g class="wobble">
+                    <rect x="40" y="60" width="110" height="70" rx="10" class="paper" />
+                    <rect x="200" y="60" width="110" height="70" rx="10" class="paper" />
+                    <circle cx="118" cy="82" r="38" class="ink" />
+                    <path class="ink" d="M146 108 l26 26" style="stroke-width:7" />
+                    <path class="thin" d="M95 128 v20 M255 128 v20" />
+                    <rect x="56" y="148" width="78" height="26" rx="6" class="solid" />
+                    <rect x="216" y="148" width="78" height="26" rx="6" class="solid" />
+                  </g>
+                  <text x="95" y="103" text-anchor="middle" font-size="24" class="mono">"16"</text>
+                  <text x="255" y="103" text-anchor="middle" font-size="24" class="mono">16</text>
+                  <text x="95" y="166" text-anchor="middle" font-size="13" class="mono inv">string</text>
+                  <text x="255" y="166" text-anchor="middle" font-size="13" class="mono inv">number</text>
+                  <text x="180" y="36" text-anchor="middle" font-size="14">mirip, tapi beda tipe!</text>
+                </svg>
+                <div class="illus-caption"><span>typeof mengecek tipe</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text"><code>typeof</code> digunakan untuk mengecek tipe data dari sebuah nilai/variabel. Hasilnya berupa string.</p>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text"><code>typeof</code> digunakan untuk mengecek tipe data dari sebuah nilai/variabel.
+                Hasilnya berupa string.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
 console.log(typeof "Budi");    // string
 console.log(typeof 16);        // number
 console.log(typeof true);      // boolean
 console.log(typeof undefined); // undefined</textarea></div>
-            <div class="callout" data-kind="fakta"><code>typeof null</code> menghasilkan <code>"object"</code>. Ini adalah bug historis JavaScript sejak 1995 yang tidak pernah diperbaiki demi menjaga kompatibilitas.</div>
-            <div data-widget="typeof-lab"></div>
-            <div data-tebak data-judul="Angka atau teks?"><textarea>
+              <div class="callout" data-kind="fakta"><code>typeof null</code> menghasilkan <code>"object"</code>. Ini
+                adalah bug historis JavaScript sejak 1995 yang tidak pernah diperbaiki demi menjaga kompatibilitas.
+              </div>
+              <div data-widget="typeof-lab"></div>
+              <div data-tebak data-judul="Angka atau teks?"><textarea>
 let a = "10";
 let b = 10;
 console.log(typeof a);
 console.log(typeof b);</textarea></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 10. RANGKUMAN ═══════════ -->
@@ -686,18 +934,42 @@ console.log(typeof b);</textarea></div>
           <div class="step-number">10</div>
           <h2><small>Ringkas</small>Rangkuman</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="mini-grid">
-              <div class="mini-card"><h4>JavaScript</h4><p>Bahasa yang membuat web dinamis &amp; interaktif. Hubungkan lewat file eksternal <code>&lt;script src="script.js"&gt;</code> di bawah <code>&lt;body&gt;</code>.</p></div>
-              <div class="mini-card"><h4>console.log()</h4><p>Menampilkan output ke Console (<kbd>F12</kbd>). Komentar <code>//</code> tidak dijalankan.</p></div>
-              <div class="mini-card"><h4>let</h4><p>Variabel yang nilainya boleh diubah. Ubah tanpa menulis <code>let</code> lagi.</p></div>
-              <div class="mini-card"><h4>const</h4><p>Nilainya tetap. Diubah → <code>TypeError</code>. Jadikan pilihan default.</p></div>
-              <div class="mini-card"><h4>Penamaan</h4><p>Tidak diawali angka, tanpa spasi, bukan kata kunci, case-sensitive. Pakai camelCase.</p></div>
-              <div class="mini-card"><h4>Tipe data</h4><p><code>string</code>, <code>number</code>, <code>boolean</code>, <code>undefined</code>, <code>null</code>. Cek dengan <code>typeof</code>.</p></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="mini-grid">
+                <div class="mini-card">
+                  <h4>JavaScript</h4>
+                  <p>Bahasa yang membuat web dinamis &amp; interaktif. Hubungkan lewat file eksternal
+                    <code>&lt;script src="script.js"&gt;</code> di bawah <code>&lt;body&gt;</code>.
+                  </p>
+                </div>
+                <div class="mini-card">
+                  <h4>console.log()</h4>
+                  <p>Menampilkan output ke Console (<kbd>F12</kbd>). Komentar <code>//</code> tidak dijalankan.</p>
+                </div>
+                <div class="mini-card">
+                  <h4>let</h4>
+                  <p>Variabel yang nilainya boleh diubah. Ubah tanpa menulis <code>let</code> lagi.</p>
+                </div>
+                <div class="mini-card">
+                  <h4>const</h4>
+                  <p>Nilainya tetap. Diubah → <code>TypeError</code>. Jadikan pilihan default.</p>
+                </div>
+                <div class="mini-card">
+                  <h4>Penamaan</h4>
+                  <p>Tidak diawali angka, tanpa spasi, bukan kata kunci, case-sensitive. Pakai camelCase.</p>
+                </div>
+                <div class="mini-card">
+                  <h4>Tipe data</h4>
+                  <p><code>string</code>, <code>number</code>, <code>boolean</code>, <code>undefined</code>,
+                    <code>null</code>. Cek dengan <code>typeof</code>.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 11. TES PENGETAHUAN ═══════════ -->
@@ -706,15 +978,19 @@ console.log(typeof b);</textarea></div>
           <div class="step-number">✎</div>
           <h2><small>Dinilai</small>Tes Pengetahuan</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
-            <div data-kuis="15" data-judul="Kuis Dasar JavaScript"></div>
-            <div data-challenge="15:t1"></div>
-            <div data-challenge="15:t2"></div>
-            <div data-challenge="15:t3"></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong>
+                + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.
+              </p>
+              <div data-kuis="15" data-judul="Kuis Dasar JavaScript"></div>
+              <div data-challenge="15:t1"></div>
+              <div data-challenge="15:t2"></div>
+              <div data-challenge="15:t3"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <nav class="pager" aria-label="Navigasi materi">
@@ -746,6 +1022,8 @@ console.log(typeof b);</textarea></div>
   <script src="../assets/js/challenge.js"></script>
   <script src="../assets/js/kuis.js"></script>
   <script src="../assets/js/widgets/w15.js"></script>
+  <script src="../assets/js/nav.js"></script>
   <script src="../assets/js/app.js"></script>
 </body>
+
 </html>

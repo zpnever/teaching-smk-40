@@ -1,26 +1,65 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>#16 Operator — Coret.js</title>
-  <meta name="description" content="Pertemuan 16: operator aritmatika, prioritas operator, penggabungan string, type coercion, penugasan, perbandingan, logika, ternary, dan konversi tipe data — lengkap dengan editor kode, praktik, dan kuis.">
+  <meta name="description"
+    content="Pertemuan 16: operator aritmatika, prioritas operator, penggabungan string, type coercion, penugasan, perbandingan, logika, ternary, dan konversi tipe data — lengkap dengan editor kode, praktik, dan kuis.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/editor.css">
   <style>
     /* Khusus halaman operator */
-    code, kbd, pre, .CodeMirror, .mono, .input, .pill, .langkah-expr, .tabel-klik td, .readout { font-variant-ligatures: none; }
-    .tabel tr.on td { background: var(--ink) !important; color: var(--bg) !important; }
-    .tabel tr.on td code { background: #333; border-color: #555; color: var(--bg); }
-    .tabel-klik tbody tr { cursor: pointer; }
-    .tabel-klik tbody tr:hover td { background: var(--accent-soft); }
-    .tabel-klik td { font-family: var(--font-mono); }
-    .langkah-list { list-style: none; display: grid; gap: 8px; }
+    code,
+    kbd,
+    pre,
+    .CodeMirror,
+    .mono,
+    .input,
+    .pill,
+    .langkah-expr,
+    .tabel-klik td,
+    .readout {
+      font-variant-ligatures: none;
+    }
+
+    .tabel tr.on td {
+      background: var(--ink) !important;
+      color: var(--bg) !important;
+    }
+
+    .tabel tr.on td code {
+      background: #333;
+      border-color: #555;
+      color: var(--bg);
+    }
+
+    .tabel-klik tbody tr {
+      cursor: pointer;
+    }
+
+    .tabel-klik tbody tr:hover td {
+      background: var(--accent-soft);
+    }
+
+    .tabel-klik td {
+      font-family: var(--font-mono);
+    }
+
+    .langkah-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
     .langkah-list li {
       display: flex;
       flex-wrap: wrap;
@@ -32,10 +71,30 @@
       background: var(--bg-card);
       animation: popIn .3s ease-out both;
     }
-    .langkah-list li:last-child { box-shadow: var(--shadow-sm); }
-    .langkah-expr { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; white-space: pre; }
-    .langkah-expr mark { background: var(--ink); color: var(--bg); padding: 1px 6px; border-radius: 5px; }
-    .langkah-why { font-size: .84rem; color: var(--ink-light); }
+
+    .langkah-list li:last-child {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .langkah-expr {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: pre;
+    }
+
+    .langkah-expr mark {
+      background: var(--ink);
+      color: var(--bg);
+      padding: 1px 6px;
+      border-radius: 5px;
+    }
+
+    .langkah-why {
+      font-size: .84rem;
+      color: var(--ink-light);
+    }
+
     .saklar {
       display: inline-flex;
       align-items: center;
@@ -50,6 +109,7 @@
       cursor: pointer;
       box-shadow: var(--shadow-sm);
     }
+
     .saklar-knob {
       position: relative;
       width: 44px;
@@ -59,6 +119,7 @@
       background: var(--bg-card);
       transition: background .2s;
     }
+
     .saklar-knob::after {
       content: '';
       position: absolute;
@@ -70,11 +131,32 @@
       background: var(--ink);
       transition: transform .2s, background .2s;
     }
-    .saklar[aria-pressed="true"] .saklar-knob { background: var(--ink); }
-    .saklar[aria-pressed="true"] .saklar-knob::after { transform: translateX(20px); background: var(--bg); }
-    .adu-ekspr { font-size: .95rem; margin-bottom: .7rem; }
-    .adu-ekspr .muted { color: var(--ink-lighter); font-size: .8rem; }
-    .adu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .saklar[aria-pressed="true"] .saklar-knob {
+      background: var(--ink);
+    }
+
+    .saklar[aria-pressed="true"] .saklar-knob::after {
+      transform: translateX(20px);
+      background: var(--bg);
+    }
+
+    .adu-ekspr {
+      font-size: .95rem;
+      margin-bottom: .7rem;
+    }
+
+    .adu-ekspr .muted {
+      color: var(--ink-lighter);
+      font-size: .8rem;
+    }
+
+    .adu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     .adu-kartu {
       display: flex;
       flex-direction: column;
@@ -86,19 +168,72 @@
       text-align: center;
       animation: popIn .3s ease-out both;
     }
-    .adu-kartu code { font-size: 1rem; font-weight: 700; }
-    .adu-kartu b { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 800; }
-    .adu-kartu span { font-size: .8rem; color: var(--ink-light); }
-    .adu-kartu.ya { background: var(--ink); color: var(--bg); box-shadow: var(--shadow-sm); }
-    .adu-kartu.ya span { color: #ccc; }
-    .adu-kartu.ya code { background: #333; border-color: #555; color: var(--bg); }
-    .adu-kartu.tidak { border-style: dashed; background-image: var(--hatch); }
-    .op-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-    .op-chips code { font-weight: 700; }
+
+    .adu-kartu code {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .adu-kartu b {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .adu-kartu span {
+      font-size: .8rem;
+      color: var(--ink-light);
+    }
+
+    .adu-kartu.ya {
+      background: var(--ink);
+      color: var(--bg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .adu-kartu.ya span {
+      color: #ccc;
+    }
+
+    .adu-kartu.ya code {
+      background: #333;
+      border-color: #555;
+      color: var(--bg);
+    }
+
+    .adu-kartu.tidak {
+      border-style: dashed;
+      background-image: var(--hatch);
+    }
+
+    .op-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .op-chips code {
+      font-weight: 700;
+    }
+
     @media (max-width: 600px) {
-      .content-text code, .callout-body code, .def-box code, .mini-card code { white-space: normal; overflow-wrap: anywhere; }
-      .langkah-expr { font-size: .92rem; white-space: normal; }
-      .adu-grid { grid-template-columns: 1fr; }
+
+      .content-text code,
+      .callout-body code,
+      .def-box code,
+      .mini-card code {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .langkah-expr {
+        font-size: .92rem;
+        white-space: normal;
+      }
+
+      .adu-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
   <script>
@@ -113,21 +248,42 @@
     }, 6000);
   </script>
 </head>
+
 <body data-materi="16">
-  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
       <nav class="topnav" aria-label="Materi">
-        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
-        <a href="16-operator.html" data-nav="16">#16 Operator</a>
-        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
-        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
-        <a href="19-function.html" data-nav="19">#19 Function</a>
-        <a href="20-array-object.html" data-nav="20">#20 Array &amp; Object</a>
-        <a href="21-dom.html" data-nav="21">#21 DOM</a>
-        <a href="22-event.html" data-nav="22">#22 Event</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar JavaScript</a>
+            </li>
+            <li><a href="16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp; Object</a></li>
+            <li><a href="21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a></li>
+          </ul>
+        </div>
         <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
         <a href="../rapor.html" data-nav="rapor">Rapor</a>
       </nav>
@@ -139,50 +295,81 @@
     <div class="hero-text">
       <span class="hero-badge">Pertemuan 16</span>
       <h1>Menghitung &amp; Membandingkan dengan <span class="highlight">Operator</span></h1>
-      <p class="hero-subtitle">Operator adalah "kata kerja" di JavaScript: menjumlah, membandingkan, menggabungkan, sampai mengubah tipe data. Tanpa operator, data di variabel cuma diam saja.</p>
+      <p class="hero-subtitle">Operator adalah "kata kerja" di JavaScript: menjumlah, membandingkan, menggabungkan,
+        sampai mengubah tipe data. Tanpa operator, data di variabel cuma diam saja.</p>
       <p class="tujuan-title">Setelah ini kamu bisa:</p>
       <ul class="tujuan">
         <li><span>Menggunakan operator aritmatika dan memahami prioritas operasi</span></li>
         <li><span>Menggunakan operator penugasan, termasuk <code>++</code> dan <code>--</code></span></li>
         <li><span>Membedakan operator perbandingan <code>==</code> dan <code>===</code></span></li>
-        <li><span>Menggunakan operator logika <code>&amp;&amp;</code>, <code>||</code>, <code>!</code> beserta tabel kebenarannya</span></li>
+        <li><span>Menggunakan operator logika <code>&amp;&amp;</code>, <code>||</code>, <code>!</code> beserta tabel
+            kebenarannya</span></li>
         <li><span>Menulis ternary sebagai if-else singkat dan mengonversi tipe data secara eksplisit</span></li>
       </ul>
       <a href="#s1" class="hero-cta">Mulai Belajar
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
       </a>
     </div>
     <div class="hero-art">
       <div class="illus-frame">
         <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Maskot Kurawal di samping kalkulator besar">
           <g class="wobble">
-            <rect x="50" y="18" width="170" height="228" rx="18" class="paper"/>
-            <rect x="68" y="36" width="134" height="50" rx="8" class="solid"/>
-            <rect x="68" y="100" width="28" height="28" rx="6" class="paper"/><rect x="103" y="100" width="28" height="28" rx="6" class="paper"/><rect x="138" y="100" width="28" height="28" rx="6" class="paper"/><rect x="174" y="100" width="28" height="28" rx="6" class="soft"/>
-            <rect x="68" y="136" width="28" height="28" rx="6" class="paper"/><rect x="103" y="136" width="28" height="28" rx="6" class="paper"/><rect x="138" y="136" width="28" height="28" rx="6" class="paper"/><rect x="174" y="136" width="28" height="28" rx="6" class="soft"/>
-            <rect x="68" y="172" width="28" height="28" rx="6" class="paper"/><rect x="103" y="172" width="28" height="28" rx="6" class="paper"/><rect x="138" y="172" width="28" height="28" rx="6" class="paper"/><rect x="174" y="172" width="28" height="28" rx="6" class="soft"/>
-            <rect x="68" y="208" width="28" height="28" rx="6" class="paper"/><rect x="103" y="208" width="28" height="28" rx="6" class="soft"/><rect x="138" y="208" width="28" height="28" rx="6" class="soft"/><rect x="174" y="208" width="28" height="28" rx="6" class="solid"/>
+            <rect x="50" y="18" width="170" height="228" rx="18" class="paper" />
+            <rect x="68" y="36" width="134" height="50" rx="8" class="solid" />
+            <rect x="68" y="100" width="28" height="28" rx="6" class="paper" />
+            <rect x="103" y="100" width="28" height="28" rx="6" class="paper" />
+            <rect x="138" y="100" width="28" height="28" rx="6" class="paper" />
+            <rect x="174" y="100" width="28" height="28" rx="6" class="soft" />
+            <rect x="68" y="136" width="28" height="28" rx="6" class="paper" />
+            <rect x="103" y="136" width="28" height="28" rx="6" class="paper" />
+            <rect x="138" y="136" width="28" height="28" rx="6" class="paper" />
+            <rect x="174" y="136" width="28" height="28" rx="6" class="soft" />
+            <rect x="68" y="172" width="28" height="28" rx="6" class="paper" />
+            <rect x="103" y="172" width="28" height="28" rx="6" class="paper" />
+            <rect x="138" y="172" width="28" height="28" rx="6" class="paper" />
+            <rect x="174" y="172" width="28" height="28" rx="6" class="soft" />
+            <rect x="68" y="208" width="28" height="28" rx="6" class="paper" />
+            <rect x="103" y="208" width="28" height="28" rx="6" class="soft" />
+            <rect x="138" y="208" width="28" height="28" rx="6" class="soft" />
+            <rect x="174" y="208" width="28" height="28" rx="6" class="solid" />
           </g>
           <text x="194" y="68" text-anchor="end" font-size="18" class="mono inv">5 + 3 = 8</text>
-          <text x="82" y="120" text-anchor="middle" font-size="13" class="mono">7</text><text x="117" y="120" text-anchor="middle" font-size="13" class="mono">8</text><text x="152" y="120" text-anchor="middle" font-size="13" class="mono">9</text><text x="188" y="120" text-anchor="middle" font-size="13" class="mono">/</text>
-          <text x="82" y="156" text-anchor="middle" font-size="13" class="mono">4</text><text x="117" y="156" text-anchor="middle" font-size="13" class="mono">5</text><text x="152" y="156" text-anchor="middle" font-size="13" class="mono">6</text><text x="188" y="156" text-anchor="middle" font-size="13" class="mono">*</text>
-          <text x="82" y="192" text-anchor="middle" font-size="13" class="mono">1</text><text x="117" y="192" text-anchor="middle" font-size="13" class="mono">2</text><text x="152" y="192" text-anchor="middle" font-size="13" class="mono">3</text><text x="188" y="192" text-anchor="middle" font-size="13" class="mono">-</text>
-          <text x="82" y="228" text-anchor="middle" font-size="13" class="mono">0</text><text x="117" y="228" text-anchor="middle" font-size="13" class="mono">%</text><text x="152" y="228" text-anchor="middle" font-size="12" class="mono">**</text><text x="188" y="228" text-anchor="middle" font-size="14" class="mono inv">+</text>
+          <text x="82" y="120" text-anchor="middle" font-size="13" class="mono">7</text><text x="117" y="120"
+            text-anchor="middle" font-size="13" class="mono">8</text><text x="152" y="120" text-anchor="middle"
+            font-size="13" class="mono">9</text><text x="188" y="120" text-anchor="middle" font-size="13"
+            class="mono">/</text>
+          <text x="82" y="156" text-anchor="middle" font-size="13" class="mono">4</text><text x="117" y="156"
+            text-anchor="middle" font-size="13" class="mono">5</text><text x="152" y="156" text-anchor="middle"
+            font-size="13" class="mono">6</text><text x="188" y="156" text-anchor="middle" font-size="13"
+            class="mono">*</text>
+          <text x="82" y="192" text-anchor="middle" font-size="13" class="mono">1</text><text x="117" y="192"
+            text-anchor="middle" font-size="13" class="mono">2</text><text x="152" y="192" text-anchor="middle"
+            font-size="13" class="mono">3</text><text x="188" y="192" text-anchor="middle" font-size="13"
+            class="mono">-</text>
+          <text x="82" y="228" text-anchor="middle" font-size="13" class="mono">0</text><text x="117" y="228"
+            text-anchor="middle" font-size="13" class="mono">%</text><text x="152" y="228" text-anchor="middle"
+            font-size="12" class="mono">**</text><text x="188" y="228" text-anchor="middle" font-size="14"
+            class="mono inv">+</text>
           <g transform="translate(240 130)">
-            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4"/>
+            <ellipse cx="50" cy="94" rx="23" ry="3.5" fill="#E8E8E4" />
             <g class="wobble">
-              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6"/>
-              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8"/>
-              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8"/>
-              <rect x="25" y="24" width="50" height="60" rx="17" class="paper"/>
-              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5"/>
-              <circle cx="41" cy="46" r="3.3" class="solid"/><circle cx="59" cy="46" r="3.3" class="solid"/>
-              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch"/><ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch"/>
-              <path class="ink" d="M42 58 q8 8 16 0"/>
+              <path class="ink" d="M41 82 v8 h-6 M59 82 v8 h6" />
+              <path class="ink" d="M21 40 c-5 0 -5 4 -5 8 s0 7 -5 7 c5 0 5 3 5 7 s0 8 5 8" />
+              <path class="ink" d="M79 40 c5 0 5 4 5 8 s0 7 5 7 c-5 0 -5 3 -5 7 s0 8 -5 8" />
+              <rect x="25" y="24" width="50" height="60" rx="17" class="paper" />
+              <path class="ink" d="M46 24 c-1 -6 2 -11 7 -13 M53 24 c2 -4 6 -6 10 -5" />
+              <circle cx="41" cy="46" r="3.3" class="solid" />
+              <circle cx="59" cy="46" r="3.3" class="solid" />
+              <ellipse cx="34" cy="55" rx="4" ry="2.4" class="hatch" />
+              <ellipse cx="66" cy="55" rx="4" ry="2.4" class="hatch" />
+              <path class="ink" d="M42 58 q8 8 16 0" />
             </g>
             <text x="50" y="77" text-anchor="middle" font-size="9" class="mono">JS</text>
           </g>
-          <path class="dash" d="M236 104 q22 -26 54 -10"/>
+          <path class="dash" d="M236 104 q22 -26 54 -10" />
           <text x="262" y="84" font-size="15" class="mono">+ - * /</text>
         </svg>
         <div class="illus-caption"><span>Kalkulator di dalam kode</span></div>
@@ -207,49 +394,72 @@
           <div class="step-number">1</div>
           <h2><small>Pengenalan</small>Apa Itu Operator?</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Ekspresi 5 + 3: angka 5 dan 3 adalah operand, tanda tambah adalah operator">
-                <g class="wobble">
-                  <rect x="36" y="66" width="76" height="76" rx="14" class="paper"/>
-                  <circle cx="180" cy="104" r="34" class="solid"/>
-                  <rect x="248" y="66" width="76" height="76" rx="14" class="paper"/>
-                  <path class="thin" d="M74 146 v18 M286 146 v18 M180 66 v-18"/>
-                  <path class="ink" d="M150 30 q30 -18 60 0"/>
-                </g>
-                <text x="74" y="118" text-anchor="middle" font-size="36" class="mono">5</text>
-                <text x="180" y="117" text-anchor="middle" font-size="40" class="mono inv">+</text>
-                <text x="286" y="118" text-anchor="middle" font-size="36" class="mono">3</text>
-                <text x="74" y="184" text-anchor="middle" font-size="14">operand</text>
-                <text x="286" y="184" text-anchor="middle" font-size="14">operand</text>
-                <text x="180" y="42" text-anchor="middle" font-size="14">operator</text>
-              </svg>
-              <div class="illus-caption"><span>Operand &amp; operator</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Ekspresi 5 + 3: angka 5 dan 3 adalah operand, tanda tambah adalah operator">
+                  <g class="wobble">
+                    <rect x="36" y="66" width="76" height="76" rx="14" class="paper" />
+                    <circle cx="180" cy="104" r="34" class="solid" />
+                    <rect x="248" y="66" width="76" height="76" rx="14" class="paper" />
+                    <path class="thin" d="M74 146 v18 M286 146 v18 M180 66 v-18" />
+                    <path class="ink" d="M150 30 q30 -18 60 0" />
+                  </g>
+                  <text x="74" y="118" text-anchor="middle" font-size="36" class="mono">5</text>
+                  <text x="180" y="117" text-anchor="middle" font-size="40" class="mono inv">+</text>
+                  <text x="286" y="118" text-anchor="middle" font-size="36" class="mono">3</text>
+                  <text x="74" y="184" text-anchor="middle" font-size="14">operand</text>
+                  <text x="286" y="184" text-anchor="middle" font-size="14">operand</text>
+                  <text x="180" y="42" text-anchor="middle" font-size="14">operator</text>
+                </svg>
+                <div class="illus-caption"><span>Operand &amp; operator</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="def-box"><strong>Definisi</strong><b>Operator</b> adalah simbol dalam pemrograman yang digunakan untuk melakukan operasi terhadap nilai atau variabel (disebut <b>operand</b>), seperti menghitung, membandingkan, atau menggabungkan.</div>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="def-box"><strong>Definisi</strong><b>Operator</b> adalah simbol dalam pemrograman yang
+                digunakan untuk melakukan operasi terhadap nilai atau variabel (disebut <b>operand</b>), seperti
+                menghitung, membandingkan, atau menggabungkan.</div>
+              <div class="editor" data-editor><textarea class="editor-src">
 let hasil = 5 + 3;
 //          | | |
 //          | | └── operand
 //          | └──── operator
 //          └────── operand
 console.log(hasil);</textarea></div>
-            <div class="subsection">
-              <div class="section-label">Kategori operator yang akan kita pelajari</div>
-              <div class="mini-grid">
-                <div class="mini-card"><h4><span class="letter-badge">1</span>Aritmatika</h4><p>Menghitung: <code>+ - * / % **</code></p></div>
-                <div class="mini-card"><h4><span class="letter-badge">2</span>Penugasan</h4><p>Mengisi variabel: <code>= += -= ++</code></p></div>
-                <div class="mini-card"><h4><span class="letter-badge">3</span>Perbandingan</h4><p>Membandingkan: <code>=== !== &gt; &lt;</code></p></div>
-                <div class="mini-card"><h4><span class="letter-badge">4</span>Logika</h4><p>Menggabung syarat: <code>&amp;&amp; || !</code></p></div>
-                <div class="mini-card"><h4><span class="letter-badge">5</span>Ternary</h4><p>If-else satu baris: <code>? :</code></p></div>
-                <div class="mini-card"><h4><span class="letter-badge">6</span>String &amp; Konversi</h4><p>Menggabung teks &amp; mengubah tipe: <code>Number()</code></p></div>
+              <div class="subsection">
+                <div class="section-label">Kategori operator yang akan kita pelajari</div>
+                <div class="mini-grid">
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">1</span>Aritmatika</h4>
+                    <p>Menghitung: <code>+ - * / % **</code></p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">2</span>Penugasan</h4>
+                    <p>Mengisi variabel: <code>= += -= ++</code></p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">3</span>Perbandingan</h4>
+                    <p>Membandingkan: <code>=== !== &gt; &lt;</code></p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">4</span>Logika</h4>
+                    <p>Menggabung syarat: <code>&amp;&amp; || !</code></p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">5</span>Ternary</h4>
+                    <p>If-else satu baris: <code>? :</code></p>
+                  </div>
+                  <div class="mini-card">
+                    <h4><span class="letter-badge">6</span>String &amp; Konversi</h4>
+                    <p>Menggabung teks &amp; mengubah tipe: <code>Number()</code></p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 2. ARITMATIKA ═══════════ -->
@@ -258,62 +468,129 @@ console.log(hasil);</textarea></div>
           <div class="step-number">2</div>
           <h2><small>Menghitung</small>Operator Aritmatika</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Sepuluh kue dibagi ke tiga kotak isi tiga, sisa satu kue">
-                <g class="wobble">
-                  <rect x="20" y="70" width="84" height="72" rx="10" class="paper"/>
-                  <rect x="114" y="70" width="84" height="72" rx="10" class="paper"/>
-                  <rect x="208" y="70" width="84" height="72" rx="10" class="paper"/>
-                  <circle cx="44" cy="96" r="11" class="soft"/><circle cx="80" cy="96" r="11" class="soft"/><circle cx="62" cy="122" r="11" class="soft"/>
-                  <circle cx="138" cy="96" r="11" class="soft"/><circle cx="174" cy="96" r="11" class="soft"/><circle cx="156" cy="122" r="11" class="soft"/>
-                  <circle cx="232" cy="96" r="11" class="soft"/><circle cx="268" cy="96" r="11" class="soft"/><circle cx="250" cy="122" r="11" class="soft"/>
-                  <circle cx="324" cy="106" r="13" class="soft"/>
-                  <circle cx="324" cy="106" r="25" class="dash"/>
-                </g>
-                <g fill="#1A1A1A">
-                  <circle cx="41" cy="93" r="1.6"/><circle cx="47" cy="99" r="1.6"/><circle cx="77" cy="94" r="1.6"/><circle cx="83" cy="99" r="1.6"/><circle cx="59" cy="120" r="1.6"/><circle cx="65" cy="125" r="1.6"/>
-                  <circle cx="135" cy="93" r="1.6"/><circle cx="141" cy="99" r="1.6"/><circle cx="171" cy="94" r="1.6"/><circle cx="177" cy="99" r="1.6"/><circle cx="153" cy="120" r="1.6"/><circle cx="159" cy="125" r="1.6"/>
-                  <circle cx="229" cy="93" r="1.6"/><circle cx="235" cy="99" r="1.6"/><circle cx="265" cy="94" r="1.6"/><circle cx="271" cy="99" r="1.6"/><circle cx="247" cy="120" r="1.6"/><circle cx="253" cy="125" r="1.6"/>
-                  <circle cx="320" cy="103" r="1.8"/><circle cx="327" cy="110" r="1.8"/>
-                </g>
-                <text x="180" y="44" text-anchor="middle" font-size="22" class="mono">10 % 3 = 1</text>
-                <text x="62" y="166" text-anchor="middle" font-size="13">isi 3</text>
-                <text x="156" y="166" text-anchor="middle" font-size="13">isi 3</text>
-                <text x="250" y="166" text-anchor="middle" font-size="13">isi 3</text>
-                <text x="324" y="152" text-anchor="middle" font-size="13">sisa 1</text>
-              </svg>
-              <div class="illus-caption"><span>Modulus = sisa bagi</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 210" role="img"
+                  aria-label="Sepuluh kue dibagi ke tiga kotak isi tiga, sisa satu kue">
+                  <g class="wobble">
+                    <rect x="20" y="70" width="84" height="72" rx="10" class="paper" />
+                    <rect x="114" y="70" width="84" height="72" rx="10" class="paper" />
+                    <rect x="208" y="70" width="84" height="72" rx="10" class="paper" />
+                    <circle cx="44" cy="96" r="11" class="soft" />
+                    <circle cx="80" cy="96" r="11" class="soft" />
+                    <circle cx="62" cy="122" r="11" class="soft" />
+                    <circle cx="138" cy="96" r="11" class="soft" />
+                    <circle cx="174" cy="96" r="11" class="soft" />
+                    <circle cx="156" cy="122" r="11" class="soft" />
+                    <circle cx="232" cy="96" r="11" class="soft" />
+                    <circle cx="268" cy="96" r="11" class="soft" />
+                    <circle cx="250" cy="122" r="11" class="soft" />
+                    <circle cx="324" cy="106" r="13" class="soft" />
+                    <circle cx="324" cy="106" r="25" class="dash" />
+                  </g>
+                  <g fill="#1A1A1A">
+                    <circle cx="41" cy="93" r="1.6" />
+                    <circle cx="47" cy="99" r="1.6" />
+                    <circle cx="77" cy="94" r="1.6" />
+                    <circle cx="83" cy="99" r="1.6" />
+                    <circle cx="59" cy="120" r="1.6" />
+                    <circle cx="65" cy="125" r="1.6" />
+                    <circle cx="135" cy="93" r="1.6" />
+                    <circle cx="141" cy="99" r="1.6" />
+                    <circle cx="171" cy="94" r="1.6" />
+                    <circle cx="177" cy="99" r="1.6" />
+                    <circle cx="153" cy="120" r="1.6" />
+                    <circle cx="159" cy="125" r="1.6" />
+                    <circle cx="229" cy="93" r="1.6" />
+                    <circle cx="235" cy="99" r="1.6" />
+                    <circle cx="265" cy="94" r="1.6" />
+                    <circle cx="271" cy="99" r="1.6" />
+                    <circle cx="247" cy="120" r="1.6" />
+                    <circle cx="253" cy="125" r="1.6" />
+                    <circle cx="320" cy="103" r="1.8" />
+                    <circle cx="327" cy="110" r="1.8" />
+                  </g>
+                  <text x="180" y="44" text-anchor="middle" font-size="22" class="mono">10 % 3 = 1</text>
+                  <text x="62" y="166" text-anchor="middle" font-size="13">isi 3</text>
+                  <text x="156" y="166" text-anchor="middle" font-size="13">isi 3</text>
+                  <text x="250" y="166" text-anchor="middle" font-size="13">isi 3</text>
+                  <text x="324" y="152" text-anchor="middle" font-size="13">sisa 1</text>
+                </svg>
+                <div class="illus-caption"><span>Modulus = sisa bagi</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Digunakan untuk melakukan perhitungan matematika terhadap nilai <code>number</code>.</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Operator</th><th>Nama</th><th>Contoh</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>+</code></td><td>Penjumlahan</td><td><code>10 + 3</code></td><td><code>13</code></td></tr>
-                  <tr><td><code>-</code></td><td>Pengurangan</td><td><code>10 - 3</code></td><td><code>7</code></td></tr>
-                  <tr><td><code>*</code></td><td>Perkalian</td><td><code>10 * 3</code></td><td><code>30</code></td></tr>
-                  <tr><td><code>/</code></td><td>Pembagian</td><td><code>10 / 3</code></td><td><code>3.333...</code></td></tr>
-                  <tr><td><code>%</code></td><td>Modulus (sisa bagi)</td><td><code>10 % 3</code></td><td><code>1</code></td></tr>
-                  <tr><td><code>**</code></td><td>Pangkat</td><td><code>2 ** 3</code></td><td><code>8</code></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text">Digunakan untuk melakukan perhitungan matematika terhadap nilai
+                <code>number</code>.
+              </p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Operator</th>
+                      <th>Nama</th>
+                      <th>Contoh</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>+</code></td>
+                      <td>Penjumlahan</td>
+                      <td><code>10 + 3</code></td>
+                      <td><code>13</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>-</code></td>
+                      <td>Pengurangan</td>
+                      <td><code>10 - 3</code></td>
+                      <td><code>7</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>*</code></td>
+                      <td>Perkalian</td>
+                      <td><code>10 * 3</code></td>
+                      <td><code>30</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>/</code></td>
+                      <td>Pembagian</td>
+                      <td><code>10 / 3</code></td>
+                      <td><code>3.333...</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>%</code></td>
+                      <td>Modulus (sisa bagi)</td>
+                      <td><code>10 % 3</code></td>
+                      <td><code>1</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>**</code></td>
+                      <td>Pangkat</td>
+                      <td><code>2 ** 3</code></td>
+                      <td><code>8</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 let a = 10;
 let b = 3;
 
 console.log(a + b);   // 13
 console.log(a % b);   // 1
 console.log(a ** b);  // 1000</textarea></div>
-            <div class="callout" data-kind="tips">Modulus <code>%</code> sering dipakai untuk mengecek <strong>genap/ganjil</strong>: kalau <code>angka % 2</code> hasilnya <code>0</code>, angkanya genap. Ini akan sangat berguna di pertemuan percabangan &amp; perulangan.</div>
-            <div data-widget="kalkulator-operator"></div>
-            <div data-challenge="16:p1"></div>
+              <div class="callout" data-kind="tips">Modulus <code>%</code> sering dipakai untuk mengecek
+                <strong>genap/ganjil</strong>: kalau <code>angka % 2</code> hasilnya <code>0</code>, angkanya genap. Ini
+                akan sangat berguna di pertemuan percabangan &amp; perulangan.
+              </div>
+              <div data-widget="kalkulator-operator"></div>
+              <div data-challenge="16:p1"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 3. PRIORITAS ═══════════ -->
@@ -322,49 +599,56 @@ console.log(a ** b);  // 1000</textarea></div>
           <div class="step-number">3</div>
           <h2><small>Urutan</small>Prioritas Operator (Precedence)</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="Tangga prioritas: kurung paling tinggi, lalu pangkat, lalu kali bagi modulus, lalu tambah kurang">
-                <g class="wobble">
-                  <rect x="20" y="50" width="80" height="150" rx="4" class="solid"/>
-                  <rect x="100" y="90" width="80" height="110" rx="4" class="paper"/>
-                  <rect x="180" y="128" width="80" height="72" rx="4" class="soft"/>
-                  <rect x="260" y="164" width="80" height="36" rx="4" class="paper"/>
-                  <path class="ink" d="M8 200 h344"/>
-                  <path class="ink" d="M44 24 l16 -12 l16 12"/>
-                </g>
-                <text x="60" y="100" text-anchor="middle" font-size="24" class="mono inv">( )</text>
-                <text x="140" y="134" text-anchor="middle" font-size="22" class="mono">**</text>
-                <text x="220" y="168" text-anchor="middle" font-size="16" class="mono">* / %</text>
-                <text x="300" y="188" text-anchor="middle" font-size="16" class="mono">+ -</text>
-                <text x="60" y="186" text-anchor="middle" font-size="22" class="inv">1</text>
-                <text x="140" y="186" text-anchor="middle" font-size="22">2</text>
-                <text x="220" y="190" text-anchor="middle" font-size="18">3</text>
-                <text x="300" y="152" text-anchor="middle" font-size="18">4</text>
-                <text x="100" y="40" font-size="13">dikerjakan duluan</text>
-              </svg>
-              <div class="illus-caption"><span>Siapa duluan?</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 220" role="img"
+                  aria-label="Tangga prioritas: kurung paling tinggi, lalu pangkat, lalu kali bagi modulus, lalu tambah kurang">
+                  <g class="wobble">
+                    <rect x="20" y="50" width="80" height="150" rx="4" class="solid" />
+                    <rect x="100" y="90" width="80" height="110" rx="4" class="paper" />
+                    <rect x="180" y="128" width="80" height="72" rx="4" class="soft" />
+                    <rect x="260" y="164" width="80" height="36" rx="4" class="paper" />
+                    <path class="ink" d="M8 200 h344" />
+                    <path class="ink" d="M44 24 l16 -12 l16 12" />
+                  </g>
+                  <text x="60" y="100" text-anchor="middle" font-size="24" class="mono inv">( )</text>
+                  <text x="140" y="134" text-anchor="middle" font-size="22" class="mono">**</text>
+                  <text x="220" y="168" text-anchor="middle" font-size="16" class="mono">* / %</text>
+                  <text x="300" y="188" text-anchor="middle" font-size="16" class="mono">+ -</text>
+                  <text x="60" y="186" text-anchor="middle" font-size="22" class="inv">1</text>
+                  <text x="140" y="186" text-anchor="middle" font-size="22">2</text>
+                  <text x="220" y="190" text-anchor="middle" font-size="18">3</text>
+                  <text x="300" y="152" text-anchor="middle" font-size="18">4</text>
+                  <text x="100" y="40" font-size="13">dikerjakan duluan</text>
+                </svg>
+                <div class="illus-caption"><span>Siapa duluan?</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Sama seperti matematika, JavaScript mengikuti urutan prioritas:</p>
-            <ol class="content-list">
-              <li>Tanda kurung <code>( )</code></li>
-              <li>Pangkat <code>**</code></li>
-              <li>Perkalian <code>*</code>, pembagian <code>/</code>, modulus <code>%</code></li>
-              <li>Penjumlahan <code>+</code>, pengurangan <code>-</code></li>
-            </ol>
-            <p class="content-text">Jika prioritasnya setingkat (misalnya <code>%</code> dan <code>*</code>), dikerjakan dari <strong>kiri ke kanan</strong>.</p>
-            <div data-tebak data-judul="Quick Test: Prioritas" data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris ini?"><textarea>
+            <div class="step-content">
+              <p class="content-text">Sama seperti matematika, JavaScript mengikuti urutan prioritas:</p>
+              <ol class="content-list">
+                <li>Tanda kurung <code>( )</code></li>
+                <li>Pangkat <code>**</code></li>
+                <li>Perkalian <code>*</code>, pembagian <code>/</code>, modulus <code>%</code></li>
+                <li>Penjumlahan <code>+</code>, pengurangan <code>-</code></li>
+              </ol>
+              <p class="content-text">Jika prioritasnya setingkat (misalnya <code>%</code> dan <code>*</code>),
+                dikerjakan dari <strong>kiri ke kanan</strong>.</p>
+              <div data-tebak data-judul="Quick Test: Prioritas"
+                data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris ini?"><textarea>
 console.log(10 + 5 * 2);
 console.log((10 + 5) * 2);
 console.log(20 / 4 + 3 ** 2);
 console.log(100 - 10 % 3 * 2);</textarea></div>
-            <div data-widget="stepper-prioritas"></div>
-            <div class="callout" data-kind="tips">Ragu dengan urutannya? <strong>Pakai tanda kurung.</strong> <code>(a + b) * c</code> jauh lebih jelas dibaca teman satu tim daripada menghafal tabel prioritas.</div>
+              <div data-widget="stepper-prioritas"></div>
+              <div class="callout" data-kind="tips">Ragu dengan urutannya? <strong>Pakai tanda kurung.</strong>
+                <code>(a + b) * c</code> jauh lebih jelas dibaca teman satu tim daripada menghafal tabel prioritas.
+              </div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 4. STRING & COERCION ═══════════ -->
@@ -373,53 +657,61 @@ console.log(100 - 10 % 3 * 2);</textarea></div>
           <div class="step-number">4</div>
           <h2><small>Teks</small>Operator String &amp; Type Coercion</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 190" role="img" aria-label="Angka 1 ditambah teks 1 menjadi teks 11, sedangkan teks 10 dikurang 5 menjadi angka 5">
-                <g class="wobble">
-                  <rect x="20" y="24" width="56" height="50" rx="8" class="paper"/>
-                  <rect x="112" y="24" width="64" height="50" rx="8" class="soft"/>
-                  <rect x="236" y="24" width="100" height="50" rx="8" class="soft"/>
-                  <path class="dash" d="M184 49 h40"/><path class="ink" d="M218 42 l8 7 l-8 7"/>
-                  <rect x="20" y="114" width="76" height="50" rx="8" class="soft"/>
-                  <rect x="132" y="114" width="56" height="50" rx="8" class="paper"/>
-                  <rect x="256" y="114" width="60" height="50" rx="8" class="paper"/>
-                  <path class="dash" d="M196 139 h48"/><path class="ink" d="M238 132 l8 7 l-8 7"/>
-                </g>
-                <text x="48" y="57" text-anchor="middle" font-size="22" class="mono">1</text>
-                <text x="94" y="57" text-anchor="middle" font-size="22" class="mono">+</text>
-                <text x="144" y="57" text-anchor="middle" font-size="22" class="mono">"1"</text>
-                <text x="286" y="57" text-anchor="middle" font-size="22" class="mono">"11"</text>
-                <text x="58" y="147" text-anchor="middle" font-size="22" class="mono">"10"</text>
-                <text x="114" y="147" text-anchor="middle" font-size="22" class="mono">-</text>
-                <text x="160" y="147" text-anchor="middle" font-size="22" class="mono">5</text>
-                <text x="286" y="147" text-anchor="middle" font-size="22" class="mono">5</text>
-                <text x="286" y="92" text-anchor="middle" font-size="12">digabung (string)</text>
-                <text x="286" y="182" text-anchor="middle" font-size="12">dihitung (number)</text>
-              </svg>
-              <div class="illus-caption"><span>+ suka menggabung teks</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 190" role="img"
+                  aria-label="Angka 1 ditambah teks 1 menjadi teks 11, sedangkan teks 10 dikurang 5 menjadi angka 5">
+                  <g class="wobble">
+                    <rect x="20" y="24" width="56" height="50" rx="8" class="paper" />
+                    <rect x="112" y="24" width="64" height="50" rx="8" class="soft" />
+                    <rect x="236" y="24" width="100" height="50" rx="8" class="soft" />
+                    <path class="dash" d="M184 49 h40" />
+                    <path class="ink" d="M218 42 l8 7 l-8 7" />
+                    <rect x="20" y="114" width="76" height="50" rx="8" class="soft" />
+                    <rect x="132" y="114" width="56" height="50" rx="8" class="paper" />
+                    <rect x="256" y="114" width="60" height="50" rx="8" class="paper" />
+                    <path class="dash" d="M196 139 h48" />
+                    <path class="ink" d="M238 132 l8 7 l-8 7" />
+                  </g>
+                  <text x="48" y="57" text-anchor="middle" font-size="22" class="mono">1</text>
+                  <text x="94" y="57" text-anchor="middle" font-size="22" class="mono">+</text>
+                  <text x="144" y="57" text-anchor="middle" font-size="22" class="mono">"1"</text>
+                  <text x="286" y="57" text-anchor="middle" font-size="22" class="mono">"11"</text>
+                  <text x="58" y="147" text-anchor="middle" font-size="22" class="mono">"10"</text>
+                  <text x="114" y="147" text-anchor="middle" font-size="22" class="mono">-</text>
+                  <text x="160" y="147" text-anchor="middle" font-size="22" class="mono">5</text>
+                  <text x="286" y="147" text-anchor="middle" font-size="22" class="mono">5</text>
+                  <text x="286" y="92" text-anchor="middle" font-size="12">digabung (string)</text>
+                  <text x="286" y="182" text-anchor="middle" font-size="12">dihitung (number)</text>
+                </svg>
+                <div class="illus-caption"><span>+ suka menggabung teks</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Penggabungan (concatenation)</div>
-              <p class="content-text">Operator <code>+</code> yang sama juga bisa dipakai untuk <strong>menggabungkan</strong> string.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Penggabungan (concatenation)</div>
+                <p class="content-text">Operator <code>+</code> yang sama juga bisa dipakai untuk
+                  <strong>menggabungkan</strong> string.
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let depan = "Budi";
 let belakang = "Santoso";
 
 console.log(depan + " " + belakang);   // Budi Santoso</textarea></div>
-              <div data-tebak data-judul="Quick Test: Angka atau Teks?" data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris ini?"><textarea>
+                <div data-tebak data-judul="Quick Test: Angka atau Teks?"
+                  data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris ini?"><textarea>
 console.log("5" + 3);
 console.log(5 + 3);
 console.log("5" + "3");
 console.log(5 + "3" + 2);</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Type coercion: konversi otomatis</div>
-              <div class="def-box"><strong>Definisi</strong><b>Type Coercion</b> adalah konversi tipe data yang dilakukan <b>otomatis</b> oleh JavaScript tanpa diminta programmer.</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Type coercion: konversi otomatis</div>
+                <div class="def-box"><strong>Definisi</strong><b>Type Coercion</b> adalah konversi tipe data yang
+                  dilakukan <b>otomatis</b> oleh JavaScript tanpa diminta programmer.</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 // Operator + dengan string → hasil string
 console.log(1 + "1");       // "11"
 
@@ -427,10 +719,13 @@ console.log(1 + "1");       // "11"
 console.log("10" - 5);      // 5
 console.log("10" * 2);      // 20
 console.log("abc" - 5);     // NaN (gagal dikonversi)</textarea></div>
-              <div class="callout" data-kind="awas">Coercion sering bikin bug yang sulit dicari. Di bagian <a href="#s9">Konversi Tipe Data</a> kamu akan belajar mengubah tipe secara <strong>sengaja</strong> supaya hasilnya pasti.</div>
+                <div class="callout" data-kind="awas">Coercion sering bikin bug yang sulit dicari. Di bagian <a
+                    href="#s9">Konversi Tipe Data</a> kamu akan belajar mengubah tipe secara <strong>sengaja</strong>
+                  supaya hasilnya pasti.</div>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 5. PENUGASAN ═══════════ -->
@@ -439,60 +734,100 @@ console.log("abc" - 5);     // NaN (gagal dikonversi)</textarea></div>
           <div class="step-number">5</div>
           <h2><small>Mengisi</small>Operator Penugasan &amp; Increment</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Operator penugasan mengisi atau memperbarui nilai variabel. Bentuk gabungannya adalah cara singkat menulis perhitungan lalu menyimpannya kembali.</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Operator</th><th>Contoh</th><th>Sama dengan</th></tr></thead>
-                <tbody>
-                  <tr><td><code>=</code></td><td><code>x = 5</code></td><td>Isi <code>x</code> dengan 5</td></tr>
-                  <tr><td><code>+=</code></td><td><code>x += 3</code></td><td><code>x = x + 3</code></td></tr>
-                  <tr><td><code>-=</code></td><td><code>x -= 3</code></td><td><code>x = x - 3</code></td></tr>
-                  <tr><td><code>*=</code></td><td><code>x *= 3</code></td><td><code>x = x * 3</code></td></tr>
-                  <tr><td><code>/=</code></td><td><code>x /= 3</code></td><td><code>x = x / 3</code></td></tr>
-                  <tr><td><code>%=</code></td><td><code>x %= 3</code></td><td><code>x = x % 3</code></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Operator penugasan mengisi atau memperbarui nilai variabel. Bentuk gabungannya
+                adalah cara singkat menulis perhitungan lalu menyimpannya kembali.</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Operator</th>
+                      <th>Contoh</th>
+                      <th>Sama dengan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>=</code></td>
+                      <td><code>x = 5</code></td>
+                      <td>Isi <code>x</code> dengan 5</td>
+                    </tr>
+                    <tr>
+                      <td><code>+=</code></td>
+                      <td><code>x += 3</code></td>
+                      <td><code>x = x + 3</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>-=</code></td>
+                      <td><code>x -= 3</code></td>
+                      <td><code>x = x - 3</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>*=</code></td>
+                      <td><code>x *= 3</code></td>
+                      <td><code>x = x * 3</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>/=</code></td>
+                      <td><code>x /= 3</code></td>
+                      <td><code>x = x / 3</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>%=</code></td>
+                      <td><code>x %= 3</code></td>
+                      <td><code>x = x % 3</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 let skor = 10;
 skor += 5;   // skor = 15
 skor *= 2;   // skor = 30
 console.log(skor);</textarea></div>
 
-            <div class="subsection">
-              <div class="section-label">Increment &amp; decrement</div>
-              <p class="content-text"><code>++</code> menambah 1, <code>--</code> mengurangi 1. Ini akan sering kamu pakai di perulangan (<code>i++</code>).</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Increment &amp; decrement</div>
+                <p class="content-text"><code>++</code> menambah 1, <code>--</code> mengurangi 1. Ini akan sering kamu
+                  pakai di perulangan (<code>i++</code>).</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let hitung = 5;
 hitung++;    // hitung = hitung + 1  → 6
 hitung--;    // hitung = hitung - 1  → 5
 console.log(hitung);</textarea></div>
-            </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Prefix vs postfix</div>
-              <p class="content-text">Posisi <code>++</code> berpengaruh kalau nilainya langsung dipakai. <code>a++</code> (postfix) <strong>memakai nilai lama dulu</strong>, baru menambah. <code>++b</code> (prefix) <strong>menambah dulu</strong>, baru dipakai.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Prefix vs postfix</div>
+                <p class="content-text">Posisi <code>++</code> berpengaruh kalau nilainya langsung dipakai.
+                  <code>a++</code> (postfix) <strong>memakai nilai lama dulu</strong>, baru menambah. <code>++b</code>
+                  (prefix) <strong>menambah dulu</strong>, baru dipakai.
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let a = 5;
 console.log(a++);  // 5  → tampilkan dulu, baru tambah
 console.log(a);    // 6
 
 let b = 5;
 console.log(++b);  // 6  → tambah dulu, baru tampilkan</textarea></div>
-            </div>
+              </div>
 
-            <div data-tebak data-judul="Quick Test: Penugasan" data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output ketiga <code>console.log</code> ini?"><textarea>
+              <div data-tebak data-judul="Quick Test: Penugasan"
+                data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output ketiga <code>console.log</code> ini?">
+                <textarea>
 let skor = 10;
 skor += 5;
 console.log(skor);
 skor *= 2;
 console.log(skor);
 skor++;
-console.log(skor);</textarea></div>
+console.log(skor);</textarea>
+              </div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 6. PERBANDINGAN ═══════════ -->
@@ -501,64 +836,118 @@ console.log(skor);</textarea></div>
           <div class="step-number">6</div>
           <h2><small>Membandingkan</small>Operator Perbandingan &amp; == vs ===</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 220" role="img" aria-label="Timbangan dengan angka 5 di kiri dan teks 5 di kanan: seimbang menurut ==, tapi label tipenya berbeda">
-                <g class="wobble">
-                  <path class="ink" d="M180 52 v132"/>
-                  <path class="paper" d="M130 196 h100 l-12 -14 h-76 z"/>
-                  <path class="ink" d="M80 70 h200"/>
-                  <circle cx="180" cy="70" r="7" class="solid"/>
-                  <path class="thin" d="M80 70 l-28 54 M80 70 l28 54 M280 70 l-28 54 M280 70 l28 54"/>
-                  <path class="paper" d="M46 124 h68 q-6 22 -34 22 q-28 0 -34 -22z"/>
-                  <path class="paper" d="M246 124 h68 q-6 22 -34 22 q-28 0 -34 -22z"/>
-                  <rect x="56" y="88" width="48" height="36" rx="6" class="paper"/>
-                  <rect x="252" y="88" width="56" height="36" rx="6" class="soft"/>
-                  <path class="thin" d="M80 146 v22 M280 146 v22"/>
-                  <rect x="46" y="168" width="68" height="22" rx="5" class="solid"/>
-                  <rect x="246" y="168" width="68" height="22" rx="5" class="solid"/>
-                </g>
-                <text x="80" y="113" text-anchor="middle" font-size="20" class="mono">5</text>
-                <text x="280" y="113" text-anchor="middle" font-size="20" class="mono">"5"</text>
-                <text x="80" y="183" text-anchor="middle" font-size="11" class="mono inv">number</text>
-                <text x="280" y="183" text-anchor="middle" font-size="11" class="mono inv">string</text>
-                <text x="180" y="30" text-anchor="middle" font-size="13">== bilang sama, === cek tipenya juga</text>
-              </svg>
-              <div class="illus-caption"><span>Nilai sama, tipe beda</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 220" role="img"
+                  aria-label="Timbangan dengan angka 5 di kiri dan teks 5 di kanan: seimbang menurut ==, tapi label tipenya berbeda">
+                  <g class="wobble">
+                    <path class="ink" d="M180 52 v132" />
+                    <path class="paper" d="M130 196 h100 l-12 -14 h-76 z" />
+                    <path class="ink" d="M80 70 h200" />
+                    <circle cx="180" cy="70" r="7" class="solid" />
+                    <path class="thin" d="M80 70 l-28 54 M80 70 l28 54 M280 70 l-28 54 M280 70 l28 54" />
+                    <path class="paper" d="M46 124 h68 q-6 22 -34 22 q-28 0 -34 -22z" />
+                    <path class="paper" d="M246 124 h68 q-6 22 -34 22 q-28 0 -34 -22z" />
+                    <rect x="56" y="88" width="48" height="36" rx="6" class="paper" />
+                    <rect x="252" y="88" width="56" height="36" rx="6" class="soft" />
+                    <path class="thin" d="M80 146 v22 M280 146 v22" />
+                    <rect x="46" y="168" width="68" height="22" rx="5" class="solid" />
+                    <rect x="246" y="168" width="68" height="22" rx="5" class="solid" />
+                  </g>
+                  <text x="80" y="113" text-anchor="middle" font-size="20" class="mono">5</text>
+                  <text x="280" y="113" text-anchor="middle" font-size="20" class="mono">"5"</text>
+                  <text x="80" y="183" text-anchor="middle" font-size="11" class="mono inv">number</text>
+                  <text x="280" y="183" text-anchor="middle" font-size="11" class="mono inv">string</text>
+                  <text x="180" y="30" text-anchor="middle" font-size="13">== bilang sama, === cek tipenya juga</text>
+                </svg>
+                <div class="illus-caption"><span>Nilai sama, tipe beda</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Operator perbandingan menghasilkan nilai <strong>boolean</strong> (<code>true</code>/<code>false</code>).</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Operator</th><th>Arti</th><th>Contoh</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>==</code></td><td>Sama dengan (nilai)</td><td><code>5 == "5"</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>===</code></td><td>Sama dengan (nilai <strong>dan</strong> tipe)</td><td><code>5 === "5"</code></td><td><code>false</code></td></tr>
-                  <tr><td><code>!=</code></td><td>Tidak sama (nilai)</td><td><code>5 != 3</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>!==</code></td><td>Tidak sama (nilai <strong>dan</strong> tipe)</td><td><code>5 !== "5"</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>&gt;</code></td><td>Lebih besar</td><td><code>7 &gt; 3</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>&lt;</code></td><td>Lebih kecil</td><td><code>7 &lt; 3</code></td><td><code>false</code></td></tr>
-                  <tr><td><code>&gt;=</code></td><td>Lebih besar atau sama</td><td><code>5 &gt;= 5</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>&lt;=</code></td><td>Lebih kecil atau sama</td><td><code>4 &lt;= 3</code></td><td><code>false</code></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="subsection">
-              <div class="section-label">== vs === (sangat penting!)</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text">Operator perbandingan menghasilkan nilai <strong>boolean</strong>
+                (<code>true</code>/<code>false</code>).</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Operator</th>
+                      <th>Arti</th>
+                      <th>Contoh</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>==</code></td>
+                      <td>Sama dengan (nilai)</td>
+                      <td><code>5 == "5"</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>===</code></td>
+                      <td>Sama dengan (nilai <strong>dan</strong> tipe)</td>
+                      <td><code>5 === "5"</code></td>
+                      <td><code>false</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>!=</code></td>
+                      <td>Tidak sama (nilai)</td>
+                      <td><code>5 != 3</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>!==</code></td>
+                      <td>Tidak sama (nilai <strong>dan</strong> tipe)</td>
+                      <td><code>5 !== "5"</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>&gt;</code></td>
+                      <td>Lebih besar</td>
+                      <td><code>7 &gt; 3</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>&lt;</code></td>
+                      <td>Lebih kecil</td>
+                      <td><code>7 &lt; 3</code></td>
+                      <td><code>false</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>&gt;=</code></td>
+                      <td>Lebih besar atau sama</td>
+                      <td><code>5 &gt;= 5</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>&lt;=</code></td>
+                      <td>Lebih kecil atau sama</td>
+                      <td><code>4 &lt;= 3</code></td>
+                      <td><code>false</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="subsection">
+                <div class="section-label">== vs === (sangat penting!)</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 console.log(5 == "5");    // true   → hanya bandingkan nilai
 console.log(5 === "5");   // false  → bandingkan nilai DAN tipe</textarea></div>
-              <div class="important-banner">
-                <h3>Aturan praktis (wajib diingat)</h3>
-                <p>Selalu gunakan <code>===</code> dan <code>!==</code>, hindari <code>==</code> dan <code>!=</code>, agar tidak terjadi hasil yang tidak terduga.</p>
+                <div class="important-banner">
+                  <h3>Aturan praktis (wajib diingat)</h3>
+                  <p>Selalu gunakan <code>===</code> dan <code>!==</code>, hindari <code>==</code> dan <code>!=</code>,
+                    agar tidak terjadi hasil yang tidak terduga.</p>
+                </div>
+                <div data-widget="pembanding"></div>
+                <div class="callout" data-kind="awas">Jangan tertukar: <code>=</code> untuk <strong>mengisi</strong>
+                  variabel, <code>===</code> untuk <strong>membandingkan</strong>. <code>x = 5</code> mengubah x,
+                  sedangkan <code>x === 5</code> hanya bertanya "apakah x sama dengan 5?".</div>
               </div>
-              <div data-widget="pembanding"></div>
-              <div class="callout" data-kind="awas">Jangan tertukar: <code>=</code> untuk <strong>mengisi</strong> variabel, <code>===</code> untuk <strong>membandingkan</strong>. <code>x = 5</code> mengubah x, sedangkan <code>x === 5</code> hanya bertanya "apakah x sama dengan 5?".</div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 7. LOGIKA ═══════════ -->
@@ -567,72 +956,143 @@ console.log(5 === "5");   // false  → bandingkan nilai DAN tipe</textarea></di
           <div class="step-number">7</div>
           <h2><small>Menggabung syarat</small>Operator Logika</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 230" role="img" aria-label="Rangkaian seri AND: lampu mati karena satu saklar terbuka. Rangkaian paralel OR: lampu menyala karena satu saklar tertutup">
-                <g class="wobble">
-                  <path class="ink" d="M40 60 h40 M126 60 h40 M216 60 h48"/>
-                  <circle cx="84" cy="60" r="4" class="solid"/><path class="ink" d="M84 60 l34 -18"/><circle cx="122" cy="60" r="4" class="solid"/>
-                  <circle cx="170" cy="60" r="4" class="solid"/><path class="ink" d="M170 60 h42"/><circle cx="212" cy="60" r="4" class="solid"/>
-                  <circle cx="286" cy="58" r="20" class="paper"/>
-                  <path class="thin" d="M278 62 q4 -10 8 0 q4 -10 8 0"/>
-                  <path class="ink" d="M278 78 h16 v8 h-16 z"/>
-                  <path class="ink" d="M40 172 h20 M60 148 v48 M60 148 h24 M126 148 h94 M60 196 h24 M126 196 h94 M220 148 v48 M220 172 h44"/>
-                  <circle cx="84" cy="148" r="4" class="solid"/><path class="ink" d="M84 148 l34 -18"/><circle cx="122" cy="148" r="4" class="solid"/>
-                  <circle cx="84" cy="196" r="4" class="solid"/><path class="ink" d="M84 196 h38"/><circle cx="122" cy="196" r="4" class="solid"/>
-                  <circle cx="286" cy="170" r="20" class="solid"/>
-                  <path class="ink" d="M278 190 h16 v8 h-16 z"/>
-                  <path class="ink" d="M286 140 v-10 M312 152 l8 -6 M260 152 l-8 -6 M318 172 h10 M254 172 h-10"/>
-                </g>
-                <text x="100" y="34" text-anchor="middle" font-size="12" class="mono">A (false)</text>
-                <text x="190" y="44" text-anchor="middle" font-size="12" class="mono">B (true)</text>
-                <text x="40" y="100" font-size="15" class="mono">A &amp;&amp; B → lampu mati</text>
-                <text x="140" y="124" text-anchor="middle" font-size="12" class="mono">A (false)</text>
-                <text x="140" y="218" text-anchor="middle" font-size="12" class="mono">B (true)</text>
-                <text x="246" y="222" font-size="13" class="mono">A || B → nyala</text>
-              </svg>
-              <div class="illus-caption"><span>AND seri, OR paralel</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 230" role="img"
+                  aria-label="Rangkaian seri AND: lampu mati karena satu saklar terbuka. Rangkaian paralel OR: lampu menyala karena satu saklar tertutup">
+                  <g class="wobble">
+                    <path class="ink" d="M40 60 h40 M126 60 h40 M216 60 h48" />
+                    <circle cx="84" cy="60" r="4" class="solid" />
+                    <path class="ink" d="M84 60 l34 -18" />
+                    <circle cx="122" cy="60" r="4" class="solid" />
+                    <circle cx="170" cy="60" r="4" class="solid" />
+                    <path class="ink" d="M170 60 h42" />
+                    <circle cx="212" cy="60" r="4" class="solid" />
+                    <circle cx="286" cy="58" r="20" class="paper" />
+                    <path class="thin" d="M278 62 q4 -10 8 0 q4 -10 8 0" />
+                    <path class="ink" d="M278 78 h16 v8 h-16 z" />
+                    <path class="ink"
+                      d="M40 172 h20 M60 148 v48 M60 148 h24 M126 148 h94 M60 196 h24 M126 196 h94 M220 148 v48 M220 172 h44" />
+                    <circle cx="84" cy="148" r="4" class="solid" />
+                    <path class="ink" d="M84 148 l34 -18" />
+                    <circle cx="122" cy="148" r="4" class="solid" />
+                    <circle cx="84" cy="196" r="4" class="solid" />
+                    <path class="ink" d="M84 196 h38" />
+                    <circle cx="122" cy="196" r="4" class="solid" />
+                    <circle cx="286" cy="170" r="20" class="solid" />
+                    <path class="ink" d="M278 190 h16 v8 h-16 z" />
+                    <path class="ink" d="M286 140 v-10 M312 152 l8 -6 M260 152 l-8 -6 M318 172 h10 M254 172 h-10" />
+                  </g>
+                  <text x="100" y="34" text-anchor="middle" font-size="12" class="mono">A (false)</text>
+                  <text x="190" y="44" text-anchor="middle" font-size="12" class="mono">B (true)</text>
+                  <text x="40" y="100" font-size="15" class="mono">A &amp;&amp; B → lampu mati</text>
+                  <text x="140" y="124" text-anchor="middle" font-size="12" class="mono">A (false)</text>
+                  <text x="140" y="218" text-anchor="middle" font-size="12" class="mono">B (true)</text>
+                  <text x="246" y="222" font-size="13" class="mono">A || B → nyala</text>
+                </svg>
+                <div class="illus-caption"><span>AND seri, OR paralel</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Digunakan untuk menggabungkan beberapa kondisi boolean menjadi <strong>satu</strong> hasil boolean.</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Operator</th><th>Nama</th><th>Arti</th><th>Contoh</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>&amp;&amp;</code></td><td>AND</td><td>Benar jika <strong>kedua</strong> sisi benar</td><td><code>true &amp;&amp; false</code></td><td><code>false</code></td></tr>
-                  <tr><td><code>||</code></td><td>OR</td><td>Benar jika <strong>salah satu</strong> benar</td><td><code>true || false</code></td><td><code>true</code></td></tr>
-                  <tr><td><code>!</code></td><td>NOT</td><td>Membalik nilai boolean</td><td><code>!true</code></td><td><code>false</code></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Tabel kebenaran</div>
+            <div class="step-content">
+              <p class="content-text">Digunakan untuk menggabungkan beberapa kondisi boolean menjadi
+                <strong>satu</strong> hasil boolean.
+              </p>
               <div class="table-wrap">
                 <table class="tabel">
-                  <thead><tr><th>A</th><th>B</th><th>A &amp;&amp; B</th><th>A || B</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Operator</th>
+                      <th>Nama</th>
+                      <th>Arti</th>
+                      <th>Contoh</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <tr><td>true</td><td>true</td><td>true</td><td>true</td></tr>
-                    <tr><td>true</td><td>false</td><td>false</td><td>true</td></tr>
-                    <tr><td>false</td><td>true</td><td>false</td><td>true</td></tr>
-                    <tr><td>false</td><td>false</td><td>false</td><td>false</td></tr>
+                    <tr>
+                      <td><code>&amp;&amp;</code></td>
+                      <td>AND</td>
+                      <td>Benar jika <strong>kedua</strong> sisi benar</td>
+                      <td><code>true &amp;&amp; false</code></td>
+                      <td><code>false</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>||</code></td>
+                      <td>OR</td>
+                      <td>Benar jika <strong>salah satu</strong> benar</td>
+                      <td><code>true || false</code></td>
+                      <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>!</code></td>
+                      <td>NOT</td>
+                      <td>Membalik nilai boolean</td>
+                      <td><code>!true</code></td>
+                      <td><code>false</code></td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="callout" data-kind="mikir" data-label="Cara mengingat">Ibarat izin keluar rumah: <code>&amp;&amp;</code> = harus diizinkan ayah <strong>dan</strong> ibu. <code>||</code> = cukup diizinkan ayah <strong>atau</strong> ibu.</div>
-              <div data-widget="tabel-kebenaran"></div>
-            </div>
-            <div data-tebak data-judul="Quick Test: Logika" data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output ketiga baris terakhir?"><textarea>
+              <div class="subsection">
+                <div class="section-label">Tabel kebenaran</div>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>A &amp;&amp; B</th>
+                        <th>A || B</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>true</td>
+                        <td>true</td>
+                        <td>true</td>
+                        <td>true</td>
+                      </tr>
+                      <tr>
+                        <td>true</td>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>true</td>
+                      </tr>
+                      <tr>
+                        <td>false</td>
+                        <td>true</td>
+                        <td>false</td>
+                        <td>true</td>
+                      </tr>
+                      <tr>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>false</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="callout" data-kind="mikir" data-label="Cara mengingat">Ibarat izin keluar rumah:
+                  <code>&amp;&amp;</code> = harus diizinkan ayah <strong>dan</strong> ibu. <code>||</code> = cukup
+                  diizinkan ayah <strong>atau</strong> ibu.
+                </div>
+                <div data-widget="tabel-kebenaran"></div>
+              </div>
+              <div data-tebak data-judul="Quick Test: Logika"
+                data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output ketiga baris terakhir?"><textarea>
 let umur = 17;
 let punyaKtp = true;
 
 console.log(umur >= 17 && punyaKtp);
 console.log(umur < 17 || punyaKtp);
 console.log(!punyaKtp);</textarea></div>
-            <div data-challenge="16:p2"></div>
+              <div data-challenge="16:p2"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 8. TERNARY ═══════════ -->
@@ -641,39 +1101,46 @@ console.log(!punyaKtp);</textarea></div>
           <div class="step-number">8</div>
           <h2><small>If-else singkat</small>Operator Ternary</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Papan penunjuk jalan dengan tanda tanya: arah kiri jika true, arah kanan jika false">
-                <g class="wobble">
-                  <path class="ink" d="M180 70 v128" style="stroke-width:6"/>
-                  <path class="paper" d="M176 88 h-104 l-20 18 l20 18 h104 z"/>
-                  <path class="solid" d="M184 134 h104 l20 18 l-20 18 h-104 z"/>
-                  <circle cx="180" cy="44" r="26" class="paper"/>
-                  <path class="ink" d="M110 198 h140"/>
-                  <path class="thin" d="M120 198 l-10 -8 M240 198 l10 -8"/>
-                </g>
-                <text x="180" y="55" text-anchor="middle" font-size="30">?</text>
-                <text x="120" y="112" text-anchor="middle" font-size="15" class="mono">true</text>
-                <text x="242" y="158" text-anchor="middle" font-size="15" class="mono inv">false</text>
-              </svg>
-              <div class="illus-caption"><span>Dua jalan, satu pilihan</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 210" role="img"
+                  aria-label="Papan penunjuk jalan dengan tanda tanya: arah kiri jika true, arah kanan jika false">
+                  <g class="wobble">
+                    <path class="ink" d="M180 70 v128" style="stroke-width:6" />
+                    <path class="paper" d="M176 88 h-104 l-20 18 l20 18 h104 z" />
+                    <path class="solid" d="M184 134 h104 l20 18 l-20 18 h-104 z" />
+                    <circle cx="180" cy="44" r="26" class="paper" />
+                    <path class="ink" d="M110 198 h140" />
+                    <path class="thin" d="M120 198 l-10 -8 M240 198 l10 -8" />
+                  </g>
+                  <text x="180" y="55" text-anchor="middle" font-size="30">?</text>
+                  <text x="120" y="112" text-anchor="middle" font-size="15" class="mono">true</text>
+                  <text x="242" y="158" text-anchor="middle" font-size="15" class="mono inv">false</text>
+                </svg>
+                <div class="illus-caption"><span>Dua jalan, satu pilihan</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">Operator ternary adalah cara singkat menulis if-else sederhana dalam <strong>satu baris</strong>. Disebut "ternary" karena punya 3 bagian: kondisi, hasil jika benar, dan hasil jika salah.</p>
-            <div class="def-box"><strong>Sintaks</strong><code>kondisi ? nilaiJikaBenar : nilaiJikaSalah</code></div>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text">Operator ternary adalah cara singkat menulis if-else sederhana dalam <strong>satu
+                  baris</strong>. Disebut "ternary" karena punya 3 bagian: kondisi, hasil jika benar, dan hasil jika
+                salah.</p>
+              <div class="def-box"><strong>Sintaks</strong><code>kondisi ? nilaiJikaBenar : nilaiJikaSalah</code></div>
+              <div class="editor" data-editor><textarea class="editor-src">
 let nilai = 80;
 let hasil = nilai >= 75 ? "Lulus" : "Remedial";
 console.log(hasil);   // Lulus
 
 let umur = 15;
 console.log(umur >= 17 ? "Boleh bikin SIM" : "Belum boleh bikin SIM");</textarea></div>
-            <div class="callout" data-kind="tips">Pakai ternary hanya untuk kondisi <strong>sederhana</strong> dengan 2 kemungkinan hasil. Kalau sudah lebih rumit, gunakan <code>if-else</code> yang akan dipelajari di pertemuan 17.</div>
-            <div data-challenge="16:p3"></div>
+              <div class="callout" data-kind="tips">Pakai ternary hanya untuk kondisi <strong>sederhana</strong> dengan
+                2 kemungkinan hasil. Kalau sudah lebih rumit, gunakan <code>if-else</code> yang akan dipelajari di
+                pertemuan 17.</div>
+              <div data-challenge="16:p3"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 9. KONVERSI ═══════════ -->
@@ -682,71 +1149,93 @@ console.log(umur >= 17 ? "Boleh bikin SIM" : "Belum boleh bikin SIM");</textarea
           <div class="step-number">9</div>
           <h2><small>Mengubah tipe</small>Konversi Tipe Data (Type Conversion)</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 210" role="img" aria-label="Mesin Number() mengubah kartu teks 17 menjadi kartu angka 17">
-                <g class="wobble">
-                  <rect x="122" y="58" width="116" height="96" rx="12" class="paper"/>
-                  <rect x="138" y="74" width="84" height="26" rx="6" class="solid"/>
-                  <circle cx="160" cy="128" r="11" class="ink"/><circle cx="200" cy="128" r="11" class="ink"/>
-                  <path class="thin" d="M160 117 v-4 M160 139 v4 M149 128 h-4 M171 128 h4 M200 117 v-4 M200 139 v4 M189 128 h-4 M211 128 h4"/>
-                  <rect x="204" y="32" width="16" height="26" class="paper"/>
-                  <circle cx="218" cy="20" r="6" class="thin"/><circle cx="230" cy="12" r="4" class="thin"/>
-                  <path class="ink" d="M14 174 h332"/>
-                  <circle cx="40" cy="184" r="8" class="paper"/><circle cx="180" cy="184" r="8" class="paper"/><circle cx="320" cy="184" r="8" class="paper"/>
-                  <rect x="26" y="122" width="76" height="46" rx="6" class="soft"/>
-                  <rect x="262" y="122" width="76" height="46" rx="6" class="paper"/>
-                  <path class="dash" d="M104 146 h14 M240 146 h18"/>
-                </g>
-                <text x="180" y="92" text-anchor="middle" font-size="13" class="mono inv">Number()</text>
-                <text x="64" y="152" text-anchor="middle" font-size="20" class="mono">"17"</text>
-                <text x="300" y="152" text-anchor="middle" font-size="20" class="mono">17</text>
-                <text x="64" y="112" text-anchor="middle" font-size="12">string</text>
-                <text x="300" y="112" text-anchor="middle" font-size="12">number</text>
-              </svg>
-              <div class="illus-caption"><span>Ubah tipe dengan sengaja</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 210" role="img"
+                  aria-label="Mesin Number() mengubah kartu teks 17 menjadi kartu angka 17">
+                  <g class="wobble">
+                    <rect x="122" y="58" width="116" height="96" rx="12" class="paper" />
+                    <rect x="138" y="74" width="84" height="26" rx="6" class="solid" />
+                    <circle cx="160" cy="128" r="11" class="ink" />
+                    <circle cx="200" cy="128" r="11" class="ink" />
+                    <path class="thin"
+                      d="M160 117 v-4 M160 139 v4 M149 128 h-4 M171 128 h4 M200 117 v-4 M200 139 v4 M189 128 h-4 M211 128 h4" />
+                    <rect x="204" y="32" width="16" height="26" class="paper" />
+                    <circle cx="218" cy="20" r="6" class="thin" />
+                    <circle cx="230" cy="12" r="4" class="thin" />
+                    <path class="ink" d="M14 174 h332" />
+                    <circle cx="40" cy="184" r="8" class="paper" />
+                    <circle cx="180" cy="184" r="8" class="paper" />
+                    <circle cx="320" cy="184" r="8" class="paper" />
+                    <rect x="26" y="122" width="76" height="46" rx="6" class="soft" />
+                    <rect x="262" y="122" width="76" height="46" rx="6" class="paper" />
+                    <path class="dash" d="M104 146 h14 M240 146 h18" />
+                  </g>
+                  <text x="180" y="92" text-anchor="middle" font-size="13" class="mono inv">Number()</text>
+                  <text x="64" y="152" text-anchor="middle" font-size="20" class="mono">"17"</text>
+                  <text x="300" y="152" text-anchor="middle" font-size="20" class="mono">17</text>
+                  <text x="64" y="112" text-anchor="middle" font-size="12">string</text>
+                  <text x="300" y="112" text-anchor="middle" font-size="12">number</text>
+                </svg>
+                <div class="illus-caption"><span>Ubah tipe dengan sengaja</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="def-box"><strong>Definisi</strong><b>Type Conversion</b> adalah proses mengubah nilai dari satu tipe data ke tipe data lain <b>secara sengaja</b> oleh programmer (berbeda dengan type coercion yang terjadi otomatis).</div>
-            <div class="subsection">
-              <div class="section-label">Mengapa perlu?</div>
-              <p class="content-text">Input dari pengguna (misalnya dari form HTML) <strong>selalu berbentuk string</strong>, meskipun terlihat seperti angka. Jika langsung dihitung tanpa dikonversi, hasilnya bisa salah.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="def-box"><strong>Definisi</strong><b>Type Conversion</b> adalah proses mengubah nilai dari
+                satu tipe data ke tipe data lain <b>secara sengaja</b> oleh programmer (berbeda dengan type coercion
+                yang terjadi otomatis).</div>
+              <div class="subsection">
+                <div class="section-label">Mengapa perlu?</div>
+                <p class="content-text">Input dari pengguna (misalnya dari form HTML) <strong>selalu berbentuk
+                    string</strong>, meskipun terlihat seperti angka. Jika langsung dihitung tanpa dikonversi, hasilnya
+                  bisa salah.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 let inputUsia = "17";          // string, meski isinya angka
 
 console.log(inputUsia + 3);    // "173"  salah! (digabung, bukan dijumlah)</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Number(): string → number</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Number(): string → number</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 let inputUsia = "17";
 let usiaAngka = Number(inputUsia);
 
 console.log(usiaAngka + 3);        // 20  benar
 console.log(typeof usiaAngka);     // number</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">String(): number → string</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">String(): number → string</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 let angka = 100;
 let angkaJadiTeks = String(angka);
 console.log(typeof angkaJadiTeks);   // string</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Boolean(): nilai → boolean</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Boolean(): nilai → boolean</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 console.log(Boolean(1));         // true
 console.log(Boolean(0));         // false
 console.log(Boolean(""));        // false
 console.log(Boolean("halo"));    // true</textarea></div>
-              <div class="mini-grid">
-                <div class="mini-card mini-card--ink"><h4>Falsy <span class="tag">dianggap false</span></h4><p><code>0</code>, <code>""</code> (string kosong), <code>null</code>, <code>undefined</code>, <code>NaN</code> (dan tentu <code>false</code>)</p></div>
-                <div class="mini-card"><h4>Truthy <span class="tag">dianggap true</span></h4><p>Selain nilai di sebelah. Termasuk <code>"0"</code>, <code>" "</code> (spasi), dan <code>-1</code>!</p></div>
+                <div class="mini-grid">
+                  <div class="mini-card mini-card--ink">
+                    <h4>Falsy <span class="tag">dianggap false</span></h4>
+                    <p><code>0</code>, <code>""</code> (string kosong), <code>null</code>, <code>undefined</code>,
+                      <code>NaN</code> (dan tentu <code>false</code>)
+                    </p>
+                  </div>
+                  <div class="mini-card">
+                    <h4>Truthy <span class="tag">dianggap true</span></h4>
+                    <p>Selain nilai di sebelah. Termasuk <code>"0"</code>, <code>" "</code> (spasi), dan
+                      <code>-1</code>!
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div data-tebak data-judul="Quick Test: Konversi" data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris terakhir?"><textarea>
+              <div data-tebak data-judul="Quick Test: Konversi"
+                data-q="Hitung manual dulu, jangan langsung dijalankan! Apa output keempat baris terakhir?"><textarea>
 let inputNilai = "88";
 let inputAktif = "";
 
@@ -754,10 +1243,14 @@ console.log(Number(inputNilai) + 10);
 console.log(typeof Number(inputNilai));
 console.log(Boolean(inputAktif));
 console.log(Boolean(inputNilai));</textarea></div>
-            <div class="subsection">
-              <div class="section-label">Tambahan: parseInt(), parseFloat() &amp; toFixed()</div>
-              <p class="content-text"><code>parseInt()</code> dan <code>parseFloat()</code> membaca angka dari <strong>awal</strong> teks dan berhenti saat ketemu huruf. Cocok untuk teks seperti <code>"12px"</code>. Sedangkan <code>toFixed(n)</code> membulatkan ke <code>n</code> angka di belakang koma — tapi hasilnya <strong>string</strong>.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tambahan: parseInt(), parseFloat() &amp; toFixed()</div>
+                <p class="content-text"><code>parseInt()</code> dan <code>parseFloat()</code> membaca angka dari
+                  <strong>awal</strong> teks dan berhenti saat ketemu huruf. Cocok untuk teks seperti
+                  <code>"12px"</code>. Sedangkan <code>toFixed(n)</code> membulatkan ke <code>n</code> angka di belakang
+                  koma — tapi hasilnya <strong>string</strong>.
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 console.log(Number("12px"));      // NaN
 console.log(parseInt("12px"));    // 12   → ambil angka di depan
 console.log(parseInt("3.99"));    // 3    → bilangan bulat saja
@@ -767,9 +1260,10 @@ console.log(Number(""));          // 0    (hati-hati!)
 let harga = 12500 / 3;
 console.log(harga);               // 4166.666666666667
 console.log(harga.toFixed(2));    // "4166.67" (hasilnya string!)</textarea></div>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 10. MATH ═══════════ -->
@@ -779,42 +1273,88 @@ console.log(harga.toFixed(2));    // "4166.67" (hasilnya string!)</textarea></di
           <h2><small>Alat bantu</small>Objek Math</h2>
           <span class="step-tag">Tambahan</span>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Dua dadu yang dilempar dengan Math.random">
-                <g class="wobble">
-                  <g transform="rotate(-12 116 112)">
-                    <rect x="70" y="66" width="92" height="92" rx="18" class="paper"/>
-                    <circle cx="94" cy="90" r="7" class="solid"/><circle cx="138" cy="90" r="7" class="solid"/><circle cx="116" cy="112" r="7" class="solid"/><circle cx="94" cy="134" r="7" class="solid"/><circle cx="138" cy="134" r="7" class="solid"/>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Dua dadu yang dilempar dengan Math.random">
+                  <g class="wobble">
+                    <g transform="rotate(-12 116 112)">
+                      <rect x="70" y="66" width="92" height="92" rx="18" class="paper" />
+                      <circle cx="94" cy="90" r="7" class="solid" />
+                      <circle cx="138" cy="90" r="7" class="solid" />
+                      <circle cx="116" cy="112" r="7" class="solid" />
+                      <circle cx="94" cy="134" r="7" class="solid" />
+                      <circle cx="138" cy="134" r="7" class="solid" />
+                    </g>
+                    <g transform="rotate(10 252 118)">
+                      <rect x="206" y="72" width="92" height="92" rx="18" class="paper" />
+                      <circle cx="230" cy="96" r="7" class="solid" />
+                      <circle cx="252" cy="118" r="7" class="solid" />
+                      <circle cx="274" cy="140" r="7" class="solid" />
+                    </g>
+                    <path class="thin" d="M36 80 h22 M30 100 h24 M38 120 h16 M318 60 l14 -8 M322 80 h16" />
                   </g>
-                  <g transform="rotate(10 252 118)">
-                    <rect x="206" y="72" width="92" height="92" rx="18" class="paper"/>
-                    <circle cx="230" cy="96" r="7" class="solid"/><circle cx="252" cy="118" r="7" class="solid"/><circle cx="274" cy="140" r="7" class="solid"/>
-                  </g>
-                  <path class="thin" d="M36 80 h22 M30 100 h24 M38 120 h16 M318 60 l14 -8 M322 80 h16"/>
-                </g>
-                <text x="180" y="36" text-anchor="middle" font-size="16" class="mono">Math.random()</text>
-              </svg>
-              <div class="illus-caption"><span>Angka acak untuk game</span></div>
+                  <text x="180" y="36" text-anchor="middle" font-size="16" class="mono">Math.random()</text>
+                </svg>
+                <div class="illus-caption"><span>Angka acak untuk game</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <p class="content-text">JavaScript punya "kotak perkakas" bernama <code>Math</code> berisi fungsi matematika siap pakai. Ini sering dipakai untuk pembulatan nilai dan membuat angka acak di game.</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>Math.round()</code></td><td>Bulatkan ke terdekat</td><td><code>Math.round(4.5)</code></td><td><code>5</code></td></tr>
-                  <tr><td><code>Math.floor()</code></td><td>Bulatkan ke bawah</td><td><code>Math.floor(4.9)</code></td><td><code>4</code></td></tr>
-                  <tr><td><code>Math.ceil()</code></td><td>Bulatkan ke atas</td><td><code>Math.ceil(4.1)</code></td><td><code>5</code></td></tr>
-                  <tr><td><code>Math.max()</code></td><td>Nilai terbesar</td><td><code>Math.max(3, 9, 2)</code></td><td><code>9</code></td></tr>
-                  <tr><td><code>Math.min()</code></td><td>Nilai terkecil</td><td><code>Math.min(3, 9, 2)</code></td><td><code>2</code></td></tr>
-                  <tr><td><code>Math.random()</code></td><td>Angka acak 0 sampai &lt; 1</td><td><code>Math.random()</code></td><td><code>0.7302…</code></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <p class="content-text">JavaScript punya "kotak perkakas" bernama <code>Math</code> berisi fungsi
+                matematika siap pakai. Ini sering dipakai untuk pembulatan nilai dan membuat angka acak di game.</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Fungsi</th>
+                      <th>Kegunaan</th>
+                      <th>Contoh</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>Math.round()</code></td>
+                      <td>Bulatkan ke terdekat</td>
+                      <td><code>Math.round(4.5)</code></td>
+                      <td><code>5</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>Math.floor()</code></td>
+                      <td>Bulatkan ke bawah</td>
+                      <td><code>Math.floor(4.9)</code></td>
+                      <td><code>4</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>Math.ceil()</code></td>
+                      <td>Bulatkan ke atas</td>
+                      <td><code>Math.ceil(4.1)</code></td>
+                      <td><code>5</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>Math.max()</code></td>
+                      <td>Nilai terbesar</td>
+                      <td><code>Math.max(3, 9, 2)</code></td>
+                      <td><code>9</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>Math.min()</code></td>
+                      <td>Nilai terkecil</td>
+                      <td><code>Math.min(3, 9, 2)</code></td>
+                      <td><code>2</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>Math.random()</code></td>
+                      <td>Angka acak 0 sampai &lt; 1</td>
+                      <td><code>Math.random()</code></td>
+                      <td><code>0.7302…</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 console.log(Math.round(4.5));    // 5
 console.log(Math.floor(4.9));    // 4
 console.log(Math.ceil(4.1));     // 5
@@ -824,9 +1364,13 @@ console.log(Math.min(3, 9, 2));  // 2
 // Lempar dadu: angka acak 1 sampai 6
 let dadu = Math.floor(Math.random() * 6) + 1;
 console.log("Dadu:", dadu);</textarea></div>
-            <div class="callout" data-kind="tips">Jalankan kode di atas beberapa kali — angka dadunya berubah-ubah! Rumus <code>Math.floor(Math.random() * n) + 1</code> menghasilkan angka acak dari 1 sampai <code>n</code>.</div>
+              <div class="callout" data-kind="tips">Jalankan kode di atas beberapa kali — angka dadunya berubah-ubah!
+                Rumus <code>Math.floor(Math.random() * n) + 1</code> menghasilkan angka acak dari 1 sampai
+                <code>n</code>.
+              </div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 11. RANGKUMAN ═══════════ -->
@@ -835,32 +1379,65 @@ console.log("Dadu:", dadu);</textarea></div>
           <div class="step-number">11</div>
           <h2><small>Ringkas</small>Rangkuman Semua Operator</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Kategori</th><th>Operator</th></tr></thead>
-                <tbody>
-                  <tr><td>Aritmatika</td><td><span class="op-chips"><code>+</code><code>-</code><code>*</code><code>/</code><code>%</code><code>**</code></span></td></tr>
-                  <tr><td>Penugasan</td><td><span class="op-chips"><code>=</code><code>+=</code><code>-=</code><code>*=</code><code>/=</code><code>%=</code><code>**=</code><code>++</code><code>--</code></span></td></tr>
-                  <tr><td>Perbandingan</td><td><span class="op-chips"><code>==</code><code>===</code><code>!=</code><code>!==</code><code>&gt;</code><code>&lt;</code><code>&gt;=</code><code>&lt;=</code></span></td></tr>
-                  <tr><td>Logika</td><td><span class="op-chips"><code>&amp;&amp;</code><code>||</code><code>!</code></span></td></tr>
-                  <tr><td>Ternary</td><td><span class="op-chips"><code>kondisi ? benar : salah</code></span></td></tr>
-                  <tr><td>Konversi Tipe</td><td><span class="op-chips"><code>Number()</code><code>String()</code><code>Boolean()</code><code>parseInt()</code><code>parseFloat()</code></span></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="important-banner">
-              <h3>Aturan praktis yang wajib diingat</h3>
-              <ol>
-                <li>Utamakan <code>===</code> dan <code>!==</code>, hindari <code>==</code> dan <code>!=</code></li>
-                <li>Konversi tipe data secara eksplisit, jangan andalkan coercion otomatis</li>
-                <li>Ternary hanya untuk kondisi sederhana (2 kemungkinan hasil)</li>
-                <li>Perhatikan urutan prioritas operator, gunakan <code>( )</code> jika ragu</li>
-              </ol>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Kategori</th>
+                      <th>Operator</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Aritmatika</td>
+                      <td><span
+                          class="op-chips"><code>+</code><code>-</code><code>*</code><code>/</code><code>%</code><code>**</code></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Penugasan</td>
+                      <td><span
+                          class="op-chips"><code>=</code><code>+=</code><code>-=</code><code>*=</code><code>/=</code><code>%=</code><code>**=</code><code>++</code><code>--</code></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Perbandingan</td>
+                      <td><span
+                          class="op-chips"><code>==</code><code>===</code><code>!=</code><code>!==</code><code>&gt;</code><code>&lt;</code><code>&gt;=</code><code>&lt;=</code></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Logika</td>
+                      <td><span class="op-chips"><code>&amp;&amp;</code><code>||</code><code>!</code></span></td>
+                    </tr>
+                    <tr>
+                      <td>Ternary</td>
+                      <td><span class="op-chips"><code>kondisi ? benar : salah</code></span></td>
+                    </tr>
+                    <tr>
+                      <td>Konversi Tipe</td>
+                      <td><span
+                          class="op-chips"><code>Number()</code><code>String()</code><code>Boolean()</code><code>parseInt()</code><code>parseFloat()</code></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="important-banner">
+                <h3>Aturan praktis yang wajib diingat</h3>
+                <ol>
+                  <li>Utamakan <code>===</code> dan <code>!==</code>, hindari <code>==</code> dan <code>!=</code></li>
+                  <li>Konversi tipe data secara eksplisit, jangan andalkan coercion otomatis</li>
+                  <li>Ternary hanya untuk kondisi sederhana (2 kemungkinan hasil)</li>
+                  <li>Perhatikan urutan prioritas operator, gunakan <code>( )</code> jika ragu</li>
+                </ol>
+              </div>
             </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 12. TES PENGETAHUAN ═══════════ -->
@@ -869,15 +1446,19 @@ console.log("Dadu:", dadu);</textarea></div>
           <div class="step-number">✎</div>
           <h2><small>Dinilai</small>Tes Pengetahuan</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
-            <div data-kuis="16" data-judul="Kuis Operator"></div>
-            <div data-challenge="16:t1"></div>
-            <div data-challenge="16:t2"></div>
-            <div data-challenge="16:t3"></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong>
+                + <strong>50% tantangan koding</strong>. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.
+              </p>
+              <div data-kuis="16" data-judul="Kuis Operator"></div>
+              <div data-challenge="16:t1"></div>
+              <div data-challenge="16:t2"></div>
+              <div data-challenge="16:t3"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <nav class="pager" aria-label="Navigasi materi">
@@ -910,6 +1491,8 @@ console.log("Dadu:", dadu);</textarea></div>
   <script src="../assets/js/challenge.js"></script>
   <script src="../assets/js/kuis.js"></script>
   <script src="../assets/js/widgets/w16.js"></script>
+  <script src="../assets/js/nav.js"></script>
   <script src="../assets/js/app.js"></script>
 </body>
+
 </html>

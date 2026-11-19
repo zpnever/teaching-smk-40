@@ -93,23 +93,31 @@
 
   /** Kelompokkan tes berdasarkan data input supaya satu run bisa dipakai banyak tes. */
   function rencanaRun(soal) {
+    var tesBiasa = [];
+    (soal.tes || []).forEach(function (t, i) { if (!t.langkah) tesBiasa.push({ t: t, i: i }); });
+    if (!tesBiasa.length && (soal.tes || []).length) return [];
     // Soal DOM: setiap tes yang memanggil sesuatu dijalankan di halaman segar,
     // supaya klik/ketik di satu tes tidak memengaruhi tes lainnya.
-    if (soal.tesTerpisah || soal.mode === 'dom') return rencanaTerpisah(soal);
+    if (soal.tesTerpisah || soal.mode === 'dom') return rencanaTerpisah(soal, tesBiasa);
     var grup = {};
     var urutan = [];
-    (soal.tes || []).forEach(function (t, i) {
+    tesBiasa.forEach(function (item) {
+      var t = item.t, i = item.i;
       var input = inputKeKode(t.input !== undefined ? t.input : soal.input);
-      if (!grup.hasOwnProperty(input)) { grup[input] = []; urutan.push(input); }
-      grup[input].push(i);
+      var stKey = t.storage ? JSON.stringify(t.storage) : '';
+      var key = input + '\u0000' + stKey;
+      if (!grup.hasOwnProperty(key)) { grup[key] = { input: input, storage: t.storage, idx: [] }; urutan.push(key); }
+      grup[key].idx.push(i);
     });
-    if (!urutan.length) { urutan.push(inputKeKode(soal.input)); grup[urutan[0]] = []; }
-    return urutan.map(function (input) {
-      var idx = grup[input];
-      var harness = idx.filter(function (i) { return soal.tes[i].panggil; }).map(function (i) {
+    if (!urutan.length) {
+      return [{ input: inputKeKode(soal.input), storage: soal.storage, harness: '', tes: [] }];
+    }
+    return urutan.map(function (key) {
+      var g = grup[key];
+      var harness = g.idx.filter(function (i) { return soal.tes[i].panggil; }).map(function (i) {
         return harnessTes(soal, i);
       }).join('\n');
-      return { input: input, harness: harness, tes: idx };
+      return { input: g.input, storage: g.storage, harness: harness, tes: g.idx };
     });
   }
 
@@ -117,14 +125,18 @@
     return '__cek(' + i + ', function () { return (' + soal.tes[i].panggil + '); });';
   }
 
-  function rencanaTerpisah(soal) {
-    var biasa = { input: inputKeKode(soal.input), harness: '', tes: [] };
+  function rencanaTerpisah(soal, tesBiasa) {
+    var defInput = inputKeKode(soal.input);
+    var defStorage = soal.storage || undefined;
+    var biasa = { input: defInput, storage: defStorage, harness: '', tes: [] };
     var hasil = [biasa];
-    (soal.tes || []).forEach(function (t, i) {
+    tesBiasa.forEach(function (item) {
+      var t = item.t, i = item.i;
       var input = inputKeKode(t.input !== undefined ? t.input : soal.input);
-      if (t.panggil) hasil.push({ input: input, harness: harnessTes(soal, i), tes: [i] });
-      else if (input === biasa.input) biasa.tes.push(i);
-      else hasil.push({ input: input, harness: '', tes: [i] });
+      var storage = t.storage !== undefined ? t.storage : defStorage;
+      if (t.panggil) hasil.push({ input: input, storage: storage, harness: harnessTes(soal, i), tes: [i] });
+      else if (input === biasa.input && storage === biasa.storage) biasa.tes.push(i);
+      else hasil.push({ input: input, storage: storage, harness: '', tes: [i] });
     });
     if (!biasa.tes.length && hasil.length > 1) hasil.shift();
     return hasil;
@@ -203,9 +215,47 @@
     });
 
     var rencana = rencanaRun(soal);
-    return Promise.all(rencana.map(function (r) {
-      return runFn(kode, { input: r.input, harness: r.harness });
-    })).then(function (hasilRun) {
+    var langkahTes = [];
+    (soal.tes || []).forEach(function (t, i) { if (t.langkah && t.langkah.length) langkahTes.push({ t: t, i: i }); });
+
+    function jalankanLangkah(t, idx) {
+      var langkah = t.langkah;
+      var storage = Object.assign({}, t.storage || soal.storage || {});
+      var k = 0;
+      function lanjut() {
+        var L = langkah[k];
+        var akhir = k === langkah.length - 1;
+        var expr = typeof L === 'string' ? L : (L && L.panggil ? L.panggil : '');
+        if (akhir && !expr && t.panggil) expr = t.panggil;
+        var st = (L && typeof L === 'object' && L.storage) ? Object.assign({}, L.storage) : storage;
+        var inp = inputKeKode((L && typeof L === 'object' && L.input !== undefined) ? L.input : (t.input !== undefined ? t.input : soal.input));
+        var har = expr ? '__cek(' + idx + ', function () { return (' + expr + '); });' : '';
+        return runFn(kode, { input: inp, harness: har, storage: st }).then(function (res) {
+          if (res.timeout || res.error) return { res: res, panggil: expr };
+          if (expr) {
+            var c = null;
+            for (var j = 0; j < res.cek.length; j++) if (res.cek[j].i === idx) c = res.cek[j];
+            if (!c || !c.ok) return { res: res, panggil: expr };
+          }
+          storage = Object.assign({}, res.storage || {});
+          k++;
+          if (k < langkah.length) return lanjut();
+          return { res: res, panggil: expr };
+        });
+      }
+      return lanjut();
+    }
+
+    return Promise.all([
+      Promise.all(rencana.map(function (r) {
+        return runFn(kode, { input: r.input, harness: r.harness, storage: r.storage });
+      })),
+      Promise.all(langkahTes.map(function (item) {
+        return jalankanLangkah(item.t, item.i);
+      }))
+    ]).then(function (dua) {
+      var hasilRun = dua[0];
+      var hasilLangkah = dua[1];
       var hasilTes = [];
       rencana.forEach(function (r, k) {
         r.tes.forEach(function (i) {
@@ -213,6 +263,12 @@
           var gagal = nilaiTes(t, hasilRun[k], kode);
           hasilTes[i] = { nama: t.nama, lulus: !gagal, detail: gagal || '' };
         });
+      });
+      langkahTes.forEach(function (item, k) {
+        var info = hasilLangkah[k];
+        var t = Object.assign({ __i: item.i, __dom: soal.mode === 'dom' }, item.t, info.panggil ? { panggil: info.panggil } : {});
+        var gagal = nilaiTes(t, info.res, kode);
+        hasilTes[item.i] = { nama: item.t.nama, lulus: !gagal, detail: gagal || '' };
       });
       items = items.concat(hasilTes.filter(Boolean));
       if (!(soal.tes || []).length) {
@@ -223,7 +279,7 @@
       return {
         lulus: items.every(function (it) { return it.lulus; }),
         items: items,
-        run: hasilRun[0]
+        run: hasilRun[0] || (hasilLangkah[0] && hasilLangkah[0].res) || null
       };
     });
   }

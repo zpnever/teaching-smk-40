@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>#20 Array &amp; Object — Coret.js</title>
-  <meta name="description" content="Pertemuan 20: membuat dan mengakses array, push/pop/shift/unshift, includes/indexOf/join, object dan property, nested object, array of object, array & object di dalam function, sampai map/filter/find — lengkap dengan editor kode, praktik, dan kuis.">
+  <meta name="description"
+    content="Pertemuan 20: membuat dan mengakses array, push/pop/shift/unshift, includes/indexOf/join, object dan property, nested object, array of object, array & object di dalam function, sampai map/filter/find — lengkap dengan editor kode, praktik, dan kuis.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/editor.css">
   <style>
     /* Rak berlaci (array) */
-    .rak { display: flex; flex-wrap: wrap; gap: 10px; padding: 1.1rem .9rem 1rem; margin: .4rem 0 .8rem; border: 2.5px solid var(--ink); border-radius: var(--radius-md); background: var(--bg-card-alt); background-image: var(--dots); background-size: 14px 14px; min-height: 104px; align-items: flex-end; }
+    .rak {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 1.1rem .9rem 1rem;
+      margin: .4rem 0 .8rem;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--radius-md);
+      background: var(--bg-card-alt);
+      background-image: var(--dots);
+      background-size: 14px 14px;
+      min-height: 104px;
+      align-items: flex-end;
+    }
+
     .laci {
       position: relative;
       display: flex;
@@ -31,37 +49,216 @@
       cursor: pointer;
       transition: transform .2s, box-shadow .2s, background-color .2s;
     }
-    .laci::after { content: ''; position: absolute; left: 50%; top: 7px; width: 26px; height: 5px; margin-left: -13px; border-radius: 4px; background: var(--ink); }
-    .laci:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-md); }
-    .laci.pilih { background: var(--ink); color: var(--bg); }
-    .laci.pilih::after { background: var(--bg); }
-    .laci-no { position: absolute; top: -13px; left: -10px; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; background: var(--ink); color: var(--bg); font-size: .78rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-card); }
-    .laci.pilih .laci-no { background: var(--bg); color: var(--ink); border-color: var(--ink); }
-    .laci-isi { font-size: .86rem; font-weight: 700; white-space: nowrap; }
-    .laci.baru { animation: laciMasuk .45s cubic-bezier(.2, .9, .3, 1.3); }
-    .laci-keluar { pointer-events: none; animation: laciKeluar .65s ease-in forwards; border-style: dashed; }
-    @keyframes laciMasuk { from { transform: translateY(-26px) scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
-    @keyframes laciKeluar { to { transform: translateY(30px) rotate(-8deg); opacity: 0; } }
-    .rak-kosong { font-family: var(--font-mono); color: var(--ink-lighter); padding: .8rem; }
-    .rak-info { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: .8rem; }
+
+    .laci::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 7px;
+      width: 26px;
+      height: 5px;
+      margin-left: -13px;
+      border-radius: 4px;
+      background: var(--ink);
+    }
+
+    .laci:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .laci.pilih {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .laci.pilih::after {
+      background: var(--bg);
+    }
+
+    .laci-no {
+      position: absolute;
+      top: -13px;
+      left: -10px;
+      min-width: 26px;
+      height: 26px;
+      padding: 0 6px;
+      border-radius: 13px;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: .78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-card);
+    }
+
+    .laci.pilih .laci-no {
+      background: var(--bg);
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .laci-isi {
+      font-size: .86rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .laci.baru {
+      animation: laciMasuk .45s cubic-bezier(.2, .9, .3, 1.3);
+    }
+
+    .laci-keluar {
+      pointer-events: none;
+      animation: laciKeluar .65s ease-in forwards;
+      border-style: dashed;
+    }
+
+    @keyframes laciMasuk {
+      from {
+        transform: translateY(-26px) scale(.7);
+        opacity: 0;
+      }
+
+      to {
+        transform: none;
+        opacity: 1;
+      }
+    }
+
+    @keyframes laciKeluar {
+      to {
+        transform: translateY(30px) rotate(-8deg);
+        opacity: 0;
+      }
+    }
+
+    .rak-kosong {
+      font-family: var(--font-mono);
+      color: var(--ink-lighter);
+      padding: .8rem;
+    }
+
+    .rak-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: .8rem;
+    }
 
     /* Jalur data */
-    .jd-pohon { font-family: var(--font-mono); font-size: .88rem; border: 2.5px solid var(--ink); border-radius: var(--radius-md); background: var(--bg-card); padding: .9rem 1rem; margin: .4rem 0 .9rem; overflow-x: auto; }
-    .jd-pohon::before { content: 'const sekolah ='; display: block; font-weight: 800; margin-bottom: 2px; }
-    .jd-obj, .jd-arr { display: inline-block; vertical-align: top; }
-    .jd-baris { padding-left: 1.3rem; border-left: 2px dashed var(--border-light); margin-left: .35rem; display: flex; gap: 8px; align-items: baseline; padding-top: 2px; padding-bottom: 2px; }
-    .jd-kurung { font-weight: 800; }
-    .jd-key { color: var(--ink-light); font-weight: 700; white-space: nowrap; }
-    .jd-idx { flex: none; min-width: 22px; height: 22px; border-radius: 11px; background: var(--ink); color: var(--bg); font-size: .7rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
-    .jd-nilai { font: inherit; font-weight: 700; padding: 1px 8px; border: 2px solid var(--ink); border-radius: 8px; background: var(--bg-card-alt); cursor: pointer; white-space: nowrap; }
-    .jd-nilai:hover { background: var(--accent-soft); }
-    .jd-nilai.on { background: var(--ink); color: var(--bg); }
-    .jd-langkah { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 6px; font-size: .82rem; }
-    .jd-langkah span { padding: 1px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--bg-card); }
-    .jd-langkah i { font-style: normal; color: var(--ink-lighter); }
+    .jd-pohon {
+      font-family: var(--font-mono);
+      font-size: .88rem;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      padding: .9rem 1rem;
+      margin: .4rem 0 .9rem;
+      overflow-x: auto;
+    }
 
-    .banding2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .tabel td code { white-space: nowrap; }
+    .jd-pohon::before {
+      content: 'const sekolah =';
+      display: block;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .jd-obj,
+    .jd-arr {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .jd-baris {
+      padding-left: 1.3rem;
+      border-left: 2px dashed var(--border-light);
+      margin-left: .35rem;
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .jd-kurung {
+      font-weight: 800;
+    }
+
+    .jd-key {
+      color: var(--ink-light);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .jd-idx {
+      flex: none;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 11px;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: .7rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .jd-nilai {
+      font: inherit;
+      font-weight: 700;
+      padding: 1px 8px;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--bg-card-alt);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .jd-nilai:hover {
+      background: var(--accent-soft);
+    }
+
+    .jd-nilai.on {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .jd-langkah {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      margin-top: 6px;
+      font-size: .82rem;
+    }
+
+    .jd-langkah span {
+      padding: 1px 8px;
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      background: var(--bg-card);
+    }
+
+    .jd-langkah i {
+      font-style: normal;
+      color: var(--ink-lighter);
+    }
+
+    .banding2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .tabel td code {
+      white-space: nowrap;
+    }
   </style>
   <script>
     setTimeout(function () {
@@ -75,21 +272,42 @@
     }, 6000);
   </script>
 </head>
+
 <body data-materi="20">
-  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
       <nav class="topnav" aria-label="Materi">
-        <a href="15-dasar-javascript.html" data-nav="15">#15 Dasar</a>
-        <a href="16-operator.html" data-nav="16">#16 Operator</a>
-        <a href="17-percabangan.html" data-nav="17">#17 Percabangan</a>
-        <a href="18-perulangan.html" data-nav="18">#18 Perulangan</a>
-        <a href="19-function.html" data-nav="19">#19 Function</a>
-        <a href="20-array-object.html" data-nav="20">#20 Array &amp; Object</a>
-        <a href="21-dom.html" data-nav="21">#21 DOM</a>
-        <a href="22-event.html" data-nav="22">#22 Event</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar JavaScript</a>
+            </li>
+            <li><a href="16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp; Object</a></li>
+            <li><a href="21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a></li>
+          </ul>
+        </div>
         <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
         <a href="../rapor.html" data-nav="rapor">Rapor</a>
       </nav>
@@ -101,42 +319,50 @@
     <div class="hero-text">
       <span class="hero-badge">Pertemuan 20</span>
       <h1>Array &amp; Object: <span class="highlight">Wadah</span> untuk Banyak Data</h1>
-      <p class="hero-subtitle">Satu variabel untuk satu nilai sudah tidak cukup. Array menyimpan <em>daftar</em> berurutan, object menyimpan data <em>berlabel</em> — dan gabungan keduanya adalah bentuk data yang paling sering dipakai di aplikasi sungguhan.</p>
+      <p class="hero-subtitle">Satu variabel untuk satu nilai sudah tidak cukup. Array menyimpan <em>daftar</em>
+        berurutan, object menyimpan data <em>berlabel</em> — dan gabungan keduanya adalah bentuk data yang paling sering
+        dipakai di aplikasi sungguhan.</p>
       <p class="tujuan-title">Setelah ini kamu bisa:</p>
       <ul class="tujuan">
         <li><span>Membuat array dan mengakses elemennya dengan index</span></li>
-        <li><span>Memakai <code>push</code>, <code>pop</code>, <code>unshift</code>, <code>shift</code>, <code>includes</code>, <code>indexOf</code>, <code>join</code></span></li>
+        <li><span>Memakai <code>push</code>, <code>pop</code>, <code>unshift</code>, <code>shift</code>,
+            <code>includes</code>, <code>indexOf</code>, <code>join</code></span></li>
         <li><span>Membuat object lalu mengakses, mengubah, menambah, dan menghapus property</span></li>
         <li><span>Menggabungkan keduanya: array of object dan object bersarang</span></li>
         <li><span>Mengirim array &amp; object ke dalam function</span></li>
       </ul>
       <a href="#s1" class="hero-cta">Mulai Belajar
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
       </a>
     </div>
     <div class="hero-art">
       <div class="illus-frame">
-        <svg class="doodle" viewBox="0 0 360 260" role="img" aria-label="Rak berlaci bernomor 0, 1, 2 di kiri, dan kartu identitas berisi nama dan kelas di kanan">
+        <svg class="doodle" viewBox="0 0 360 260" role="img"
+          aria-label="Rak berlaci bernomor 0, 1, 2 di kiri, dan kartu identitas berisi nama dan kelas di kanan">
           <g class="wobble">
-            <rect x="20" y="40" width="150" height="190" rx="10" class="paper"/>
-            <rect x="34" y="56" width="122" height="46" rx="6" class="paper"/>
-            <rect x="34" y="112" width="122" height="46" rx="6" class="paper"/>
-            <rect x="34" y="168" width="122" height="46" rx="6" class="solid"/>
-            <path class="ink" d="M82 79 h26 M82 135 h26"/>
-            <path class="thin" d="M84 191 h22" style="stroke:#fff"/>
+            <rect x="20" y="40" width="150" height="190" rx="10" class="paper" />
+            <rect x="34" y="56" width="122" height="46" rx="6" class="paper" />
+            <rect x="34" y="112" width="122" height="46" rx="6" class="paper" />
+            <rect x="34" y="168" width="122" height="46" rx="6" class="solid" />
+            <path class="ink" d="M82 79 h26 M82 135 h26" />
+            <path class="thin" d="M84 191 h22" style="stroke:#fff" />
             <g transform="rotate(5 270 130)">
-              <rect x="196" y="66" width="148" height="110" rx="12" class="paper"/>
-              <rect x="196" y="66" width="148" height="26" rx="12" class="solid"/>
-              <circle cx="228" cy="128" r="18" class="soft"/>
-              <path class="thin" d="M256 118 h72 M256 136 h58 M256 154 h66"/>
+              <rect x="196" y="66" width="148" height="110" rx="12" class="paper" />
+              <rect x="196" y="66" width="148" height="26" rx="12" class="solid" />
+              <circle cx="228" cy="128" r="18" class="soft" />
+              <path class="thin" d="M256 118 h72 M256 136 h58 M256 154 h66" />
             </g>
-            <path class="dash" d="M170 30 q30 -22 60 6"/>
+            <path class="dash" d="M170 30 q30 -22 60 6" />
           </g>
           <text x="48" y="84" font-size="15" class="mono">0</text>
           <text x="48" y="140" font-size="15" class="mono">1</text>
           <text x="48" y="196" font-size="15" class="mono inv">2</text>
           <text x="95" y="30" text-anchor="middle" font-size="16" class="mono">[ ]</text>
-          <text x="270" y="84" text-anchor="middle" font-size="12" class="mono inv" transform="rotate(5 270 130)">{ key: value }</text>
+          <text x="270" y="84" text-anchor="middle" font-size="12" class="mono inv" transform="rotate(5 270 130)">{ key:
+            value }</text>
           <text x="270" y="206" text-anchor="middle" font-size="12">kartu identitas</text>
         </svg>
         <div class="illus-caption"><span>Daftar bernomor &amp; data berlabel</span></div>
@@ -161,32 +387,73 @@
           <div class="step-number">1</div>
           <h2><small>Pengenalan</small>Array vs Object</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Bayangkan kamu harus menyimpan nilai ulangan 30 siswa. Membuat <code>nilai1</code>, <code>nilai2</code>, … sampai <code>nilai30</code> jelas melelahkan. JavaScript punya dua "wadah" untuk menyimpan banyak data sekaligus:</p>
-            <div class="mini-grid">
-              <div class="mini-card mini-card--ink"><h4><span class="letter-badge">[ ]</span>Array</h4><p>Seperti <strong>rak berlaci bernomor</strong>. Isinya berurutan, setiap laci punya nomor (index).</p></div>
-              <div class="mini-card"><h4><span class="letter-badge">{ }</span>Object</h4><p>Seperti <strong>kartu identitas</strong>. Setiap data punya label: nama, kelas, umur, ...</p></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Bayangkan kamu harus menyimpan nilai ulangan 30 siswa. Membuat
+                <code>nilai1</code>, <code>nilai2</code>, … sampai <code>nilai30</code> jelas melelahkan. JavaScript
+                punya dua "wadah" untuk menyimpan banyak data sekaligus:</p>
+              <div class="mini-grid">
+                <div class="mini-card mini-card--ink">
+                  <h4><span class="letter-badge">[ ]</span>Array</h4>
+                  <p>Seperti <strong>rak berlaci bernomor</strong>. Isinya berurutan, setiap laci punya nomor (index).
+                  </p>
+                </div>
+                <div class="mini-card">
+                  <h4><span class="letter-badge">{ }</span>Object</h4>
+                  <p>Seperti <strong>kartu identitas</strong>. Setiap data punya label: nama, kelas, umur, ...</p>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Array</th>
+                      <th>Object</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Bentuk</td>
+                      <td>Daftar <strong>berurutan</strong></td>
+                      <td>Kumpulan data <strong>berlabel</strong> (<code>key: value</code>)</td>
+                    </tr>
+                    <tr>
+                      <td>Ditulis dengan</td>
+                      <td><code>[ ]</code></td>
+                      <td><code>{ }</code></td>
+                    </tr>
+                    <tr>
+                      <td>Mengakses lewat</td>
+                      <td><strong>Nomor index</strong> (<code>daftar[0]</code>)</td>
+                      <td><strong>Nama property</strong> (<code>siswa.nama</code>)</td>
+                    </tr>
+                    <tr>
+                      <td>Cocok untuk</td>
+                      <td>Banyak data sejenis (daftar nilai, daftar nama)</td>
+                      <td>Satu benda dengan banyak sifat (profil siswa, produk)</td>
+                    </tr>
+                    <tr>
+                      <td>Analogi</td>
+                      <td>Rak berlaci bernomor</td>
+                      <td>Kartu identitas</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="subsection">
+                <div class="section-label">Setup file praktik</div>
+                <p class="content-text">Seperti pertemuan sebelumnya, buat 2 file: <code>index.html</code> (struktur
+                  dasar HTML + <code>&lt;script src="./script.js"&gt;</code>) dan <code>script.js</code> untuk koding.
+                  Di website ini kamu juga bisa langsung mencoba di editor.</p>
+              </div>
+              <div class="callout" data-kind="fakta">Hampir semua data di aplikasi yang kamu pakai sehari-hari berbentuk
+                array dan object: daftar chat, daftar produk di marketplace, daftar video, profil akun. Setelah materi
+                ini, kamu bisa membaca bentuk data seperti itu.</div>
             </div>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th></th><th>Array</th><th>Object</th></tr></thead>
-                <tbody>
-                  <tr><td>Bentuk</td><td>Daftar <strong>berurutan</strong></td><td>Kumpulan data <strong>berlabel</strong> (<code>key: value</code>)</td></tr>
-                  <tr><td>Ditulis dengan</td><td><code>[ ]</code></td><td><code>{ }</code></td></tr>
-                  <tr><td>Mengakses lewat</td><td><strong>Nomor index</strong> (<code>daftar[0]</code>)</td><td><strong>Nama property</strong> (<code>siswa.nama</code>)</td></tr>
-                  <tr><td>Cocok untuk</td><td>Banyak data sejenis (daftar nilai, daftar nama)</td><td>Satu benda dengan banyak sifat (profil siswa, produk)</td></tr>
-                  <tr><td>Analogi</td><td>Rak berlaci bernomor</td><td>Kartu identitas</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Setup file praktik</div>
-              <p class="content-text">Seperti pertemuan sebelumnya, buat 2 file: <code>index.html</code> (struktur dasar HTML + <code>&lt;script src="./script.js"&gt;</code>) dan <code>script.js</code> untuk koding. Di website ini kamu juga bisa langsung mencoba di editor.</p>
-            </div>
-            <div class="callout" data-kind="fakta">Hampir semua data di aplikasi yang kamu pakai sehari-hari berbentuk array dan object: daftar chat, daftar produk di marketplace, daftar video, profil akun. Setelah materi ini, kamu bisa membaca bentuk data seperti itu.</div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 2. ARRAY: MEMBUAT & MENGAKSES ═══════════ -->
@@ -195,48 +462,65 @@
           <div class="step-number">2</div>
           <h2><small>Array</small>Membuat &amp; Mengakses</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 170" role="img" aria-label="Tiga laci berisi apel, jeruk, mangga dengan nomor index 0, 1, 2">
-                <g class="wobble">
-                  <rect x="20" y="50" width="100" height="80" rx="10" class="paper"/>
-                  <rect x="130" y="50" width="100" height="80" rx="10" class="paper"/>
-                  <rect x="240" y="50" width="100" height="80" rx="10" class="paper"/>
-                  <path class="ink" d="M56 64 h28 M166 64 h28 M276 64 h28" style="stroke-width:5"/>
-                  <circle cx="34" cy="46" r="15" class="solid"/>
-                  <circle cx="144" cy="46" r="15" class="solid"/>
-                  <circle cx="254" cy="46" r="15" class="solid"/>
-                </g>
-                <text x="34" y="51" text-anchor="middle" font-size="14" class="mono inv">0</text>
-                <text x="144" y="51" text-anchor="middle" font-size="14" class="mono inv">1</text>
-                <text x="254" y="51" text-anchor="middle" font-size="14" class="mono inv">2</text>
-                <text x="70" y="102" text-anchor="middle" font-size="13" class="mono">"apel"</text>
-                <text x="180" y="102" text-anchor="middle" font-size="13" class="mono">"jeruk"</text>
-                <text x="290" y="102" text-anchor="middle" font-size="13" class="mono">"mangga"</text>
-                <text x="180" y="160" text-anchor="middle" font-size="12">length = 3, index terakhir = 2</text>
-              </svg>
-              <div class="illus-caption"><span>Index dimulai dari 0</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 170" role="img"
+                  aria-label="Tiga laci berisi apel, jeruk, mangga dengan nomor index 0, 1, 2">
+                  <g class="wobble">
+                    <rect x="20" y="50" width="100" height="80" rx="10" class="paper" />
+                    <rect x="130" y="50" width="100" height="80" rx="10" class="paper" />
+                    <rect x="240" y="50" width="100" height="80" rx="10" class="paper" />
+                    <path class="ink" d="M56 64 h28 M166 64 h28 M276 64 h28" style="stroke-width:5" />
+                    <circle cx="34" cy="46" r="15" class="solid" />
+                    <circle cx="144" cy="46" r="15" class="solid" />
+                    <circle cx="254" cy="46" r="15" class="solid" />
+                  </g>
+                  <text x="34" y="51" text-anchor="middle" font-size="14" class="mono inv">0</text>
+                  <text x="144" y="51" text-anchor="middle" font-size="14" class="mono inv">1</text>
+                  <text x="254" y="51" text-anchor="middle" font-size="14" class="mono inv">2</text>
+                  <text x="70" y="102" text-anchor="middle" font-size="13" class="mono">"apel"</text>
+                  <text x="180" y="102" text-anchor="middle" font-size="13" class="mono">"jeruk"</text>
+                  <text x="290" y="102" text-anchor="middle" font-size="13" class="mono">"mangga"</text>
+                  <text x="180" y="160" text-anchor="middle" font-size="12">length = 3, index terakhir = 2</text>
+                </svg>
+                <div class="illus-caption"><span>Index dimulai dari 0</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Membuat array</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Membuat array</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 console.log(buah);   // ['apel', 'jeruk', 'mangga']</textarea></div>
-              <div class="table-wrap">
-                <table class="tabel">
-                  <thead><tr><th>Index</th><th>0</th><th>1</th><th>2</th></tr></thead>
-                  <tbody><tr><td>Isi</td><td><code>"apel"</code></td><td><code>"jeruk"</code></td><td><code>"mangga"</code></td></tr></tbody>
-                </table>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th>Index</th>
+                        <th>0</th>
+                        <th>1</th>
+                        <th>2</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Isi</td>
+                        <td><code>"apel"</code></td>
+                        <td><code>"jeruk"</code></td>
+                        <td><code>"mangga"</code></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="callout" data-kind="awas" data-label="Sangat penting!">Index dimulai dari
+                  <strong>0</strong>, bukan 1. Elemen pertama adalah <code>buah[0]</code>.</div>
               </div>
-              <div class="callout" data-kind="awas" data-label="Sangat penting!">Index dimulai dari <strong>0</strong>, bukan 1. Elemen pertama adalah <code>buah[0]</code>.</div>
-            </div>
 
-            <div class="subsection">
-              <div class="section-label">Mengakses elemen</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Mengakses elemen</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 
 console.log(buah[0]);                 // apel
@@ -244,13 +528,14 @@ console.log(buah[2]);                 // mangga
 console.log(buah[3]);                 // undefined (tidak ada index 3)
 console.log(buah.length);             // 3 (jumlah elemen)
 console.log(buah[buah.length - 1]);   // mangga (elemen terakhir)</textarea></div>
-              <div class="def-box"><strong>Rumus elemen terakhir</strong><code>array[array.length - 1]</code>. Ingat: <code>length</code> adalah <b>property</b> (tanpa kurung), bukan function.</div>
-              <div data-widget="rak-array" data-mode="index"></div>
-            </div>
+                <div class="def-box"><strong>Rumus elemen terakhir</strong><code>array[array.length - 1]</code>. Ingat:
+                  <code>length</code> adalah <b>property</b> (tanpa kurung), bukan function.</div>
+                <div data-widget="rak-array" data-mode="index"></div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Mengubah elemen &amp; const pada array</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Mengubah elemen &amp; const pada array</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 
 buah[1] = "pisang";
@@ -260,17 +545,21 @@ buah[0] = "anggur";  // ✅ boleh: mengubah ISI
 console.log(buah);
 
 buah = ["durian"];   // ❌ TypeError: Assignment to constant variable</textarea></div>
-              <p class="content-text">Array yang dibuat dengan <code>const</code> <strong>isinya boleh diubah</strong>, tetapi variabelnya <strong>tidak boleh diganti seluruhnya</strong>. Analoginya: raknya dipaku ke dinding (tidak bisa diganti rak lain), tapi isi lacinya bebas ditukar.</p>
-            </div>
+                <p class="content-text">Array yang dibuat dengan <code>const</code> <strong>isinya boleh
+                    diubah</strong>, tetapi variabelnya <strong>tidak boleh diganti seluruhnya</strong>. Analoginya:
+                  raknya dipaku ke dinding (tidak bisa diganti rak lain), tapi isi lacinya bebas ditukar.</p>
+              </div>
 
-            <div data-tebak data-judul="Index berapa?" data-q="Perhatikan baik-baik index-nya. Apa output kode ini?"><textarea>
+              <div data-tebak data-judul="Index berapa?" data-q="Perhatikan baik-baik index-nya. Apa output kode ini?">
+                <textarea>
 const kelas = ["X", "XI", "XII"];
 console.log(kelas[1]);
 console.log(kelas.length);</textarea></div>
 
-            <div data-challenge="20:p1"></div>
+              <div data-challenge="20:p1"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 3. MENAMBAH & MENGHAPUS ═══════════ -->
@@ -279,45 +568,74 @@ console.log(kelas.length);</textarea></div>
           <div class="step-number">3</div>
           <h2><small>Array</small>Menambah &amp; Menghapus Elemen</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 170" role="img" aria-label="Antrean kotak: unshift dan shift di sisi awal, push dan pop di sisi akhir">
-                <g class="wobble">
-                  <rect x="100" y="60" width="50" height="50" rx="8" class="paper"/>
-                  <rect x="155" y="60" width="50" height="50" rx="8" class="paper"/>
-                  <rect x="210" y="60" width="50" height="50" rx="8" class="paper"/>
-                  <path class="ink" d="M30 72 h56 M76 64 l10 8 l-10 8"/>
-                  <path class="ink" d="M86 98 h-56 M40 90 l-10 8 l10 8"/>
-                  <path class="ink" d="M274 72 h56 M320 64 l10 8 l-10 8"/>
-                  <path class="ink" d="M330 98 h-56 M284 90 l-10 8 l10 8"/>
-                </g>
-                <text x="125" y="90" text-anchor="middle" font-size="13" class="mono">10</text>
-                <text x="180" y="90" text-anchor="middle" font-size="13" class="mono">20</text>
-                <text x="235" y="90" text-anchor="middle" font-size="13" class="mono">30</text>
-                <text x="58" y="56" text-anchor="middle" font-size="11" class="mono">unshift</text>
-                <text x="58" y="124" text-anchor="middle" font-size="11" class="mono">shift</text>
-                <text x="302" y="56" text-anchor="middle" font-size="11" class="mono">pop</text>
-                <text x="302" y="124" text-anchor="middle" font-size="11" class="mono">push</text>
-                <text x="58" y="150" text-anchor="middle" font-size="12">AWAL</text>
-                <text x="302" y="150" text-anchor="middle" font-size="12">AKHIR</text>
-              </svg>
-              <div class="illus-caption"><span>Dua pintu: awal &amp; akhir</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 170" role="img"
+                  aria-label="Antrean kotak: unshift dan shift di sisi awal, push dan pop di sisi akhir">
+                  <g class="wobble">
+                    <rect x="100" y="60" width="50" height="50" rx="8" class="paper" />
+                    <rect x="155" y="60" width="50" height="50" rx="8" class="paper" />
+                    <rect x="210" y="60" width="50" height="50" rx="8" class="paper" />
+                    <path class="ink" d="M30 72 h56 M76 64 l10 8 l-10 8" />
+                    <path class="ink" d="M86 98 h-56 M40 90 l-10 8 l10 8" />
+                    <path class="ink" d="M274 72 h56 M320 64 l10 8 l-10 8" />
+                    <path class="ink" d="M330 98 h-56 M284 90 l-10 8 l10 8" />
+                  </g>
+                  <text x="125" y="90" text-anchor="middle" font-size="13" class="mono">10</text>
+                  <text x="180" y="90" text-anchor="middle" font-size="13" class="mono">20</text>
+                  <text x="235" y="90" text-anchor="middle" font-size="13" class="mono">30</text>
+                  <text x="58" y="56" text-anchor="middle" font-size="11" class="mono">unshift</text>
+                  <text x="58" y="124" text-anchor="middle" font-size="11" class="mono">shift</text>
+                  <text x="302" y="56" text-anchor="middle" font-size="11" class="mono">pop</text>
+                  <text x="302" y="124" text-anchor="middle" font-size="11" class="mono">push</text>
+                  <text x="58" y="150" text-anchor="middle" font-size="12">AWAL</text>
+                  <text x="302" y="150" text-anchor="middle" font-size="12">AKHIR</text>
+                </svg>
+                <div class="illus-caption"><span>Dua pintu: awal &amp; akhir</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Method</th><th>Fungsi</th><th>Posisi</th><th>Return (tambahan)</th></tr></thead>
-                <tbody>
-                  <tr><td><code>push(x)</code></td><td><strong>Menambah</strong> elemen</td><td>Di <strong>akhir</strong></td><td>Panjang baru</td></tr>
-                  <tr><td><code>pop()</code></td><td><strong>Menghapus</strong> elemen</td><td>Di <strong>akhir</strong></td><td>Elemen yang dibuang</td></tr>
-                  <tr><td><code>unshift(x)</code></td><td><strong>Menambah</strong> elemen</td><td>Di <strong>awal</strong></td><td>Panjang baru</td></tr>
-                  <tr><td><code>shift()</code></td><td><strong>Menghapus</strong> elemen</td><td>Di <strong>awal</strong></td><td>Elemen yang dibuang</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th>Fungsi</th>
+                      <th>Posisi</th>
+                      <th>Return (tambahan)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>push(x)</code></td>
+                      <td><strong>Menambah</strong> elemen</td>
+                      <td>Di <strong>akhir</strong></td>
+                      <td>Panjang baru</td>
+                    </tr>
+                    <tr>
+                      <td><code>pop()</code></td>
+                      <td><strong>Menghapus</strong> elemen</td>
+                      <td>Di <strong>akhir</strong></td>
+                      <td>Elemen yang dibuang</td>
+                    </tr>
+                    <tr>
+                      <td><code>unshift(x)</code></td>
+                      <td><strong>Menambah</strong> elemen</td>
+                      <td>Di <strong>awal</strong></td>
+                      <td>Panjang baru</td>
+                    </tr>
+                    <tr>
+                      <td><code>shift()</code></td>
+                      <td><strong>Menghapus</strong> elemen</td>
+                      <td>Di <strong>awal</strong></td>
+                      <td>Elemen yang dibuang</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 const angka = [10, 20, 30];
 
 angka.push(40);       // [10, 20, 30, 40]
@@ -329,12 +647,14 @@ console.log(angka);
 angka.shift();        // [10, 20, 30]      (5 dibuang)
 console.log(angka);</textarea></div>
 
-            <div data-widget="rak-array" data-mode="method"></div>
+              <div data-widget="rak-array" data-mode="method"></div>
 
-            <div class="subsection">
-              <div class="section-label">Tambahan: nilai yang dikembalikan</div>
-              <p class="content-text">Method juga me-<code>return</code> sesuatu. <code>pop()</code> dan <code>shift()</code> mengembalikan elemen yang dibuang — berguna misalnya untuk mengambil antrean berikutnya.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tambahan: nilai yang dikembalikan</div>
+                <p class="content-text">Method juga me-<code>return</code> sesuatu. <code>pop()</code> dan
+                  <code>shift()</code> mengembalikan elemen yang dibuang — berguna misalnya untuk mengambil antrean
+                  berikutnya.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 const antrean = ["Budi", "Ani", "Citra"];
 
 const dipanggil = antrean.shift();
@@ -343,12 +663,14 @@ console.log("Sisa antrean:", antrean);
 
 const panjang = antrean.push("Doni");
 console.log("Panjang antrean sekarang:", panjang);</textarea></div>
-            </div>
+              </div>
 
-            <div class="subsection">
-              <div class="section-label">Tambahan: splice untuk posisi di tengah</div>
-              <p class="content-text"><code>push/pop/shift/unshift</code> hanya bekerja di ujung. Untuk menghapus atau menyisipkan di <strong>tengah</strong>, pakai <code>splice(index, jumlahHapus, ...elemenBaru)</code>.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tambahan: splice untuk posisi di tengah</div>
+                <p class="content-text"><code>push/pop/shift/unshift</code> hanya bekerja di ujung. Untuk menghapus atau
+                  menyisipkan di <strong>tengah</strong>, pakai <code>splice(index, jumlahHapus, ...elemenBaru)</code>.
+                </p>
+                <div class="editor" data-editor><textarea class="editor-src">
 const hari = ["Senin", "Selasa", "Rabu", "Kamis"];
 
 hari.splice(1, 1);              // hapus 1 elemen mulai index 1
@@ -356,11 +678,12 @@ console.log(hari);              // ['Senin', 'Rabu', 'Kamis']
 
 hari.splice(1, 0, "Selasa!");   // sisipkan di index 1, tidak menghapus
 console.log(hari);</textarea></div>
-            </div>
+              </div>
 
-            <div data-challenge="20:p2"></div>
+              <div data-challenge="20:p2"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 4. MENCARI & MENGGABUNGKAN ═══════════ -->
@@ -369,19 +692,34 @@ console.log(hari);</textarea></div>
           <div class="step-number">4</div>
           <h2><small>Array</small>Mencari &amp; Menggabungkan</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Method</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>includes(x)</code></td><td><code>true</code> / <code>false</code> — apakah ada?</td></tr>
-                  <tr><td><code>indexOf(x)</code></td><td>Nomor index, atau <code>-1</code> jika tidak ada</td></tr>
-                  <tr><td><code>join(pemisah)</code></td><td><strong>String</strong> gabungan semua elemen</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>includes(x)</code></td>
+                      <td><code>true</code> / <code>false</code> — apakah ada?</td>
+                    </tr>
+                    <tr>
+                      <td><code>indexOf(x)</code></td>
+                      <td>Nomor index, atau <code>-1</code> jika tidak ada</td>
+                    </tr>
+                    <tr>
+                      <td><code>join(pemisah)</code></td>
+                      <td><strong>String</strong> gabungan semua elemen</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 const hobi = ["membaca", "ngoding", "gaming"];
 
 console.log(hobi.includes("ngoding"));   // true   (apakah ada?)
@@ -389,10 +727,11 @@ console.log(hobi.includes("renang"));    // false
 console.log(hobi.indexOf("gaming"));     // 2      (di index berapa?)
 console.log(hobi.indexOf("renang"));     // -1     (tidak ditemukan)
 console.log(hobi.join(", "));            // membaca, ngoding, gaming</textarea></div>
-            <div class="callout" data-kind="awas"><code>includes</code> dan <code>indexOf</code> membedakan huruf besar-kecil: <code>"Ngoding"</code> tidak sama dengan <code>"ngoding"</code>.</div>
-            <div class="subsection">
-              <div class="section-label">Contoh pemakaian nyata</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="callout" data-kind="awas"><code>includes</code> dan <code>indexOf</code> membedakan huruf
+                besar-kecil: <code>"Ngoding"</code> tidak sama dengan <code>"ngoding"</code>.</div>
+              <div class="subsection">
+                <div class="section-label">Contoh pemakaian nyata</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const terdaftar = ["budi", "ani", "citra"];
 const login = "Ani";
 
@@ -402,14 +741,17 @@ if (terdaftar.includes(login.toLowerCase())) {
 } else {
   console.log("Nama belum terdaftar.");
 }</textarea></div>
-            </div>
-            <div data-tebak data-judul="join tanpa pemisah?" data-q="Kalau <code>join()</code> dipanggil tanpa argument, pemisahnya apa? Tebak output-nya!"><textarea>
+              </div>
+              <div data-tebak data-judul="join tanpa pemisah?"
+                data-q="Kalau <code>join()</code> dipanggil tanpa argument, pemisahnya apa? Tebak output-nya!">
+                <textarea>
 const kata = ["Coret", "js", "keren"];
 console.log(kata.join());
 console.log(kata.join(""));</textarea></div>
-            <div data-challenge="20:p3"></div>
+              <div data-challenge="20:p3"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 5. LOOPING ARRAY ═══════════ -->
@@ -419,46 +761,52 @@ console.log(kata.join(""));</textarea></div>
           <h2><small>Array + Perulangan</small>Mengolah Semua Elemen</h2>
           <span class="step-tag">Tambahan</span>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Kekuatan array muncul saat digabung dengan <strong>perulangan</strong> (pertemuan 18). Daftar berisi 3 atau 300 elemen bisa diolah dengan kode yang sama.</p>
-            <div class="tabs">
-              <div class="tabs-nav" role="tablist">
-                <button class="tab-btn" aria-selected="true" aria-controls="loop-for">for biasa</button>
-                <button class="tab-btn" aria-selected="false" aria-controls="loop-of">for...of</button>
-                <button class="tab-btn" aria-selected="false" aria-controls="loop-each">forEach</button>
-              </div>
-              <div class="tab-panel" id="loop-for">
-                <p class="content-text">Pakai index dari <code>0</code> sampai <code>length - 1</code>. Cocok kalau kamu butuh nomor index-nya.</p>
-                <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Kekuatan array muncul saat digabung dengan <strong>perulangan</strong> (pertemuan
+                18). Daftar berisi 3 atau 300 elemen bisa diolah dengan kode yang sama.</p>
+              <div class="tabs">
+                <div class="tabs-nav" role="tablist">
+                  <button class="tab-btn" aria-selected="true" aria-controls="loop-for">for biasa</button>
+                  <button class="tab-btn" aria-selected="false" aria-controls="loop-of">for...of</button>
+                  <button class="tab-btn" aria-selected="false" aria-controls="loop-each">forEach</button>
+                </div>
+                <div class="tab-panel" id="loop-for">
+                  <p class="content-text">Pakai index dari <code>0</code> sampai <code>length - 1</code>. Cocok kalau
+                    kamu butuh nomor index-nya.</p>
+                  <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 
 for (let i = 0; i < buah.length; i++) {
   console.log(`${i + 1}. ${buah[i]}`);
 }</textarea></div>
-              </div>
-              <div class="tab-panel" id="loop-of" hidden>
-                <p class="content-text">Paling ringkas: langsung dapat <strong>isinya</strong>, tanpa mengurus index.</p>
-                <div class="editor" data-editor><textarea class="editor-src">
+                </div>
+                <div class="tab-panel" id="loop-of" hidden>
+                  <p class="content-text">Paling ringkas: langsung dapat <strong>isinya</strong>, tanpa mengurus index.
+                  </p>
+                  <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 
 for (const b of buah) {
   console.log(b);
 }</textarea></div>
-              </div>
-              <div class="tab-panel" id="loop-each" hidden>
-                <p class="content-text">Method array yang menerima <strong>callback</strong> (pertemuan 19). Callback dipanggil sekali untuk setiap elemen. Bentuk ini akan sering kamu pakai di DOM: <code>document.querySelectorAll("li").forEach(...)</code>.</p>
-                <div class="editor" data-editor><textarea class="editor-src">
+                </div>
+                <div class="tab-panel" id="loop-each" hidden>
+                  <p class="content-text">Method array yang menerima <strong>callback</strong> (pertemuan 19). Callback
+                    dipanggil sekali untuk setiap elemen. Bentuk ini akan sering kamu pakai di DOM:
+                    <code>document.querySelectorAll("li").forEach(...)</code>.</p>
+                  <div class="editor" data-editor><textarea class="editor-src">
 const buah = ["apel", "jeruk", "mangga"];
 
 buah.forEach((b, i) => {
   console.log(i, b);
 });</textarea></div>
+                </div>
               </div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Pola akumulator: total, rata-rata, terbesar</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Pola akumulator: total, rata-rata, terbesar</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const nilai = [80, 75, 90, 65, 88];
 
 let total = 0;
@@ -474,11 +822,13 @@ for (const n of nilai) {
 console.log("Total     :", total);
 console.log("Rata-rata :", total / nilai.length);
 console.log("Terbesar  :", terbesar);</textarea></div>
-              <div class="callout" data-kind="tips">Selalu pakai <code>nilai.length</code>, jangan menulis angka <code>5</code> langsung. Kalau datanya bertambah, kodemu tetap benar.</div>
+                <div class="callout" data-kind="tips">Selalu pakai <code>nilai.length</code>, jangan menulis angka
+                  <code>5</code> langsung. Kalau datanya bertambah, kodemu tetap benar.</div>
+              </div>
+              <div data-challenge="20:p7"></div>
             </div>
-            <div data-challenge="20:p7"></div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 6. OBJECT: MEMBUAT & MENGAKSES ═══════════ -->
@@ -487,33 +837,35 @@ console.log("Terbesar  :", terbesar);</textarea></div>
           <div class="step-number">6</div>
           <h2><small>Object</small>Membuat &amp; Mengakses</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Kartu identitas siswa berisi label nama, kelas, umur, aktif beserta nilainya">
-                <g class="wobble">
-                  <rect x="40" y="24" width="280" height="160" rx="14" class="paper"/>
-                  <rect x="40" y="24" width="280" height="34" rx="14" class="solid"/>
-                  <rect x="60" y="76" width="70" height="88" rx="8" class="soft"/>
-                  <path class="thin" d="M150 90 h60 M150 114 h60 M150 138 h60 M150 162 h60"/>
-                </g>
-                <text x="180" y="47" text-anchor="middle" font-size="13" class="mono inv">const siswa = { }</text>
-                <text x="150" y="86" font-size="11" class="mono">nama:</text>
-                <text x="215" y="86" font-size="11" class="mono">"Budi"</text>
-                <text x="150" y="110" font-size="11" class="mono">kelas:</text>
-                <text x="215" y="110" font-size="11" class="mono">"XI RPL"</text>
-                <text x="150" y="134" font-size="11" class="mono">umur:</text>
-                <text x="215" y="134" font-size="11" class="mono">16</text>
-                <text x="150" y="158" font-size="11" class="mono">aktif:</text>
-                <text x="215" y="158" font-size="11" class="mono">true</text>
-              </svg>
-              <div class="illus-caption"><span>Setiap data punya label</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Kartu identitas siswa berisi label nama, kelas, umur, aktif beserta nilainya">
+                  <g class="wobble">
+                    <rect x="40" y="24" width="280" height="160" rx="14" class="paper" />
+                    <rect x="40" y="24" width="280" height="34" rx="14" class="solid" />
+                    <rect x="60" y="76" width="70" height="88" rx="8" class="soft" />
+                    <path class="thin" d="M150 90 h60 M150 114 h60 M150 138 h60 M150 162 h60" />
+                  </g>
+                  <text x="180" y="47" text-anchor="middle" font-size="13" class="mono inv">const siswa = { }</text>
+                  <text x="150" y="86" font-size="11" class="mono">nama:</text>
+                  <text x="215" y="86" font-size="11" class="mono">"Budi"</text>
+                  <text x="150" y="110" font-size="11" class="mono">kelas:</text>
+                  <text x="215" y="110" font-size="11" class="mono">"XI RPL"</text>
+                  <text x="150" y="134" font-size="11" class="mono">umur:</text>
+                  <text x="215" y="134" font-size="11" class="mono">16</text>
+                  <text x="150" y="158" font-size="11" class="mono">aktif:</text>
+                  <text x="215" y="158" font-size="11" class="mono">true</text>
+                </svg>
+                <div class="illus-caption"><span>Setiap data punya label</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Cara membuat object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Cara membuat object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const siswa = {
   nama: "Budi",
   kelas: "XI RPL",
@@ -522,31 +874,34 @@ const siswa = {
 };
 
 console.log(siswa);</textarea></div>
-              <p class="content-text">Tiap data berbentuk <strong>key: value</strong> (pasangan nama dan nilai), dipisah koma. <em>Key</em> disebut juga <strong>property</strong>.</p>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Mengakses property</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+                <p class="content-text">Tiap data berbentuk <strong>key: value</strong> (pasangan nama dan nilai),
+                  dipisah koma. <em>Key</em> disebut juga <strong>property</strong>.</p>
+              </div>
+              <div class="subsection">
+                <div class="section-label">Mengakses property</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const siswa = { nama: "Budi", kelas: "XI RPL", umur: 16, aktif: true };
 
 console.log(siswa.nama);       // Budi       → dot notation (paling umum)
 console.log(siswa["kelas"]);   // XI RPL     → bracket notation
 console.log(siswa.alamat);     // undefined  → property tidak ada</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Tambahan: kapan memakai bracket?</div>
-              <p class="content-text">Bracket notation wajib dipakai kalau nama property-nya disimpan di <strong>variabel</strong>, atau mengandung spasi/tanda strip.</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Tambahan: kapan memakai bracket?</div>
+                <p class="content-text">Bracket notation wajib dipakai kalau nama property-nya disimpan di
+                  <strong>variabel</strong>, atau mengandung spasi/tanda strip.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 const nilai = { matematika: 85, "bahasa inggris": 90 };
 
 const mapel = "matematika";
 console.log(nilai[mapel]);              // 85  (isi variabel mapel dipakai sebagai key)
 console.log(nilai.mapel);               // undefined (mencari property bernama "mapel")
 console.log(nilai["bahasa inggris"]);   // 90  (key dengan spasi)</textarea></div>
+              </div>
+              <div data-challenge="20:p4"></div>
             </div>
-            <div data-challenge="20:p4"></div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 7. OBJECT: UBAH TAMBAH HAPUS ═══════════ -->
@@ -555,9 +910,10 @@ console.log(nilai["bahasa inggris"]);   // 90  (key dengan spasi)</textarea></di
           <div class="step-number">7</div>
           <h2><small>Object</small>Mengubah, Menambah, Menghapus</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="editor" data-editor><textarea class="editor-src">
 const siswa = { nama: "Budi", kelas: "XI RPL", umur: 16, aktif: true };
 
 siswa.umur = 17;           // MENGUBAH nilai property
@@ -566,16 +922,26 @@ delete siswa.aktif;        // MENGHAPUS property
 
 console.log(siswa);
 // {nama: 'Budi', kelas: 'XI RPL', umur: 17, hobi: 'ngoding'}</textarea></div>
-            <div class="mini-grid">
-              <div class="mini-card"><h4>Ubah</h4><p>Isi property yang <strong>sudah ada</strong>: <code>siswa.umur = 17</code></p></div>
-              <div class="mini-card"><h4>Tambah</h4><p>Isi property yang <strong>belum ada</strong>: <code>siswa.hobi = "ngoding"</code></p></div>
-              <div class="mini-card mini-card--ink"><h4>Hapus</h4><p>Pakai kata kunci <code>delete</code>: <code>delete siswa.aktif</code></p></div>
-            </div>
-            <div class="callout" data-kind="tips">Sama seperti array, object yang dibuat dengan <code>const</code> tetap boleh diubah isinya. Yang tidak boleh: <code>siswa = { ... }</code> (mengganti seluruhnya).</div>
+              <div class="mini-grid">
+                <div class="mini-card">
+                  <h4>Ubah</h4>
+                  <p>Isi property yang <strong>sudah ada</strong>: <code>siswa.umur = 17</code></p>
+                </div>
+                <div class="mini-card">
+                  <h4>Tambah</h4>
+                  <p>Isi property yang <strong>belum ada</strong>: <code>siswa.hobi = "ngoding"</code></p>
+                </div>
+                <div class="mini-card mini-card--ink">
+                  <h4>Hapus</h4>
+                  <p>Pakai kata kunci <code>delete</code>: <code>delete siswa.aktif</code></p>
+                </div>
+              </div>
+              <div class="callout" data-kind="tips">Sama seperti array, object yang dibuat dengan <code>const</code>
+                tetap boleh diubah isinya. Yang tidak boleh: <code>siswa = { ... }</code> (mengganti seluruhnya).</div>
 
-            <div class="subsection">
-              <div class="section-label">Tambahan: melihat isi object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Tambahan: melihat isi object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const siswa = { nama: "Budi", kelas: "XI RPL", umur: 17 };
 
 console.log(Object.keys(siswa));     // daftar nama property
@@ -586,17 +952,21 @@ console.log("alamat" in siswa);      // false
 for (const key in siswa) {
   console.log(`${key} = ${siswa[key]}`);
 }</textarea></div>
-              <p class="content-text"><code>for...in</code> mengulang setiap <strong>nama property</strong>. Karena key-nya ada di variabel, nilainya diambil dengan bracket: <code>siswa[key]</code>.</p>
-            </div>
-            <div data-tebak data-judul="Ubah atau tambah?" data-q="Ada satu property yang diubah, satu yang ditambah, dan satu yang dihapus. Apa output-nya?"><textarea>
+                <p class="content-text"><code>for...in</code> mengulang setiap <strong>nama property</strong>. Karena
+                  key-nya ada di variabel, nilainya diambil dengan bracket: <code>siswa[key]</code>.</p>
+              </div>
+              <div data-tebak data-judul="Ubah atau tambah?"
+                data-q="Ada satu property yang diubah, satu yang ditambah, dan satu yang dihapus. Apa output-nya?">
+                <textarea>
 const hp = { merk: "Andro", harga: 2000000 };
 hp.harga = hp.harga - 500000;
 hp.warna = "hitam";
 delete hp.merk;
 console.log(hp);</textarea></div>
-            <div data-challenge="20:p5"></div>
+              <div data-challenge="20:p5"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 8. NESTED & ARRAY OF OBJECT ═══════════ -->
@@ -605,30 +975,43 @@ console.log(hp);</textarea></div>
           <div class="step-number">8</div>
           <h2><small>Gabungan</small>Nested &amp; Array of Object</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-image">
-            <div class="illus-frame">
-              <svg class="doodle" viewBox="0 0 360 200" role="img" aria-label="Rak array berisi tiga kartu object siswa">
-                <g class="wobble">
-                  <rect x="14" y="30" width="332" height="150" rx="14" class="paper"/>
-                  <g transform="rotate(-3 76 105)"><rect x="30" y="56" width="92" height="100" rx="10" class="paper"/><rect x="30" y="56" width="92" height="22" rx="10" class="solid"/></g>
-                  <rect x="134" y="56" width="92" height="100" rx="10" class="paper"/><rect x="134" y="56" width="92" height="22" rx="10" class="solid"/>
-                  <g transform="rotate(3 284 105)"><rect x="238" y="56" width="92" height="100" rx="10" class="paper"/><rect x="238" y="56" width="92" height="22" rx="10" class="solid"/></g>
-                  <path class="thin" d="M44 110 h60 M44 130 h44 M148 110 h60 M148 130 h44 M252 110 h60 M252 130 h44"/>
-                </g>
-                <text x="180" y="22" text-anchor="middle" font-size="13" class="mono">daftarSiswa = [ {…}, {…}, {…} ]</text>
-                <text x="76" y="72" text-anchor="middle" font-size="11" class="mono inv" transform="rotate(-3 76 105)">[0]</text>
-                <text x="180" y="72" text-anchor="middle" font-size="11" class="mono inv">[1]</text>
-                <text x="284" y="72" text-anchor="middle" font-size="11" class="mono inv" transform="rotate(3 284 105)">[2]</text>
-                <text x="180" y="100" text-anchor="middle" font-size="11" class="mono">"Ani"</text>
-              </svg>
-              <div class="illus-caption"><span>Index dulu, lalu property</span></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-image">
+              <div class="illus-frame">
+                <svg class="doodle" viewBox="0 0 360 200" role="img"
+                  aria-label="Rak array berisi tiga kartu object siswa">
+                  <g class="wobble">
+                    <rect x="14" y="30" width="332" height="150" rx="14" class="paper" />
+                    <g transform="rotate(-3 76 105)">
+                      <rect x="30" y="56" width="92" height="100" rx="10" class="paper" />
+                      <rect x="30" y="56" width="92" height="22" rx="10" class="solid" />
+                    </g>
+                    <rect x="134" y="56" width="92" height="100" rx="10" class="paper" />
+                    <rect x="134" y="56" width="92" height="22" rx="10" class="solid" />
+                    <g transform="rotate(3 284 105)">
+                      <rect x="238" y="56" width="92" height="100" rx="10" class="paper" />
+                      <rect x="238" y="56" width="92" height="22" rx="10" class="solid" />
+                    </g>
+                    <path class="thin"
+                      d="M44 110 h60 M44 130 h44 M148 110 h60 M148 130 h44 M252 110 h60 M252 130 h44" />
+                  </g>
+                  <text x="180" y="22" text-anchor="middle" font-size="13" class="mono">daftarSiswa = [ {…}, {…}, {…}
+                    ]</text>
+                  <text x="76" y="72" text-anchor="middle" font-size="11" class="mono inv"
+                    transform="rotate(-3 76 105)">[0]</text>
+                  <text x="180" y="72" text-anchor="middle" font-size="11" class="mono inv">[1]</text>
+                  <text x="284" y="72" text-anchor="middle" font-size="11" class="mono inv"
+                    transform="rotate(3 284 105)">[2]</text>
+                  <text x="180" y="100" text-anchor="middle" font-size="11" class="mono">"Ani"</text>
+                </svg>
+                <div class="illus-caption"><span>Index dulu, lalu property</span></div>
+              </div>
             </div>
-          </div>
-          <div class="step-content">
-            <div class="subsection">
-              <div class="section-label">Object di dalam object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Object di dalam object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const sekolah = {
   nama: "SMK Nusantara",
   alamat: {
@@ -638,17 +1021,17 @@ const sekolah = {
 };
 
 console.log(sekolah.alamat.kota);   // Jakarta</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Array di dalam object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Array di dalam object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const siswa = { nama: "Budi", hobi: ["membaca", "ngoding"] };
 console.log(siswa.hobi[1]);       // ngoding
 console.log(siswa.hobi.length);   // 2</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Array of object (paling sering dipakai di dunia nyata)</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Array of object (paling sering dipakai di dunia nyata)</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const daftarSiswa = [
   { nama: "Budi", nilai: 85 },
   { nama: "Ani", nilai: 90 },
@@ -666,12 +1049,14 @@ console.log(daftarSiswa.length);     // 4
 for (const s of daftarSiswa) {
   console.log(`${s.nama}: ${s.nilai >= 75 ? "Lulus" : "Remedial"}`);
 }</textarea></div>
+              </div>
+              <div data-widget="jalur-data"></div>
+              <div class="callout" data-kind="fakta">Data dari internet (misalnya daftar produk dari server) biasanya
+                dikirim dalam format <strong>JSON</strong> — bentuknya persis array of object seperti di atas.</div>
+              <div data-challenge="20:p6"></div>
             </div>
-            <div data-widget="jalur-data"></div>
-            <div class="callout" data-kind="fakta">Data dari internet (misalnya daftar produk dari server) biasanya dikirim dalam format <strong>JSON</strong> — bentuknya persis array of object seperti di atas.</div>
-            <div data-challenge="20:p6"></div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 9. ARRAY & OBJECT DI FUNCTION ═══════════ -->
@@ -680,12 +1065,15 @@ for (const s of daftarSiswa) {
           <div class="step-number">9</div>
           <h2><small>Gabungan</small>Array &amp; Object di Dalam Function</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Array dan object bisa dikirim sebagai <strong>argument</strong> dan dikembalikan dengan <strong>return</strong>, sama seperti angka atau string. Inilah cara membuat function yang benar-benar berguna.</p>
-            <div class="subsection">
-              <div class="section-label">Mengirim array ke function</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Array dan object bisa dikirim sebagai <strong>argument</strong> dan dikembalikan
+                dengan <strong>return</strong>, sama seperti angka atau string. Inilah cara membuat function yang
+                benar-benar berguna.</p>
+              <div class="subsection">
+                <div class="section-label">Mengirim array ke function</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 function hitungRata(daftarNilai) {
   let total = 0;
   for (const n of daftarNilai) {
@@ -696,10 +1084,10 @@ function hitungRata(daftarNilai) {
 
 console.log(hitungRata([80, 90, 70]));         // 80
 console.log(hitungRata([100, 95, 88, 77]));    // 90</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Mengirim object ke function</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Mengirim object ke function</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 function kartuSiswa(siswa) {
   return `${siswa.nama} (${siswa.kelas}) — umur ${siswa.umur} tahun`;
 }
@@ -707,11 +1095,12 @@ function kartuSiswa(siswa) {
 const budi = { nama: "Budi", kelas: "XI RPL", umur: 16 };
 console.log(kartuSiswa(budi));
 console.log(kartuSiswa({ nama: "Ani", kelas: "XI TKJ", umur: 17 }));</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Me-return object (banyak hasil sekaligus)</div>
-              <p class="content-text"><code>return</code> hanya bisa mengirim <strong>satu</strong> nilai. Kalau hasilnya banyak, bungkus dalam object:</p>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Me-return object (banyak hasil sekaligus)</div>
+                <p class="content-text"><code>return</code> hanya bisa mengirim <strong>satu</strong> nilai. Kalau
+                  hasilnya banyak, bungkus dalam object:</p>
+                <div class="editor" data-editor><textarea class="editor-src">
 function infoPersegiPanjang(p, l) {
   return {
     luas: p * l,
@@ -722,10 +1111,10 @@ function infoPersegiPanjang(p, l) {
 const hasil = infoPersegiPanjang(12, 8);
 console.log(hasil);
 console.log(hasil.luas, hasil.keliling);</textarea></div>
-            </div>
-            <div class="subsection">
-              <div class="section-label">Tambahan: method — function di dalam object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              </div>
+              <div class="subsection">
+                <div class="section-label">Tambahan: method — function di dalam object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const kucing = {
   nama: "Oyen",
   bersuara() {
@@ -734,10 +1123,15 @@ const kucing = {
 };
 
 console.log(kucing.bersuara());</textarea></div>
-              <p class="content-text">Function yang menjadi property disebut <strong>method</strong>. Kamu sudah sering memakainya: <code>console.log()</code>, <code>buah.push()</code>, dan nanti <code>document.querySelector()</code>.</p>
-            </div>
-            <div class="callout" data-kind="awas" data-label="Hati-hati!">Array/object yang dikirim ke function adalah <strong>barang yang sama</strong>, bukan fotokopinya. Kalau function memanggil <code>push</code> atau mengubah property, data aslinya ikut berubah.</div>
-            <div data-tebak data-judul="Barang yang sama" data-q="Function <code>tambahBonus</code> mengubah array yang dikirim. Apa output-nya?"><textarea>
+                <p class="content-text">Function yang menjadi property disebut <strong>method</strong>. Kamu sudah
+                  sering memakainya: <code>console.log()</code>, <code>buah.push()</code>, dan nanti
+                  <code>document.querySelector()</code>.</p>
+              </div>
+              <div class="callout" data-kind="awas" data-label="Hati-hati!">Array/object yang dikirim ke function adalah
+                <strong>barang yang sama</strong>, bukan fotokopinya. Kalau function memanggil <code>push</code> atau
+                mengubah property, data aslinya ikut berubah.</div>
+              <div data-tebak data-judul="Barang yang sama"
+                data-q="Function <code>tambahBonus</code> mengubah array yang dikirim. Apa output-nya?"><textarea>
 function tambahBonus(daftar) {
   daftar.push(100);
 }
@@ -745,9 +1139,10 @@ function tambahBonus(daftar) {
 const skor = [70, 80];
 tambahBonus(skor);
 console.log(skor);</textarea></div>
-            <div data-challenge="20:p8"></div>
+              <div data-challenge="20:p8"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 10. MAP FILTER FIND ═══════════ -->
@@ -757,20 +1152,40 @@ console.log(skor);</textarea></div>
           <h2><small>Method Modern</small>map, filter, find</h2>
           <span class="step-tag">Tambahan</span>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Tiga method ini menerima <strong>callback</strong> dan sering menggantikan loop panjang. Semuanya <strong>tidak mengubah</strong> array asli.</p>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Method</th><th>Callback me-return</th><th>Hasil</th></tr></thead>
-                <tbody>
-                  <tr><td><code>map(cb)</code></td><td>Nilai baru untuk tiap elemen</td><td>Array baru, panjang <strong>sama</strong></td></tr>
-                  <tr><td><code>filter(cb)</code></td><td><code>true</code>/<code>false</code></td><td>Array baru berisi elemen yang <code>true</code></td></tr>
-                  <tr><td><code>find(cb)</code></td><td><code>true</code>/<code>false</code></td><td>Elemen <strong>pertama</strong> yang <code>true</code> (atau <code>undefined</code>)</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="editor" data-editor><textarea class="editor-src">
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Tiga method ini menerima <strong>callback</strong> dan sering menggantikan loop
+                panjang. Semuanya <strong>tidak mengubah</strong> array asli.</p>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th>Callback me-return</th>
+                      <th>Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>map(cb)</code></td>
+                      <td>Nilai baru untuk tiap elemen</td>
+                      <td>Array baru, panjang <strong>sama</strong></td>
+                    </tr>
+                    <tr>
+                      <td><code>filter(cb)</code></td>
+                      <td><code>true</code>/<code>false</code></td>
+                      <td>Array baru berisi elemen yang <code>true</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>find(cb)</code></td>
+                      <td><code>true</code>/<code>false</code></td>
+                      <td>Elemen <strong>pertama</strong> yang <code>true</code> (atau <code>undefined</code>)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="editor" data-editor><textarea class="editor-src">
 const harga = [5000, 12000, 3000, 25000];
 
 const dobel = harga.map((h) => h * 2);
@@ -781,9 +1196,9 @@ console.log(mahal);
 
 const pertamaMurah = harga.find((h) => h < 6000);
 console.log(pertamaMurah);</textarea></div>
-            <div class="subsection">
-              <div class="section-label">Pada array of object</div>
-              <div class="editor" data-editor><textarea class="editor-src">
+              <div class="subsection">
+                <div class="section-label">Pada array of object</div>
+                <div class="editor" data-editor><textarea class="editor-src">
 const daftarSiswa = [
   { nama: "Budi", nilai: 85 },
   { nama: "Ani", nilai: 90 },
@@ -798,11 +1213,14 @@ console.log(lulus.length, "siswa lulus");
 
 const ani = daftarSiswa.find((s) => s.nama === "Ani");
 console.log(ani);</textarea></div>
+              </div>
+              <div class="callout" data-kind="tips">Masih bingung? Tidak apa-apa memakai <code>for...of</code> biasa —
+                hasilnya sama. <code>map/filter/find</code> hanya cara yang lebih ringkas, dan akan sering kamu jumpai
+                di kode orang lain.</div>
+              <div data-challenge="20:p9"></div>
             </div>
-            <div class="callout" data-kind="tips">Masih bingung? Tidak apa-apa memakai <code>for...of</code> biasa — hasilnya sama. <code>map/filter/find</code> hanya cara yang lebih ringkas, dan akan sering kamu jumpai di kode orang lain.</div>
-            <div data-challenge="20:p9"></div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 11. RANGKUMAN ═══════════ -->
@@ -811,12 +1229,13 @@ console.log(ani);</textarea></div>
           <div class="step-number">11</div>
           <h2><small>Ringkas</small>Rangkuman</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <div class="banding2">
-              <div>
-                <div class="section-label">Array</div>
-                <pre class="snippet" data-hl>const arr = ["a", "b", "c"];
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="banding2">
+                <div>
+                  <div class="section-label">Array</div>
+                  <pre class="snippet" data-hl>const arr = ["a", "b", "c"];
 arr[0];                 // "a"
 arr.length;             // 3
 arr[arr.length - 1];    // "c"
@@ -827,10 +1246,10 @@ arr.shift();            // hapus di awal
 arr.includes("a");      // true
 arr.indexOf("b");       // 1 (atau -1)
 arr.join("-");          // "a-b-c"</pre>
-              </div>
-              <div>
-                <div class="section-label">Object</div>
-                <pre class="snippet" data-hl>const obj = { nama: "Budi", umur: 16 };
+                </div>
+                <div>
+                  <div class="section-label">Object</div>
+                  <pre class="snippet" data-hl>const obj = { nama: "Budi", umur: 16 };
 obj.nama;               // "Budi"
 obj["umur"];            // 16
 obj.umur = 17;          // ubah
@@ -841,29 +1260,48 @@ Object.keys(obj);       // ['nama', 'kelas']
 // ARRAY OF OBJECT
 const data = [{ nama: "Ani" }, { nama: "Budi" }];
 data[1].nama;           // "Budi"</pre>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th>Tambahan</th>
+                      <th>Ingat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>for...of</code> / <code>forEach</code></td>
+                      <td>Mengolah setiap elemen array</td>
+                    </tr>
+                    <tr>
+                      <td><code>for...in</code></td>
+                      <td>Mengulang setiap nama property object</td>
+                    </tr>
+                    <tr>
+                      <td>Array/object di function</td>
+                      <td>Bisa jadi argument &amp; nilai return; data asli ikut berubah jika diubah di dalam</td>
+                    </tr>
+                    <tr>
+                      <td><code>map</code> / <code>filter</code> / <code>find</code></td>
+                      <td>Ubah semua / saring / cari satu — tidak mengubah array asli</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="important-banner">
+                <h3>Aturan praktis</h3>
+                <ol>
+                  <li>Data <strong>sejenis dan berurutan</strong> → array. Data <strong>satu benda dengan banyak
+                      sifat</strong> → object.</li>
+                  <li>Index mulai dari <strong>0</strong>; elemen terakhir <code>arr[arr.length - 1]</code>.</li>
+                  <li>Array of object: <strong>index dulu, lalu property</strong> → <code>data[1].nama</code>.</li>
+                </ol>
               </div>
             </div>
-            <div class="table-wrap">
-              <table class="tabel">
-                <thead><tr><th>Tambahan</th><th>Ingat</th></tr></thead>
-                <tbody>
-                  <tr><td><code>for...of</code> / <code>forEach</code></td><td>Mengolah setiap elemen array</td></tr>
-                  <tr><td><code>for...in</code></td><td>Mengulang setiap nama property object</td></tr>
-                  <tr><td>Array/object di function</td><td>Bisa jadi argument &amp; nilai return; data asli ikut berubah jika diubah di dalam</td></tr>
-                  <tr><td><code>map</code> / <code>filter</code> / <code>find</code></td><td>Ubah semua / saring / cari satu — tidak mengubah array asli</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="important-banner">
-              <h3>Aturan praktis</h3>
-              <ol>
-                <li>Data <strong>sejenis dan berurutan</strong> → array. Data <strong>satu benda dengan banyak sifat</strong> → object.</li>
-                <li>Index mulai dari <strong>0</strong>; elemen terakhir <code>arr[arr.length - 1]</code>.</li>
-                <li>Array of object: <strong>index dulu, lalu property</strong> → <code>data[1].nama</code>.</li>
-              </ol>
-            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <!-- ═══════════ 12. TES PENGETAHUAN ═══════════ -->
@@ -872,15 +1310,19 @@ data[1].nama;           // "Budi"</pre>
           <div class="step-number">✎</div>
           <h2><small>Dinilai</small>Tes Pengetahuan</h2>
         </div>
-        <div class="step-body"><div class="step-inner">
-          <div class="step-content">
-            <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong> + <strong>50% tantangan koding</strong>. Tantangan diuji dengan memanggil function-mu memakai banyak array/object berbeda. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
-            <div data-kuis="20" data-judul="Kuis Array &amp; Object"></div>
-            <div data-challenge="20:t1"></div>
-            <div data-challenge="20:t2"></div>
-            <div data-challenge="20:t3"></div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong>
+                + <strong>50% tantangan koding</strong>. Tantangan diuji dengan memanggil function-mu memakai banyak
+                array/object berbeda. Nilai tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+              <div data-kuis="20" data-judul="Kuis Array &amp; Object"></div>
+              <div data-challenge="20:t1"></div>
+              <div data-challenge="20:t2"></div>
+              <div data-challenge="20:t3"></div>
+            </div>
           </div>
-        </div></div>
+        </div>
       </article>
 
       <nav class="pager" aria-label="Navigasi materi">
@@ -913,9 +1355,11 @@ data[1].nama;           // "Budi"</pre>
   <script src="../assets/js/challenge.js"></script>
   <script src="../assets/js/kuis.js"></script>
   <script src="../assets/js/widgets/w20.js"></script>
+  <script src="../assets/js/nav.js"></script>
   <script src="../assets/js/app.js"></script>
   <script>
     document.querySelectorAll('pre[data-hl]').forEach(function (pre) { window.Editor.highlight(pre.textContent, pre); });
   </script>
 </body>
+
 </html>

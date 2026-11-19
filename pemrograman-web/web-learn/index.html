@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coret.js — Belajar JavaScript Interaktif</title>
-  <meta name="description" content="Website belajar JavaScript interaktif untuk XI RPL: materi pertemuan 15–22 (dasar, operator, percabangan, perulangan, function, array &amp; object, DOM, event) dengan editor kode, kuis, dan tantangan koding.">
+  <meta name="description"
+    content="Website belajar JavaScript interaktif untuk XI RPL: materi pertemuan 15–23 (dasar, operator, percabangan, perulangan, function, array &amp; object, DOM, event, localStorage) dengan editor kode, kuis, dan tantangan koding.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    .hero-mascot { width: 128px; height: 128px; margin-bottom: .6rem; animation: fadeSlideDown .8s ease-out both; }
-    .hero-mascot svg { width: 100%; height: 100%; animation: wiggle 3.2s ease-in-out infinite; }
+    .hero-mascot {
+      width: 128px;
+      height: 128px;
+      margin-bottom: .6rem;
+      animation: fadeSlideDown .8s ease-out both;
+    }
+
+    .hero-mascot svg {
+      width: 100%;
+      height: 100%;
+      animation: wiggle 3.2s ease-in-out infinite;
+    }
+
     .hero-doodle {
       position: absolute;
       z-index: 0;
@@ -24,15 +39,44 @@
       user-select: none;
       animation: fadeIn 1.2s .6s ease-out both;
     }
-    .hero-doodle.o { color: transparent; -webkit-text-stroke: 1.6px var(--ink); }
 
-    .section { max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem 1rem; }
-    .section-head { text-align: center; margin-bottom: 2.6rem; }
-    .section-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 900; letter-spacing: -.5px; margin-top: .9rem; line-height: 1.2; }
-    .section-head p { color: var(--ink-light); max-width: 560px; margin: .6rem auto 0; }
+    .hero-doodle.o {
+      color: transparent;
+      -webkit-text-stroke: 1.6px var(--ink);
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem 1rem;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 2.6rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -.5px;
+      margin-top: .9rem;
+      line-height: 1.2;
+    }
+
+    .section-head p {
+      color: var(--ink-light);
+      max-width: 560px;
+      margin: .6rem auto 0;
+    }
 
     /* Peta belajar: jalur zig-zag */
-    .map { position: relative; display: grid; gap: 1.4rem; }
+    .map {
+      position: relative;
+      display: grid;
+      gap: 1.4rem;
+    }
+
     .map::before {
       content: '';
       position: absolute;
@@ -41,7 +85,14 @@
       left: calc(50% - 1.5px);
       border-left: 3px dashed var(--ink);
     }
-    .map-row { position: relative; display: grid; grid-template-columns: 1fr 76px 1fr; align-items: center; }
+
+    .map-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 76px 1fr;
+      align-items: center;
+    }
+
     .map-bubble {
       grid-column: 2;
       grid-row: 1;
@@ -61,7 +112,12 @@
       font-weight: 800;
       font-size: 1.05rem;
     }
-    .map-bubble.selesai { background: var(--bg-card); color: var(--ink); }
+
+    .map-bubble.selesai {
+      background: var(--bg-card);
+      color: var(--ink);
+    }
+
     .map-card {
       grid-row: 1;
       display: grid;
@@ -76,73 +132,286 @@
       text-decoration: none;
       transition: var(--transition);
     }
-    .map-card:hover { transform: translate(-3px, -3px) rotate(-.4deg); box-shadow: var(--shadow-lg); }
-    .map-row:nth-child(odd) .map-card { grid-column: 1; }
-    .map-row:nth-child(even) .map-card { grid-column: 3; }
-    .map-info small { font-size: .66rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-lighter); }
-    .map-info h3 { font-size: 1.2rem; font-weight: 800; line-height: 1.25; margin: 2px 0 4px; }
-    .map-info p { font-size: .86rem; color: var(--ink-light); line-height: 1.55; }
-    .map-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: .6rem; }
-    .map-progress { display: flex; align-items: center; gap: 10px; margin-top: .8rem; }
-    .bar { flex: 1; height: 12px; border: 2px solid var(--ink); border-radius: 50px; background: var(--bg-card); overflow: hidden; }
-    .bar span { display: block; height: 100%; width: 0; background: var(--ink); transition: width 1s cubic-bezier(.4, 0, .2, 1); }
-    .map-status { font-size: .72rem; font-weight: 700; white-space: nowrap; }
-    .map-art { width: 92px; height: 92px; }
-    .map-art svg { width: 100%; height: 100%; }
-    .map-card--akhir { background: var(--ink); color: var(--bg); }
-    .map-card--akhir .map-info p, .map-card--akhir .map-info small { color: #bbb; }
-    .map-card--akhir .chip { background: #222; color: var(--bg); border-color: #666; }
-    .map-card--akhir .bar { border-color: var(--bg); background: #222; }
-    .map-card--akhir .bar span { background: var(--bg); }
-    .map-card--akhir .doodle .ink, .map-card--akhir .doodle .thin { stroke: var(--bg); }
-    .map-card--akhir .doodle .paper { fill: #222; stroke: var(--bg); }
-    .map-card--akhir .doodle .solid { fill: var(--bg); stroke: var(--bg); }
-    .map-card--akhir .doodle text { fill: var(--bg); }
 
-    .steps3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem; }
-    .steps3 .mini-card { padding: 1.4rem; text-align: center; }
-    .steps3 .mini-card svg { width: 120px; height: 90px; margin: 0 auto .6rem; display: block; }
-    .steps3 h4 { justify-content: center; font-size: 1.05rem; }
+    .map-card:hover {
+      transform: translate(-3px, -3px) rotate(-.4deg);
+      box-shadow: var(--shadow-lg);
+    }
 
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
-    .stat { text-align: center; border: 2px dashed var(--ink); border-radius: var(--radius-md); padding: 1rem; background: var(--bg-card); }
-    .stat b { display: block; font-size: 2rem; font-weight: 900; line-height: 1.1; }
-    .stat span { font-size: .78rem; color: var(--ink-light); font-weight: 600; }
+    .map-row:nth-child(odd) .map-card {
+      grid-column: 1;
+    }
 
-    .rapor-teaser { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
-    .rapor-teaser .callout-mascot { width: 96px; height: 96px; }
-    .rapor-teaser > div:nth-child(2) { flex: 1 1 260px; }
-    .rapor-teaser .btn { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+    .map-row:nth-child(even) .map-card {
+      grid-column: 3;
+    }
+
+    .map-info small {
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-lighter);
+    }
+
+    .map-info h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin: 2px 0 4px;
+    }
+
+    .map-info p {
+      font-size: .86rem;
+      color: var(--ink-light);
+      line-height: 1.55;
+    }
+
+    .map-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: .6rem;
+    }
+
+    .map-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: .8rem;
+    }
+
+    .bar {
+      flex: 1;
+      height: 12px;
+      border: 2px solid var(--ink);
+      border-radius: 50px;
+      background: var(--bg-card);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--ink);
+      transition: width 1s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .map-status {
+      font-size: .72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .map-art {
+      width: 92px;
+      height: 92px;
+    }
+
+    .map-art svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-card--akhir {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .map-card--akhir .map-info p,
+    .map-card--akhir .map-info small {
+      color: #bbb;
+    }
+
+    .map-card--akhir .chip {
+      background: #222;
+      color: var(--bg);
+      border-color: #666;
+    }
+
+    .map-card--akhir .bar {
+      border-color: var(--bg);
+      background: #222;
+    }
+
+    .map-card--akhir .bar span {
+      background: var(--bg);
+    }
+
+    .map-card--akhir .doodle .ink,
+    .map-card--akhir .doodle .thin {
+      stroke: var(--bg);
+    }
+
+    .map-card--akhir .doodle .paper {
+      fill: #222;
+      stroke: var(--bg);
+    }
+
+    .map-card--akhir .doodle .solid {
+      fill: var(--bg);
+      stroke: var(--bg);
+    }
+
+    .map-card--akhir .doodle text {
+      fill: var(--bg);
+    }
+
+    .steps3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .steps3 .mini-card {
+      padding: 1.4rem;
+      text-align: center;
+    }
+
+    .steps3 .mini-card svg {
+      width: 120px;
+      height: 90px;
+      margin: 0 auto .6rem;
+      display: block;
+    }
+
+    .steps3 h4 {
+      justify-content: center;
+      font-size: 1.05rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      text-align: center;
+      border: 2px dashed var(--ink);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background: var(--bg-card);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      font-size: .78rem;
+      color: var(--ink-light);
+      font-weight: 600;
+    }
+
+    .rapor-teaser {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .rapor-teaser .callout-mascot {
+      width: 96px;
+      height: 96px;
+    }
+
+    .rapor-teaser>div:nth-child(2) {
+      flex: 1 1 260px;
+    }
+
+    .rapor-teaser .btn {
+      background: var(--bg);
+      color: var(--ink);
+      border-color: var(--bg);
+    }
 
     @media (max-width: 760px) {
-      .map::before { left: 27px; }
-      .map-row { grid-template-columns: 56px 1fr; gap: 10px; }
-      .map-bubble { grid-column: 1; width: 50px; height: 50px; font-size: .9rem; }
-      .map-row:nth-child(odd) .map-card, .map-row:nth-child(even) .map-card { grid-column: 2; }
-      .map-card { grid-template-columns: 1fr; padding: 1rem; }
-      .map-art { display: none; }
-      .hero-doodle { display: none; }
-      .section { padding-top: 3.5rem; }
+      .map::before {
+        left: 27px;
+      }
+
+      .map-row {
+        grid-template-columns: 56px 1fr;
+        gap: 10px;
+      }
+
+      .map-bubble {
+        grid-column: 1;
+        width: 50px;
+        height: 50px;
+        font-size: .9rem;
+      }
+
+      .map-row:nth-child(odd) .map-card,
+      .map-row:nth-child(even) .map-card {
+        grid-column: 2;
+      }
+
+      .map-card {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      .map-art {
+        display: none;
+      }
+
+      .hero-doodle {
+        display: none;
+      }
+
+      .section {
+        padding-top: 3.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
-  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <a class="brand" href="index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
       <nav class="topnav" aria-label="Materi">
-        <a href="materi/15-dasar-javascript.html">#15 Dasar</a>
-        <a href="materi/16-operator.html">#16 Operator</a>
-        <a href="materi/17-percabangan.html">#17 Percabangan</a>
-        <a href="materi/18-perulangan.html">#18 Perulangan</a>
-        <a href="materi/19-function.html">#19 Function</a>
-        <a href="materi/20-array-object.html">#20 Array &amp; Object</a>
-        <a href="materi/21-dom.html">#21 DOM</a>
-        <a href="materi/22-event.html">#22 Event</a>
-        <a href="materi/tantangan-akhir.html">Tantangan Akhir</a>
-        <a href="rapor.html">Rapor</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="materi/15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar
+                JavaScript</a></li>
+            <li><a href="materi/16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="materi/17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="materi/18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="materi/19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="materi/20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp;
+                Object</a></li>
+            <li><a href="materi/21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="materi/22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="materi/23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a>
+            </li>
+          </ul>
+        </div>
+        <a href="materi/tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="rapor.html" data-nav="rapor">Rapor</a>
       </nav>
     </div>
   </header>
@@ -159,12 +428,19 @@
     <div class="hero-mascot" data-mascot="senang"></div>
     <span class="hero-badge">XI RPL · Pemrograman Web</span>
     <h1>Belajar <span class="highlight">JavaScript</span> sambil Corat-coret</h1>
-    <p class="hero-subtitle">Baca materinya, langsung coba kodenya di browser, lalu uji dirimu dengan kuis dan tantangan koding. Disusun dari materi pertemuan 15 sampai 22.</p>
+    <p class="hero-subtitle">Baca materinya, langsung coba kodenya di browser, lalu uji dirimu dengan kuis dan tantangan
+      koding. Disusun dari materi pertemuan 15 sampai 23.</p>
     <a href="#peta" class="hero-cta">Mulai Belajar
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M12 5v14M19 12l-7 7-7-7" />
+      </svg>
     </a>
     <div class="hero-scroll-hint">Scroll
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M12 5v14M19 12l-7 7-7-7" />
+      </svg>
     </div>
   </section>
 
@@ -172,7 +448,7 @@
   <section class="section" id="peta">
     <div class="section-head">
       <span class="sticker sticker--ink">Peta Belajar</span>
-      <h2>Delapan pos, satu per satu</h2>
+      <h2>Sembilan pos, satu per satu</h2>
       <p>Ikuti urutannya dari atas. Progres dan nilaimu tersimpan otomatis di browser ini.</p>
     </div>
 
@@ -184,11 +460,21 @@
             <small>Pertemuan 15</small>
             <h3>Dasar JavaScript</h3>
             <p>Kenalan dengan JS, menghubungkan ke HTML, console.log, variabel let &amp; const, tipe data, typeof.</p>
-            <div class="map-chips"><span class="chip">let &amp; const</span><span class="chip">string</span><span class="chip">typeof</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-chips"><span class="chip">let &amp; const</span><span class="chip">string</span><span
+                class="chip">typeof</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><path class="soft" d="M22 40 l-10 -12 h30 l6 12z"/><path class="soft" d="M78 40 l10 -12 h-30 l-6 12z"/><rect x="22" y="40" width="56" height="44" rx="4" class="paper"/><rect x="34" y="54" width="32" height="16" rx="4" class="solid"/></g><text x="50" y="66" text-anchor="middle" font-size="10" class="mono inv">nama</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <path class="soft" d="M22 40 l-10 -12 h30 l6 12z" />
+                <path class="soft" d="M78 40 l10 -12 h-30 l-6 12z" />
+                <rect x="22" y="40" width="56" height="44" rx="4" class="paper" />
+                <rect x="34" y="54" width="32" height="16" rx="4" class="solid" />
+              </g><text x="50" y="66" text-anchor="middle" font-size="10" class="mono inv">nama</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -200,11 +486,25 @@
             <small>Pertemuan 16</small>
             <h3>Operator</h3>
             <p>Aritmatika, prioritas, penugasan, perbandingan, logika, ternary, dan konversi tipe data.</p>
-            <div class="map-chips"><span class="chip">+ - * / %</span><span class="chip">===</span><span class="chip">&amp;&amp; ||</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-chips"><span class="chip">+ - * / %</span><span class="chip">===</span><span
+                class="chip">&amp;&amp; ||</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><rect x="20" y="14" width="60" height="74" rx="8" class="paper"/><rect x="28" y="22" width="44" height="16" rx="3" class="soft"/><rect x="28" y="46" width="12" height="10" rx="2" class="ink"/><rect x="44" y="46" width="12" height="10" rx="2" class="ink"/><rect x="60" y="46" width="12" height="10" rx="2" class="solid"/><rect x="28" y="62" width="12" height="10" rx="2" class="ink"/><rect x="44" y="62" width="12" height="10" rx="2" class="ink"/><rect x="60" y="62" width="12" height="18" rx="2" class="solid"/></g><text x="66" y="35" text-anchor="end" font-size="10" class="mono">17%5</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <rect x="20" y="14" width="60" height="74" rx="8" class="paper" />
+                <rect x="28" y="22" width="44" height="16" rx="3" class="soft" />
+                <rect x="28" y="46" width="12" height="10" rx="2" class="ink" />
+                <rect x="44" y="46" width="12" height="10" rx="2" class="ink" />
+                <rect x="60" y="46" width="12" height="10" rx="2" class="solid" />
+                <rect x="28" y="62" width="12" height="10" rx="2" class="ink" />
+                <rect x="44" y="62" width="12" height="10" rx="2" class="ink" />
+                <rect x="60" y="62" width="12" height="18" rx="2" class="solid" />
+              </g><text x="66" y="35" text-anchor="end" font-size="10" class="mono">17%5</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -216,11 +516,22 @@
             <small>Pertemuan 17</small>
             <h3>Percabangan</h3>
             <p>if, else, else if, kondisi majemuk, nested if, truthy &amp; falsy, ternary, dan switch.</p>
-            <div class="map-chips"><span class="chip">if / else</span><span class="chip">truthy</span><span class="chip">switch</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-chips"><span class="chip">if / else</span><span class="chip">truthy</span><span
+                class="chip">switch</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><path class="ink" d="M50 92 v-34 l-24 -22 M50 58 l24 -22"/><path class="ink" d="M50 58 v-8"/><rect x="10" y="16" width="32" height="16" rx="3" class="paper"/><rect x="58" y="16" width="32" height="16" rx="3" class="solid"/></g><text x="26" y="28" text-anchor="middle" font-size="9" class="mono">false</text><text x="74" y="28" text-anchor="middle" font-size="9" class="mono inv">true</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <path class="ink" d="M50 92 v-34 l-24 -22 M50 58 l24 -22" />
+                <path class="ink" d="M50 58 v-8" />
+                <rect x="10" y="16" width="32" height="16" rx="3" class="paper" />
+                <rect x="58" y="16" width="32" height="16" rx="3" class="solid" />
+              </g><text x="26" y="28" text-anchor="middle" font-size="9" class="mono">false</text><text x="74" y="28"
+                text-anchor="middle" font-size="9" class="mono inv">true</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -232,11 +543,20 @@
             <small>Pertemuan 18</small>
             <h3>Perulangan</h3>
             <p>for, while, do…while, akumulator, break &amp; continue, nested loop, dan bahaya infinite loop.</p>
-            <div class="map-chips"><span class="chip">for</span><span class="chip">while</span><span class="chip">FizzBuzz</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-chips"><span class="chip">for</span><span class="chip">while</span><span
+                class="chip">FizzBuzz</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><circle cx="50" cy="52" r="30" class="paper"/><path class="ink" d="M50 22 a30 30 0 1 1 -26 15"/><path class="ink" d="M18 30 l6 8 l9 -4"/></g><text x="50" y="58" text-anchor="middle" font-size="16" class="mono">i++</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <circle cx="50" cy="52" r="30" class="paper" />
+                <path class="ink" d="M50 22 a30 30 0 1 1 -26 15" />
+                <path class="ink" d="M18 30 l6 8 l9 -4" />
+              </g><text x="50" y="58" text-anchor="middle" font-size="16" class="mono">i++</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -248,11 +568,22 @@
             <small>Pertemuan 19</small>
             <h3>Function</h3>
             <p>Membuat &amp; memanggil function, parameter, return, arrow function, default parameter, scope.</p>
-            <div class="map-chips"><span class="chip">return</span><span class="chip">=&gt;</span><span class="chip">scope</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-chips"><span class="chip">return</span><span class="chip">=&gt;</span><span
+                class="chip">scope</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><path class="paper" d="M30 14 h40 l-8 18 h-24 z"/><rect x="22" y="32" width="56" height="40" rx="6" class="paper"/><circle cx="50" cy="52" r="10" class="soft"/><path class="ink" d="M44 72 v12 h12 v-12"/><path class="ink" d="M50 84 v8"/></g><text x="50" y="27" text-anchor="middle" font-size="9" class="mono">input</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <path class="paper" d="M30 14 h40 l-8 18 h-24 z" />
+                <rect x="22" y="32" width="56" height="40" rx="6" class="paper" />
+                <circle cx="50" cy="52" r="10" class="soft" />
+                <path class="ink" d="M44 72 v12 h12 v-12" />
+                <path class="ink" d="M50 84 v8" />
+              </g><text x="50" y="27" text-anchor="middle" font-size="9" class="mono">input</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -263,12 +594,26 @@
           <div class="map-info">
             <small>Pertemuan 20</small>
             <h3>Array &amp; Object</h3>
-            <p>Index, push/pop/shift/unshift, includes &amp; join, object &amp; property, nested, array of object, map/filter.</p>
-            <div class="map-chips"><span class="chip">[ ]</span><span class="chip">{ }</span><span class="chip">data[1].nama</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <p>Index, push/pop/shift/unshift, includes &amp; join, object &amp; property, nested, array of object,
+              map/filter.</p>
+            <div class="map-chips"><span class="chip">[ ]</span><span class="chip">{ }</span><span
+                class="chip">data[1].nama</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><rect x="12" y="20" width="76" height="22" rx="4" class="paper"/><path class="ink" d="M37 20 v22 M62 20 v22"/><rect x="22" y="54" width="56" height="34" rx="6" class="paper"/><rect x="22" y="54" width="56" height="10" rx="5" class="solid"/><path class="thin" d="M30 72 h30 M30 80 h22"/></g><text x="24" y="36" text-anchor="middle" font-size="9" class="mono">0</text><text x="50" y="36" text-anchor="middle" font-size="9" class="mono">1</text><text x="75" y="36" text-anchor="middle" font-size="9" class="mono">2</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <rect x="12" y="20" width="76" height="22" rx="4" class="paper" />
+                <path class="ink" d="M37 20 v22 M62 20 v22" />
+                <rect x="22" y="54" width="56" height="34" rx="6" class="paper" />
+                <rect x="22" y="54" width="56" height="10" rx="5" class="solid" />
+                <path class="thin" d="M30 72 h30 M30 80 h22" />
+              </g><text x="24" y="36" text-anchor="middle" font-size="9" class="mono">0</text><text x="50" y="36"
+                text-anchor="middle" font-size="9" class="mono">1</text><text x="75" y="36" text-anchor="middle"
+                font-size="9" class="mono">2</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -279,12 +624,25 @@
           <div class="map-info">
             <small>Pertemuan 21</small>
             <h3>DOM</h3>
-            <p>querySelector, textContent, innerHTML, style, classList, atribut, createElement, remove, dan klik pertama — dengan Preview langsung.</p>
-            <div class="map-chips"><span class="chip">querySelector</span><span class="chip">classList</span><span class="chip">createElement</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <p>querySelector, textContent, innerHTML, style, classList, atribut, createElement, remove, dan klik pertama
+              — dengan Preview langsung.</p>
+            <div class="map-chips"><span class="chip">querySelector</span><span class="chip">classList</span><span
+                class="chip">createElement</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><rect x="36" y="10" width="28" height="16" rx="4" class="solid"/><path class="ink" d="M50 26 v12 M22 38 h56 M22 38 v10 M50 38 v10 M78 38 v10"/><rect x="10" y="48" width="24" height="16" rx="4" class="paper"/><rect x="38" y="48" width="24" height="16" rx="4" class="paper"/><rect x="66" y="48" width="24" height="16" rx="4" class="paper"/><path class="paper" d="M52 70 l0 22 l6 -5 l4 9 l5 -2 l-4 -9 l8 -1 z"/></g><text x="50" y="21" text-anchor="middle" font-size="7" class="mono inv">body</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <rect x="36" y="10" width="28" height="16" rx="4" class="solid" />
+                <path class="ink" d="M50 26 v12 M22 38 h56 M22 38 v10 M50 38 v10 M78 38 v10" />
+                <rect x="10" y="48" width="24" height="16" rx="4" class="paper" />
+                <rect x="38" y="48" width="24" height="16" rx="4" class="paper" />
+                <rect x="66" y="48" width="24" height="16" rx="4" class="paper" />
+                <path class="paper" d="M52 70 l0 22 l6 -5 l4 9 l5 -2 l-4 -9 l8 -1 z" />
+              </g><text x="50" y="21" text-anchor="middle" font-size="7" class="mono inv">body</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -295,12 +653,53 @@
           <div class="map-info">
             <small>Pertemuan 22</small>
             <h3>Event</h3>
-            <p>addEventListener, click, mouseover, input, change, keydown, submit, event object, dan preventDefault — halaman yang bereaksi.</p>
-            <div class="map-chips"><span class="chip">addEventListener</span><span class="chip">e.target</span><span class="chip">submit</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <p>addEventListener, click, mouseover, input, change, keydown, submit, event object, dan preventDefault —
+              halaman yang bereaksi.</p>
+            <div class="map-chips"><span class="chip">addEventListener</span><span class="chip">e.target</span><span
+                class="chip">submit</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><rect x="12" y="22" width="56" height="26" rx="6" class="solid"/><path class="ink" d="M54 52 l0 26 l7 -6 l5 11 l6 -3 l-5 -11 l9 -1 z"/><path class="dash" d="M74 22 q8 -6 12 -14 M76 34 h14 M74 46 q8 6 12 14"/><rect x="12" y="66" width="34" height="22" rx="5" class="paper"/></g><text x="40" y="39" text-anchor="middle" font-size="9" class="mono inv">klik</text><text x="29" y="81" text-anchor="middle" font-size="7" class="mono">Enter</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <rect x="12" y="22" width="56" height="26" rx="6" class="solid" />
+                <path class="ink" d="M54 52 l0 26 l7 -6 l5 11 l6 -3 l-5 -11 l9 -1 z" />
+                <path class="dash" d="M74 22 q8 -6 12 -14 M76 34 h14 M74 46 q8 6 12 14" />
+                <rect x="12" y="66" width="34" height="22" rx="5" class="paper" />
+              </g><text x="40" y="39" text-anchor="middle" font-size="9" class="mono inv">klik</text><text x="29" y="81"
+                text-anchor="middle" font-size="7" class="mono">Enter</text>
+            </svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="map-row">
+        <div class="map-bubble" data-bubble="23">23</div>
+        <a class="map-card" href="materi/23-localstorage.html" data-id="23">
+          <div class="map-info">
+            <small>Pertemuan 23</small>
+            <h3>localStorage</h3>
+            <p>Menyimpan data di browser agar tetap ada setelah refresh: setItem, getItem, konversi string,
+              JSON.stringify &amp; JSON.parse, dan Dark Mode.</p>
+            <div class="map-chips"><span class="chip">setItem</span><span class="chip">JSON.parse</span><span
+                class="chip">Dark Mode</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
+          </div>
+          <div class="map-art">
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <rect x="18" y="18" width="64" height="66" rx="8" class="paper" />
+                <rect x="18" y="18" width="64" height="18" rx="8" class="solid" />
+                <rect x="26" y="42" width="48" height="14" rx="4" class="soft" />
+                <rect x="26" y="62" width="48" height="14" rx="4" class="paper" />
+              </g><text x="50" y="30" text-anchor="middle" font-size="8" class="mono inv">storage</text><text x="50"
+                y="52" text-anchor="middle" font-size="8" class="mono">key:val</text><text x="50" y="72"
+                text-anchor="middle" font-size="8" class="mono">JSON</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -311,12 +710,21 @@
           <div class="map-info">
             <small>Gabungan</small>
             <h3>Tantangan Akhir</h3>
-            <p>Lima level koding sampai melawan "boss", ditutup kuis campuran acak dari semua materi #15–#22.</p>
+            <p>Lima level koding sampai melawan "boss", ditutup kuis campuran acak dari semua materi #15–#23.</p>
             <div class="map-chips"><span class="chip">5 level</span><span class="chip">kuis acak</span></div>
-            <div class="map-progress"><div class="bar"><span></span></div><span class="map-status">Belum mulai</span></div>
+            <div class="map-progress">
+              <div class="bar"><span></span></div><span class="map-status">Belum mulai</span>
+            </div>
           </div>
           <div class="map-art">
-            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true"><g class="wobble"><path class="paper" d="M30 20 h40 v18 a20 20 0 0 1 -40 0z"/><path class="ink" d="M30 26 h-10 a10 10 0 0 0 12 14 M70 26 h10 a10 10 0 0 1 -12 14"/><path class="ink" d="M50 58 v12"/><rect x="34" y="70" width="32" height="12" rx="3" class="solid"/></g><text x="50" y="40" text-anchor="middle" font-size="14" class="mono">1</text></svg>
+            <svg class="doodle" viewBox="0 0 100 100" aria-hidden="true">
+              <g class="wobble">
+                <path class="paper" d="M30 20 h40 v18 a20 20 0 0 1 -40 0z" />
+                <path class="ink" d="M30 26 h-10 a10 10 0 0 0 12 14 M70 26 h10 a10 10 0 0 1 -12 14" />
+                <path class="ink" d="M50 58 v12" />
+                <rect x="34" y="70" width="32" height="12" rx="3" class="solid" />
+              </g><text x="50" y="40" text-anchor="middle" font-size="14" class="mono">1</text>
+            </svg>
           </div>
         </a>
       </div>
@@ -332,17 +740,41 @@
     </div>
     <div class="steps3">
       <div class="mini-card">
-        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true"><g class="wobble"><path class="paper" d="M60 20 q-20 -10 -44 -4 v58 q24 -6 44 4z"/><path class="paper" d="M60 20 q20 -10 44 -4 v58 q-24 -6 -44 4z"/><path class="thin" d="M24 30 h26 M24 40 h22 M24 50 h26 M70 30 h26 M70 40 h20 M70 50 h24"/></g></svg>
+        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true">
+          <g class="wobble">
+            <path class="paper" d="M60 20 q-20 -10 -44 -4 v58 q24 -6 44 4z" />
+            <path class="paper" d="M60 20 q20 -10 44 -4 v58 q-24 -6 -44 4z" />
+            <path class="thin" d="M24 30 h26 M24 40 h22 M24 50 h26 M70 30 h26 M70 40 h20 M70 50 h24" />
+          </g>
+        </svg>
         <h4>1. Baca materi</h4>
         <p>Penjelasan singkat dari slide, analogi, dan ilustrasi. Klik judul kartu untuk membuka/menutup.</p>
       </div>
       <div class="mini-card">
-        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true"><g class="wobble"><rect x="14" y="12" width="92" height="58" rx="6" class="solid"/><path class="ink" d="M6 76 h108" style="stroke-width:4"/></g><path d="M30 30 l-8 8 l8 8 M48 30 l8 8 l-8 8" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M64 38 h26 M64 48 h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true">
+          <g class="wobble">
+            <rect x="14" y="12" width="92" height="58" rx="6" class="solid" />
+            <path class="ink" d="M6 76 h108" style="stroke-width:4" />
+          </g>
+          <path d="M30 30 l-8 8 l8 8 M48 30 l8 8 l-8 8" fill="none" stroke="#fff" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M64 38 h26 M64 48 h18" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+        </svg>
         <h4>2. Coba kodenya</h4>
-        <p>Setiap contoh bisa diubah dan dijalankan langsung. Output dan pesan error (dalam bahasa Indonesia) muncul di bawahnya.</p>
+        <p>Setiap contoh bisa diubah dan dijalankan langsung. Output dan pesan error (dalam bahasa Indonesia) muncul di
+          bawahnya.</p>
       </div>
       <div class="mini-card">
-        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true"><g class="wobble"><rect x="30" y="8" width="60" height="76" rx="6" class="paper"/><rect x="46" y="4" width="28" height="10" rx="3" class="solid"/><rect x="40" y="26" width="10" height="10" rx="2" class="solid"/><rect x="40" y="44" width="10" height="10" rx="2" class="solid"/><rect x="40" y="62" width="10" height="10" rx="2" class="ink"/><path class="thin" d="M56 31 h24 M56 49 h20 M56 67 h24"/></g></svg>
+        <svg class="doodle" viewBox="0 0 120 90" aria-hidden="true">
+          <g class="wobble">
+            <rect x="30" y="8" width="60" height="76" rx="6" class="paper" />
+            <rect x="46" y="4" width="28" height="10" rx="3" class="solid" />
+            <rect x="40" y="26" width="10" height="10" rx="2" class="solid" />
+            <rect x="40" y="44" width="10" height="10" rx="2" class="solid" />
+            <rect x="40" y="62" width="10" height="10" rx="2" class="ink" />
+            <path class="thin" d="M56 31 h24 M56 49 h20 M56 67 h24" />
+          </g>
+        </svg>
         <h4>3. Uji dirimu</h4>
         <p>Kuis, tebak output, susun kode, dan tantangan koding yang diperiksa otomatis. Nilainya masuk rapor.</p>
       </div>
@@ -356,7 +788,8 @@
       <div class="callout-mascot" data-mascot="bangga" aria-hidden="true"></div>
       <div>
         <h3 data-rapor-judul>Rapor belajarmu</h3>
-        <p data-rapor-teks>Nilai setiap pertemuan = 50% kuis + 50% tantangan koding. Selesaikan materi lalu cetak rapormu untuk dikumpulkan.</p>
+        <p data-rapor-teks>Nilai setiap pertemuan = 50% kuis + 50% tantangan koding. Selesaikan materi lalu cetak
+          rapormu untuk dikumpulkan.</p>
       </div>
       <a class="btn" href="rapor.html">Buka Rapor →</a>
     </div>
@@ -369,6 +802,7 @@
 
   <script src="assets/js/progress.js"></script>
   <script src="assets/js/illustrations.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src="assets/data/bank-15.js"></script>
   <script src="assets/data/bank-16.js"></script>
   <script src="assets/data/bank-17.js"></script>
@@ -377,6 +811,7 @@
   <script src="assets/data/bank-20.js"></script>
   <script src="assets/data/bank-21.js"></script>
   <script src="assets/data/bank-22.js"></script>
+  <script src="assets/data/bank-23.js"></script>
   <script src="assets/data/bank-akhir.js"></script>
   <script>
     (function () {
@@ -398,14 +833,14 @@
 
       // Statistik isi website (dihitung dari bank soal)
       var kuis = 0, koding = 0;
-      ['15', '16', '17', '18', '19', '20', '21', '22', 'akhir'].forEach(function (id) {
+      ['15', '16', '17', '18', '19', '20', '21', '22', '23', 'akhir'].forEach(function (id) {
         var b = BANK[id];
         if (!b) return;
         kuis += (b.kuis || []).length;
         koding += Object.keys(b.latihan || {}).length + (b.tantangan || []).length;
       });
       document.querySelector('[data-stats]').innerHTML =
-        '<div class="stat"><b>9</b><span>pos belajar</span></div>' +
+        '<div class="stat"><b>10</b><span>pos belajar</span></div>' +
         '<div class="stat"><b>' + koding + '</b><span>praktik &amp; tantangan koding</span></div>' +
         '<div class="stat"><b>' + kuis + '</b><span>soal kuis</span></div>' +
         '<div class="stat"><b>0</b><span>instalasi yang dibutuhkan</span></div>';
@@ -414,9 +849,10 @@
       if (nilaiSemua.length) {
         var rata = Math.round(nilaiSemua.reduce(function (a, b) { return a + b; }, 0) / nilaiSemua.length);
         document.querySelector('[data-rapor-judul]').textContent = (profil.nama ? 'Halo, ' + profil.nama + '! ' : '') + 'Rata-rata nilaimu: ' + rata;
-        document.querySelector('[data-rapor-teks]').textContent = nilaiSemua.length + ' dari 9 pos sudah punya nilai. Lanjutkan, lalu cetak rapormu untuk dikumpulkan.';
+        document.querySelector('[data-rapor-teks]').textContent = nilaiSemua.length + ' dari 10 pos sudah punya nilai. Lanjutkan, lalu cetak rapormu untuk dikumpulkan.';
       }
     })();
   </script>
 </body>
+
 </html>

@@ -6,7 +6,7 @@
   'use strict';
 
   var KUNCI = 'coretjs.v1';
-  var MATERI = ['15', '16', '17', '18', '19', '20', '21', '22', 'akhir'];
+  var MATERI = ['15', '16', '17', '18', '19', '20', '21', '22', '23', 'akhir'];
   var cache = null;
 
   function baca() {

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#23 localStorage — Coret.js</title>
+  <meta name="description"
+    content="Pertemuan 23: localStorage di JavaScript — setItem, getItem, removeItem, clear, konversi string & Number(), JSON.stringify & JSON.parse, pola baca saat dibuka & simpan saat berubah, Dark Mode, hingga studi kasus interaktif.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    .st-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .st-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: .4rem 0;
+    }
+
+    .st-panel {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .st-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-card-alt);
+      border-bottom: 2px dashed var(--border-light);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .st-panel-head small {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--ink-lighter);
+    }
+
+    .st-empty {
+      padding: 14px 12px;
+      font-size: .82rem;
+      font-style: italic;
+      color: var(--ink-lighter);
+    }
+
+    .st-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: .8rem;
+    }
+
+    .st-table th {
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--ink-lighter);
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .st-table td {
+      padding: 6px 12px;
+      border-top: 1px dashed var(--border-light);
+      word-break: break-word;
+    }
+
+    .st-table td:first-child {
+      font-weight: 700;
+      width: 38%;
+    }
+
+    .json-pipe {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .tabel td code {
+      white-space: nowrap;
+    }
+
+    .banding2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
+  <script>
+    setTimeout(function () {
+      if (window.App) return;
+      var cek = { 'CodeMirror': 'vendor/codemirror', 'JSRunner': 'runner.js', 'DomRunner': 'dom-runner.js', 'Checker': 'checker.js', 'Progress': 'progress.js', 'Illus': 'illustrations.js', 'BANK': 'data/bank', 'Editor': 'editor.js', 'Playground': 'playground.js', 'Challenge': 'challenge.js', 'Kuis': 'kuis.js', 'App': 'app.js' };
+      var hilang = Object.keys(cek).filter(function (k) { return !window[k]; }).map(function (k) { return cek[k]; });
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#1a1a1a;color:#fff;padding:14px 18px;border-radius:14px;font:14px/1.6 system-ui,sans-serif';
+      d.textContent = 'Skrip halaman tidak berjalan. Yang gagal dimuat: ' + hilang.join(', ') + ' — alamat halaman: ' + location.href;
+      document.body.appendChild(d);
+    }, 6000);
+  </script>
+</head>
+
+<body data-materi="23">
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
+      <nav class="topnav" aria-label="Materi">
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar JavaScript</a>
+            </li>
+            <li><a href="16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp; Object</a></li>
+            <li><a href="21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a></li>
+          </ul>
+        </div>
+        <a href="tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="../rapor.html" data-nav="rapor">Rapor</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero hero--materi">
+    <div class="hero-text">
+      <span class="hero-badge">Pertemuan 23</span>
+      <h1>localStorage: Halaman yang <span class="highlight">"Ingat"</span> Datanya</h1>
+      <p class="hero-subtitle">Di materi Event, setiap kali halaman di-<em>refresh</em> semua perubahan langsung hilang.
+        Sekarang halaman webmu bisa menyimpan data di browser — dari Dark Mode, nama pengguna, sampai daftar catatan.
+      </p>
+      <p class="tujuan-title">Setelah ini kamu bisa:</p>
+      <ul class="tujuan">
+        <li><span>Menyimpan, membaca, dan menghapus data dengan <code>setItem</code>, <code>getItem</code>,
+            <code>removeItem</code></span></li>
+        <li><span>Memahami bahwa <code>localStorage</code> <strong>hanya menyimpan string</strong></span></li>
+        <li><span>Menyimpan <strong>array dan object</strong> memakai <code>JSON.stringify</code> dan
+            <code>JSON.parse</code></span></li>
+        <li><span>Memakai pola <strong>"baca saat halaman dibuka, simpan saat data berubah"</strong></span></li>
+      </ul>
+      <a href="#s1" class="hero-cta">Mulai Belajar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
+      </a>
+    </div>
+    <div class="hero-art">
+      <div class="illus-frame">
+        <svg class="doodle" viewBox="0 0 360 260" role="img"
+          aria-label="Jendela browser yang di-refresh, terhubung dengan brankas penyimpanan lokal bertuliskan key dan value">
+          <g class="wobble">
+            <rect x="24" y="28" width="174" height="134" rx="12" class="paper" />
+            <path class="ink" d="M24 56 h174" />
+            <circle cx="40" cy="42" r="4" class="solid" />
+            <circle cx="54" cy="42" r="4" class="paper" />
+            <path class="ink" d="M98 112 a24 24 0 1 1 24 12" />
+            <path class="ink" d="M122 86 l8 8 l-10 4" />
+            <path class="dash" d="M198 96 h42 M230 88 l10 8 l-10 8" />
+            <rect x="242" y="42" width="100" height="162" rx="12" class="paper" />
+            <rect x="242" y="42" width="100" height="30" rx="12" class="solid" />
+            <rect x="254" y="88" width="76" height="28" rx="6" class="soft" />
+            <rect x="254" y="124" width="76" height="28" rx="6" class="paper" />
+            <rect x="254" y="160" width="76" height="28" rx="6" class="paper" />
+            <rect x="44" y="184" width="136" height="44" rx="10" class="soft" />
+          </g>
+          <text x="111" y="150" text-anchor="middle" font-size="11" class="mono">refresh()</text>
+          <text x="292" y="61" text-anchor="middle" font-size="11" class="mono inv">localStorage</text>
+          <text x="292" y="106" text-anchor="middle" font-size="9" class="mono">tema: "gelap"</text>
+          <text x="292" y="142" text-anchor="middle" font-size="9" class="mono">nama: "Budi"</text>
+          <text x="292" y="178" text-anchor="middle" font-size="9" class="mono">skor: "10"</text>
+          <text x="112" y="211" text-anchor="middle" font-size="11" class="mono">tetap ingat!</text>
+        </svg>
+        <div class="illus-caption"><span>Refresh tanpa lupa</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Daftar isi">
+      <div class="sidebar-title">Daftar Isi</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="control-bar">
+        <button class="ctrl-btn" data-expand-all>Buka Semua ↓</button>
+        <button class="ctrl-btn" data-collapse-all>Tutup Semua ↑</button>
+      </div>
+
+      <!-- ═══════════ 1. SETUP & APA ITU LOCALSTORAGE ═══════════ -->
+      <article class="step" id="s1">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2><small>Pengenalan</small>Setup &amp; Apa Itu localStorage?</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="callout" data-kind="mikir" data-label="Pemantik">Kalian pasti pernah <strong>mengaktifkan Dark
+                  Mode</strong> di sebuah website, lalu menutup dan membukanya lagi — ternyata <strong>Dark Mode-nya
+                  masih aktif</strong>. Padahal di materi Event, setiap kali halaman di-<em>refresh</em>, semua
+                perubahan langsung hilang dan kembali seperti semula. Bagaimana cara website mengingat pilihan kita?
+                Jawabannya: <strong>localStorage</strong>.</div>
+              <div class="def-box"><strong>Definisi</strong><b>localStorage</b> adalah tempat penyimpanan kecil <b>di
+                  dalam browser</b>. Datanya berbentuk pasangan <code>key: value</code> (seperti object) dan <b>tetap
+                  ada</b> walaupun halaman di-<em>refresh</em> atau browser ditutup.</div>
+
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th scope="col">Aspek</th>
+                      <th scope="col">Variabel Biasa</th>
+                      <th scope="col"><code>localStorage</code></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Disimpan di</td>
+                      <td>Memori (sementara)</td>
+                      <td>Browser (tetap)</td>
+                    </tr>
+                    <tr>
+                      <td>Saat halaman di-refresh</td>
+                      <td>✗ <strong>Hilang</strong></td>
+                      <td>✓ <strong>Tetap ada</strong></td>
+                    </tr>
+                    <tr>
+                      <td>Saat browser ditutup</td>
+                      <td>✗ Hilang</td>
+                      <td>✓ Tetap ada</td>
+                    </tr>
+                    <tr>
+                      <td>Dibaca perangkat lain</td>
+                      <td>✗ Tidak bisa</td>
+                      <td>✗ Hanya di browser &amp; perangkat itu</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Setup: HTML &amp; CSS disediakan</div>
+                <p class="content-text">HTML dan CSS <strong>disediakan dan tidak diubah</strong> — kamu hanya menulis
+                  <code>script.js</code>. Buka tab <code>index.html</code> dan <code>style.css</code> di bawah untuk
+                  melihat seluruh elemen yang sudah disiapkan untuk Praktik 4 serta Latihan B1–B7.</p>
+                <div data-playground data-preset="storage" data-aktif="html" data-tinggi="360" data-storage
+                  data-id="setup-23"><textarea data-lang="js">
+console.log("localStorage siap!");</textarea></div>
+                <div class="callout" data-kind="tips">Perhatikan panel <strong>Local Storage</strong> tepat di bawah
+                  Preview: panel ini mensimulasikan tab <strong>Application → Local Storage</strong> (Chrome/Edge,
+                  <kbd>F12</kbd>) atau <strong>Storage</strong> (Firefox) agar kamu bisa langsung melihat pasangan
+                  <code>key | value</code> yang tersimpan dan menguji efek tombol <strong>Refresh</strong>.</div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Peta halaman</div>
+                <pre
+                  class="snippet">body
+ ├── h1#judul
+ ├── section (Tema)        → button#btnTema
+ ├── section (Nama)        → input#nama, button#btnSimpanNama, p#sapaan
+ ├── section (Penghitung)  → button#btnTambah, span#angka, button#btnResetHitung, span#rekor
+ ├── section (Kunjungan)   → p#kunjungan
+ ├── section (Catatan)     → input#inputCatatan, button#btnCatat, button#btnHapusCatatan, ul#daftarCatatan
+ └── section (Profil)      → input#inputProfilNama, input#inputProfilKelas, button#btnSimpanProfil, p#tampilProfil</pre>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">4 Method yang Perlu Dikuasai</div>
+                <pre class="snippet" data-hl>localStorage.setItem("nama", "Budi");        // SIMPAN (key, value)
+const nama = localStorage.getItem("nama");   // BACA
+console.log(nama);                           // "Budi"
+
+localStorage.removeItem("nama");             // HAPUS satu data
+console.log(localStorage.getItem("nama"));   // null (data tidak ada)
+
+localStorage.clear();                        // HAPUS SEMUA data (hati-hati!)</pre>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th scope="col">Method</th>
+                        <th scope="col">Fungsi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>setItem("key", value)</code></td>
+                        <td><strong>Menyimpan</strong> data. Jika key sudah ada, nilainya <strong>ditimpa</strong>.</td>
+                      </tr>
+                      <tr>
+                        <td><code>getItem("key")</code></td>
+                        <td><strong>Membaca</strong> data. Hasilnya <code>null</code> jika key belum ada.</td>
+                      </tr>
+                      <tr>
+                        <td><code>removeItem("key")</code></td>
+                        <td><strong>Menghapus</strong> satu data berdasarkan key.</td>
+                      </tr>
+                      <tr>
+                        <td><code>clear()</code></td>
+                        <td><strong>Menghapus semua</strong> data milik situs ini.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="callout" data-kind="awas" data-label="Tips penamaan key">Beri awalan unik pada nama key,
+                  misalnya <code>rpl_nama</code>, agar tidak bentrok dengan data proyek lain. Ingat juga bahwa key
+                  bersifat <strong>case-sensitive</strong> (<code>"nama"</code> ≠ <code>"Nama"</code>).</div>
+              </div>
+
+              <div data-widget="brankas-storage"></div>
+              <div data-challenge="23:p1"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 2. SEMUA NILAI BERUPA STRING ═══════════ -->
+      <article class="step" id="s2">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2><small>Tipe Data</small>Semua Nilai Berupa String</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text"><code>localStorage</code> <strong>hanya bisa menyimpan string</strong>. Angka dan
+                boolean yang kamu kirim akan otomatis diubah menjadi string saat disimpan.</p>
+              <div class="editor" data-editor><textarea class="editor-src">
+localStorage.setItem("rpl_skor", 10);
+
+const skor = localStorage.getItem("rpl_skor");
+console.log(skor);                 // "10"   (string, bukan angka)
+console.log(typeof skor);          // string
+console.log(skor + 5);             // "105"  (digabung, bukan dijumlah!)
+console.log(Number(skor) + 5);     // 15     (dikonversi dulu)
+
+// Boolean juga berubah menjadi string:
+localStorage.setItem("rpl_aktif", true);
+console.log(localStorage.getItem("rpl_aktif"));            // "true"
+console.log(localStorage.getItem("rpl_aktif") === "true"); // true (boolean sungguhan)</textarea></div>
+
+              <div class="subsection">
+                <div class="section-label">Menangani data yang belum ada (null)</div>
+                <pre class="snippet" data-hl>let skor = 0;                                       // nilai awal
+const tersimpan = localStorage.getItem("rpl_skor");
+
+if (tersimpan !== null) {                           // hanya jika ada data tersimpan
+  skor = Number(tersimpan);                         // ubah ke angka
+}</pre>
+                <div class="callout" data-kind="fakta" data-label="Kenapa cek !== null?">Data dari luar (form
+                  <code>.value</code> maupun <code>localStorage</code>) selalu string sehingga butuh
+                  <code>Number()</code> sebelum dihitung. Memeriksa <code>tersimpan !== null</code> secara eksplisit
+                  juga mencegah kesalahan karena <code>Number(null)</code> menghasilkan <code>0</code>.</div>
+              </div>
+              <div data-challenge="23:p2"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 3. MENYIMPAN ARRAY & OBJECT (JSON) ═══════════ -->
+      <article class="step" id="s3">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2><small>Struktur Data</small>Menyimpan Array &amp; Object (JSON)</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Masalah saat menyimpan object langsung</div>
+                <p class="content-text">Karena <code>localStorage</code> memaksa semua nilai menjadi string, menyimpan
+                  object secara langsung menghasilkan teks yang tidak berguna:</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+const siswa = { nama: "Budi", kelas: "XI RPL" };
+localStorage.setItem("rpl_siswa", siswa);
+console.log(localStorage.getItem("rpl_siswa"));   // "[object Object]" ❌</textarea></div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Solusi: JSON (stringify &amp; parse)</div>
+                <div class="def-box"><strong>JSON</strong><b>JSON</b> (JavaScript Object Notation) adalah format teks
+                  untuk menyimpan array dan object:
+                  <br>• <code>JSON.stringify(data)</code> → mengubah array/object menjadi <b>string</b> (dipakai saat
+                  <b>menyimpan</b>).
+                  <br>• <code>JSON.parse(teks)</code> → mengubah string JSON kembali menjadi array/object (dipakai saat
+                  <b>membaca</b>).
+                </div>
+                <div data-widget="mesin-json"></div>
+                <div class="editor" data-editor><textarea class="editor-src">
+const siswa = { nama: "Budi", kelas: "XI RPL" };
+
+// SIMPAN: object → string JSON
+localStorage.setItem("rpl_siswa", JSON.stringify(siswa));
+console.log(localStorage.getItem("rpl_siswa"));   // {"nama":"Budi","kelas":"XI RPL"}
+
+// BACA: string JSON → object
+const dibaca = JSON.parse(localStorage.getItem("rpl_siswa"));
+console.log(dibaca.nama);                         // "Budi"</textarea></div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Contoh dengan Array (wajib simpan lagi setelah diubah!)</div>
+                <div class="editor" data-editor><textarea class="editor-src">
+let buah = ["apel", "jeruk"];
+localStorage.setItem("rpl_buah", JSON.stringify(buah));
+
+// Nanti saat membaca kembali:
+let tersimpan = JSON.parse(localStorage.getItem("rpl_buah"));
+tersimpan.push("mangga");                                    // ubah array di memori
+localStorage.setItem("rpl_buah", JSON.stringify(tersimpan)); // SIMPAN LAGI!
+
+console.log(JSON.parse(localStorage.getItem("rpl_buah")));</textarea></div>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th scope="col">Tujuan</th>
+                        <th scope="col">Kode</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Simpan array / object</td>
+                        <td><code>localStorage.setItem("key", JSON.stringify(data))</code></td>
+                      </tr>
+                      <tr>
+                        <td>Baca array / object</td>
+                        <td><code>JSON.parse(localStorage.getItem("key"))</code></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="callout" data-kind="awas" data-label="Dua aturan penting">
+                  1. <strong>Data diubah → harus disimpan lagi.</strong> <code>localStorage</code> tidak ikut berubah
+                  otomatis saat array/object di memori diubah.
+                  <br>2. <strong>Periksa <code>null</code> dulu</strong> sebelum memakai hasil <code>getItem</code>:
+                  jika key belum ada, <code>JSON.parse(null)</code> menghasilkan <code>null</code> yang bisa memicu
+                  error.
+                </div>
+              </div>
+              <div data-challenge="23:p3"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 4. POLA PEMAKAIAN & DARK MODE ═══════════ -->
+      <article class="step" id="s4">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2><small>Pola Inti</small>Baca Saat Dibuka, Simpan Saat Berubah</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="important-banner">
+                <h3>Pola Inti (Hafalkan!)</h3>
+                <ol>
+                  <li><strong>SAAT HALAMAN DIBUKA</strong> → <strong>BACA</strong> dari <code>localStorage</code> (cek
+                    <code>null</code>), lalu tampilkan ke halaman.</li>
+                  <li><strong>SAAT DATA BERUBAH</strong> (misal tombol diklik) → ubah tampilan, lalu
+                    <strong>SIMPAN</strong> ke <code>localStorage</code>.</li>
+                </ol>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Demo: Dark Mode yang Diingat</div>
+                <p class="content-text">Klik tombol <strong>🌙 Mode Gelap</strong> di Preview, amati munculnya
+                  <code>rpl_tema: "gelap"</code> di panel Local Storage, lalu tekan tombol <strong>Refresh</strong>.
+                  Untuk menguji kondisi awal lagi, klik <strong>Hapus Storage</strong>.</p>
+                <div data-playground data-preset="storage" data-storage data-id="demo-tema" data-tinggi="260"><textarea
+                    data-lang="js">
+const btnTema = document.querySelector("#btnTema");
+
+// Menerapkan tema ke halaman
+function terapkanTema(tema) {
+  if (tema === "gelap") {
+    document.body.classList.add("dark-mode");
+    btnTema.textContent = "☀️ Mode Terang";
+  } else {
+    document.body.classList.remove("dark-mode");
+    btnTema.textContent = "🌙 Mode Gelap";
+  }
+}
+
+// 1. SAAT HALAMAN DIBUKA: baca tema tersimpan (null → terang)
+terapkanTema(localStorage.getItem("rpl_tema"));
+
+// 2. SAAT TOMBOL DIKLIK: ganti tema, lalu SIMPAN
+btnTema.addEventListener("click", () => {
+  if (document.body.classList.contains("dark-mode")) {
+    terapkanTema("terang");
+    localStorage.setItem("rpl_tema", "terang");
+  } else {
+    terapkanTema("gelap");
+    localStorage.setItem("rpl_tema", "gelap");
+  }
+});</textarea></div>
+              </div>
+              <div data-challenge="23:p4"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 5. TAMBAHAN ═══════════ -->
+      <article class="step" id="s5">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <h2><small>Pengayaan</small>sessionStorage, Daftar Key, try/catch &amp; Keamanan</h2>
+          <span class="step-tag">Tambahan</span>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">sessionStorage: ingat selama tab belum ditutup</div>
+                <p class="content-text">Browser juga menyediakan <code>sessionStorage</code> dengan method yang persis
+                  sama (<code>setItem</code>, <code>getItem</code>, <code>removeItem</code>, <code>clear</code>), namun
+                  datanya <strong>otomatis hilang saat tab ditutup</strong>. Cocok untuk data sementara satu sesi (misal
+                  isi form langkah demi langkah).</p>
+                <div class="table-wrap">
+                  <table class="tabel">
+                    <thead>
+                      <tr>
+                        <th scope="col">Fitur</th>
+                        <th scope="col"><code>localStorage</code></th>
+                        <th scope="col"><code>sessionStorage</code></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Bertahan saat refresh</td>
+                        <td>✓ Ya</td>
+                        <td>✓ Ya</td>
+                      </tr>
+                      <tr>
+                        <td>Bertahan saat tab ditutup</td>
+                        <td>✓ Ya</td>
+                        <td>✗ <strong>Hilang</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Dibagikan antar tab situs sama</td>
+                        <td>✓ Ya</td>
+                        <td>✗ Per tab saja</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Melihat semua key yang tersimpan</div>
+                <div class="editor" data-editor><textarea class="editor-src">
+localStorage.setItem("rpl_nama", "Budi");
+localStorage.setItem("rpl_kelas", "XI RPL");
+
+console.log("Jumlah data:", localStorage.length);
+for (let i = 0; i < localStorage.length; i++) {
+  const kunci = localStorage.key(i);
+  console.log(kunci, "=", localStorage.getItem(kunci));
+}</textarea></div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Mengamankan JSON.parse &amp; penyimpanan dengan try/catch</div>
+                <p class="content-text">Di aplikasi nyata, data di <code>localStorage</code> bisa rusak (misal diubah
+                  manual di DevTools) atau penyimpanan penuh/diblokir (mode privat). Membungkus <code>JSON.parse</code>
+                  dan <code>setItem</code> dengan <code>try ... catch</code> mencegah seluruh halaman berhenti karena
+                  error.</p>
+                <div class="editor" data-editor><textarea class="editor-src">
+// Simulasi data rusak di localStorage
+localStorage.setItem("rpl_profil", "{bukan json valid");
+
+let profil = { nama: "Tamu" };
+try {
+  const teks = localStorage.getItem("rpl_profil");
+  if (teks !== null) profil = JSON.parse(teks);
+} catch (err) {
+  console.log("Data rusak, memakai nilai bawaan.");
+}
+console.log(profil);</textarea></div>
+                <div class="callout" data-kind="fakta" data-label="Sinkron antar tab">Bila situs yang sama dibuka di dua
+                  tab sekaligus, perubahan <code>localStorage</code> di tab A memicu event <code>"storage"</code> pada
+                  <code>window</code> di tab B — sehingga tema atau data bisa ikut tersinkron otomatis.</div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Catatan keamanan: innerHTML vs createElement</div>
+                <div class="callout" data-kind="awas" data-label="Risiko XSS">Pada Latihan B4 di slide, daftar catatan
+                  ditampilkan memakai <code>innerHTML</code> dan <code>join</code> agar ringkas. Di aplikasi sungguhan,
+                  memasukkan teks ketikan pengguna langsung ke <code>innerHTML</code> berbahaya (risiko <em>Cross-Site
+                    Scripting / XSS</em> jika pengguna mengetik tag <code>&lt;img onerror=...&gt;</code>). Biasakan
+                  memakai <code>document.createElement("li")</code> + <code>li.textContent = teks</code> seperti di
+                  Studi Kasus nanti.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 6. PERINGATAN & KESALAHAN UMUM ═══════════ -->
+      <article class="step" id="s6">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <h2><small>Debugging</small>Peringatan, Kesalahan Umum &amp; Latihan C</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Peringatan Penting</div>
+                <ul class="content-list">
+                  <li><strong>Jangan simpan data rahasia</strong> (password, token login, nomor kartu). Siapa pun yang
+                    membuka DevTools bisa melihat dan mengubah seluruh isi <code>localStorage</code>.</li>
+                  <li>Data <strong>hanya tersimpan di browser dan perangkat itu</strong>, tidak otomatis ikut ke
+                    perangkat lain.</li>
+                  <li>Kapasitas terbatas (± <strong>5 MB</strong> per situs) — simpan teks/JSON seperlunya saja.</li>
+                  <li><code>sessionStorage</code> memakai method yang sama persis, namun hilang ketika tab ditutup.</li>
+                </ul>
+              </div>
+
+              <div class="table-wrap">
+                <table class="tabel">
+                  <thead>
+                    <tr>
+                      <th scope="col">No</th>
+                      <th scope="col">Kesalahan</th>
+                      <th scope="col">Akibat</th>
+                      <th scope="col">Perbaikan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Menyimpan array/object tanpa <code>JSON.stringify</code></td>
+                      <td>Tersimpan <code>"[object Object]"</code></td>
+                      <td><code>JSON.stringify(data)</code></td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Menghitung langsung hasil <code>getItem</code></td>
+                      <td><code>"5" + 1</code> menjadi <code>"51"</code></td>
+                      <td><code>Number(getItem(...))</code></td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Tidak memeriksa <code>null</code> pada data yang belum ada</td>
+                      <td>Tampil <code>Halo, null!</code> atau error</td>
+                      <td><code>if (tersimpan !== null)</code></td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Key beda huruf besar-kecil: <code>"Nama"</code> vs <code>"nama"</code></td>
+                      <td>Hasil <code>null</code></td>
+                      <td>Samakan penulisan key persis</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>Mengubah array di memori tapi lupa menyimpan lagi</td>
+                      <td>Data kembali lama setelah refresh</td>
+                      <td>Panggil <code>setItem</code> lagi setelah diubah</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Latihan C — Cari &amp; Perbaiki Kesalahan</div>
+                <p class="content-text">Jalankan tiap kode, tulis di komentar <strong>apa kesalahannya</strong>, lalu
+                  perbaiki hingga semua pemeriksaan lulus.</p>
+                <div data-challenge="23:c1"></div>
+                <div data-challenge="23:c2"></div>
+                <div data-challenge="23:c3"></div>
+                <div data-challenge="23:c4"></div>
+                <div data-challenge="23:c5"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 7. RANGKUMAN ═══════════ -->
+      <article class="step" id="s7">
+        <div class="step-header">
+          <div class="step-number">7</div>
+          <h2><small>Ringkas</small>Rangkuman (Contekan)</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="banding2">
+                <div>
+                  <div class="section-label">Dasar &amp; Konversi</div>
+                  <pre class="snippet" data-hl>// SIMPAN, BACA, HAPUS
+localStorage.setItem("rpl_key", "nilai");
+localStorage.getItem("rpl_key");        // "nilai" atau null
+localStorage.removeItem("rpl_key");
+localStorage.clear();
+
+// ANGKA (semuanya string!)
+const teks = localStorage.getItem("rpl_skor");
+let skor = teks !== null ? Number(teks) : 0;</pre>
+                </div>
+                <div>
+                  <div class="section-label">JSON &amp; Pola Inti</div>
+                  <pre class="snippet" data-hl>// ARRAY / OBJECT
+localStorage.setItem("rpl_data", JSON.stringify(data));
+const baca = localStorage.getItem("rpl_data");
+const data = baca !== null ? JSON.parse(baca) : [];
+
+// POLA UTAMA
+// 1. Halaman dibuka → baca &amp; tampilkan (cek null!)
+// 2. Data berubah   → tampilkan &amp; simpan lagi</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 8. LATIHAN A & B ═══════════ -->
+      <article class="step" id="s8">
+        <div class="step-header">
+          <div class="step-number">8</div>
+          <h2><small>Porsi Utama</small>Latihan A &amp; B</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <div class="subsection">
+                <div class="section-label">Latihan A — Tebak hasil</div>
+                <p class="content-text">Tulis <strong>prediksi</strong> dulu di kotak jawaban, baru klik <strong>Cek
+                    Jawaban</strong>. Jika hasilnya berbeda, baca kembali materinya dan catat
+                  <strong>alasannya</strong>.</p>
+                <div data-tebak data-judul="A1" data-q="Apa yang tampil di Console?"><textarea>
+localStorage.setItem("kota", "Bandung");
+console.log(localStorage.getItem("kota"));</textarea></div>
+                <div data-tebak data-judul="A2"
+                  data-q="Key <code>hobi</code> belum pernah disimpan. Apa yang tampil di Console?"><textarea>
+console.log(localStorage.getItem("hobi"));</textarea></div>
+                <div data-tebak data-judul="A3" data-q="Apa hasil <code>typeof</code> berikut?"><textarea>
+localStorage.setItem("umur", 16);
+console.log(typeof localStorage.getItem("umur"));</textarea></div>
+                <div data-tebak data-judul="A4"
+                  data-q="Perhatikan nilai yang disimpan dan operator <code>+</code>. Apa yang tampil di Console?">
+                  <textarea>
+localStorage.setItem("a", 5);
+localStorage.setItem("b", 3);
+console.log(localStorage.getItem("a") + localStorage.getItem("b"));</textarea></div>
+                <div data-tebak data-judul="A5"
+                  data-q="Object disimpan tanpa <code>JSON.stringify</code>. Apa yang tampil di Console?"><textarea>
+const siswa = { nama: "Budi", umur: 16 };
+localStorage.setItem("siswa", siswa);
+console.log(localStorage.getItem("siswa"));</textarea></div>
+                <div data-tebak data-judul="A6"
+                  data-q="Array disimpan dengan <code>JSON.stringify</code> lalu dibaca dengan <code>JSON.parse</code>. Apa dua baris output Console-nya?">
+                  <textarea>
+const buah = ["apel", "jeruk"];
+localStorage.setItem("buah", JSON.stringify(buah));
+const hasil = JSON.parse(localStorage.getItem("buah"));
+console.log(hasil[1]);
+console.log(hasil.length);</textarea></div>
+                <div data-tebak data-judul="A7" data-q="Apa yang tampil setelah <code>removeItem</code> dijalankan?">
+                  <textarea>
+localStorage.setItem("x", "1");
+localStorage.removeItem("x");
+console.log(localStorage.getItem("x"));</textarea></div>
+
+                <div class="block tebak" id="latihan-a8">
+                  <div class="block-head"><span class="block-kind">Konsep</span>
+                    <h3>A8 — Lintas Perangkat</h3>
+                  </div>
+                  <div class="block-body">
+                    <p class="content-text">Budi menyimpan namanya di <code>localStorage</code> pada laptopnya. Apakah
+                      Ani yang membuka website yang sama di HP-nya akan melihat nama Budi? Jelaskan alasannya.</p>
+                    <label class="field">Jawabanmu<textarea class="tebak-input" id="a8-jawab" rows="2"
+                        placeholder="Tulis jawaban dan alasanmu di sini…"></textarea></label>
+                    <div class="block-actions"><button type="button" class="btn btn--sm" id="a8-btn">Lihat Jawaban &amp;
+                        Alasan</button></div>
+                    <div class="bahas" id="a8-bahas" hidden>
+                      <div class="bahas-title">Pembahasan A8</div>
+                      <strong>Tidak.</strong> <code>localStorage</code> tersimpan <strong>di browser dan perangkat
+                        masing-masing</strong>, tidak dikirim ke server maupun dibagikan antar perangkat.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <div class="section-label">Latihan B — Koding bertahap</div>
+                <p class="content-text">HTML dan CSS (Slide 3) <strong>tidak diubah</strong>; jawaban ditulis di
+                  <code>script.js</code>. Gunakan key berawalan <code>rpl_</code> (misal <code>rpl_nama</code>). B7 dan
+                  dua studi kasus lanjutan tersedia di <a href="#tes">Tes Pengetahuan</a>.</p>
+                <div data-challenge="23:b1"></div>
+                <div data-challenge="23:b2"></div>
+                <div data-challenge="23:b3"></div>
+                <div data-challenge="23:b4"></div>
+                <div data-challenge="23:b5"></div>
+                <div data-challenge="23:b6"></div>
+                <div class="callout" data-kind="tips">Mengerjakan di file lokal komputer sendiri? Bungkus tiap soal
+                  dengan kurung kurawal <code>{ ... }</code> agar nama variabel antar soal tidak bentrok, lalu buktikan
+                  dengan screenshot tab <strong>Application → Local Storage</strong> dan rekaman layar singkat (10–15
+                  detik) saat halaman di-<em>refresh</em>.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ═══════════ 9. TES PENGETAHUAN ═══════════ -->
+      <article class="step step--tes" id="tes">
+        <div class="step-header">
+          <div class="step-number">✎</div>
+          <h2><small>Dinilai</small>Tes Pengetahuan</h2>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-content">
+              <p class="content-text">Waktunya membuktikan pemahamanmu! Nilai pertemuan ini = <strong>50% kuis</strong>
+                + <strong>50% tantangan koding</strong>. Tantangan diperiksa otomatis dengan berinteraksi pada halamanmu
+                lalu <strong>mensimulasikan refresh</strong> untuk memastikan datamu benar-benar tersimpan. Nilai
+                tersimpan otomatis di <a href="../rapor.html">rapor</a>.</p>
+              <div data-kuis="23" data-judul="Kuis localStorage"></div>
+              <div data-challenge="23:t1"></div>
+              <div data-challenge="23:t2"></div>
+              <div data-challenge="23:t3"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <nav class="pager" aria-label="Navigasi materi">
+        <a class="prev" href="22-event.html"><small>Sebelumnya</small><b>← #22 Event</b></a>
+        <a class="next" href="tantangan-akhir.html"><small>Berikutnya</small><b>Tantangan Akhir →</b></a>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">{ Coret.js }</div>
+    <p>Materi Pemrograman Web XI RPL · disusun dari slide Nuraini Azizah &amp; Danu Suko Handiyanto</p>
+  </footer>
+
+  <script src="../assets/vendor/codemirror/codemirror.min.js"></script>
+  <script src="../assets/vendor/codemirror/javascript.min.js"></script>
+  <script src="../assets/vendor/codemirror/xml.min.js"></script>
+  <script src="../assets/vendor/codemirror/css.min.js"></script>
+  <script src="../assets/vendor/codemirror/htmlmixed.min.js"></script>
+  <script src="../assets/vendor/codemirror/closebrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/matchbrackets.min.js"></script>
+  <script src="../assets/vendor/codemirror/runmode.min.js"></script>
+  <script src="../assets/vendor/codemirror/placeholder.min.js"></script>
+  <script src="../assets/js/runner.js"></script>
+  <script src="../assets/js/dom-runner.js"></script>
+  <script src="../assets/js/checker.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/illustrations.js"></script>
+  <script src="../assets/data/bank-23.js"></script>
+  <script src="../assets/js/editor.js"></script>
+  <script src="../assets/js/playground.js"></script>
+  <script src="../assets/js/challenge.js"></script>
+  <script src="../assets/js/kuis.js"></script>
+  <script src="../assets/js/widgets/w23.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script>
+    document.querySelectorAll('pre[data-hl]').forEach(function (pre) { window.Editor.highlight(pre.textContent, pre); });
+    (function () {
+      var btn = document.getElementById('a8-btn');
+      var box = document.getElementById('a8-bahas');
+      if (btn && box) {
+        btn.addEventListener('click', function () {
+          var buka = box.hidden;
+          box.hidden = !buka;
+          btn.textContent = buka ? 'Sembunyikan Penjelasan' : 'Lihat Jawaban & Alasan';
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>

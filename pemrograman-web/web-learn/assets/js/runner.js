@@ -27,6 +27,10 @@
     'self.setTimeout=function(fn,ms){var a=Array.prototype.slice.call(arguments,2);__pending++;var id=__st(function(){if(!__id[id])return;delete __id[id];__pending--;if(typeof fn==="function")fn.apply(null,a);__selesai();},ms);__id[id]=1;return id;};',
     'self.clearTimeout=function(id){if(__id[id]){delete __id[id];__pending--;}__ct(id);__selesai();};',
     'function __aman(v){var t=typeof v;if(t==="function"||t==="symbol")return {__teks:__fmt(v,0,true)};if(v!==null&&t==="object"){try{return JSON.parse(JSON.stringify(v));}catch(e){return {__teks:__fmt(v,0,true)};}}return v;}',
+    'function __mkStore(){var d={};var s={getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null;},setItem:function(k,v){d[String(k)]=String(v);},removeItem:function(k){delete d[String(k)];},clear:function(){Object.keys(d).forEach(function(k){delete d[k];});},key:function(i){var ks=Object.keys(d);return i>=0&&i<ks.length?ks[i]:null;}};Object.defineProperty(s,"length",{get:function(){return Object.keys(d).length;}});return s;}',
+    'if(typeof self.localStorage==="undefined")self.localStorage=__mkStore();',
+    'if(typeof self.sessionStorage==="undefined")self.sessionStorage=__mkStore();',
+    'function __initStore(o){if(o&&typeof o==="object")Object.keys(o).forEach(function(k){self.localStorage.setItem(k,o[k]);});}',
     'self.__cek=function(i,fn){__tangkap=[];var r;try{var v=fn();r={t:"cek",i:i,ok:true,tipe:typeof v,value:__aman(v),logs:__tangkap};}catch(e){r={t:"cek",i:i,ok:false,error:{name:e&&e.name,message:e&&e.message},logs:__tangkap};}__tangkap=null;self.postMessage(r);};'
   ].join('\n');
 
@@ -39,21 +43,26 @@
   /**
    * Susun sumber lengkap untuk worker.
    * @param {string} kode   kode siswa
-   * @param {object} opsi   { input: string (deklarasi data), harness: string (kode cek) }
+   * @param {object} opsi   { input: string (deklarasi data), harness: string (kode cek), storage?: object }
    */
   function buildSource(kode, opsi) {
     opsi = opsi || {};
     var input = opsi.input || '';
     var bagian = [PRELUDE];
+    var extra = 0;
+    if (opsi.storage) {
+      bagian.push('__initStore(' + JSON.stringify(opsi.storage).replace(/</g, '\\u003c') + ');');
+      extra = 1;
+    }
     if (input) bagian.push(input);
-    var offset = PRELUDE_BARIS + hitungBaris(input);
+    var offset = PRELUDE_BARIS + extra + hitungBaris(input);
     bagian.push(kode);
     bagian.push(';' + (opsi.harness || ''));
     bagian.push('self.postMessage({t:"sync"});__selesaiSync=true;__selesai();');
     return {
       text: bagian.join('\n'),
       offset: offset,
-      inputOffset: PRELUDE_BARIS,
+      inputOffset: PRELUDE_BARIS + extra,
       inputBaris: hitungBaris(input),
       kodeBaris: hitungBaris(kode)
     };
@@ -123,7 +132,7 @@
       return m[1] + ' hanya boleh dipakai di dalam perulangan (for/while/do...while)' + (m[1] === 'break' ? ' atau switch.' : '.');
     }],
     [/^Cannot (read|set) properties of null \((?:reading|setting) '([^']+)'\)/, function (m) {
-      return 'Mencoba ' + (m[1] === 'read' ? 'membaca' : 'mengubah') + ' "' + m[2] + '" dari nilai null. Di DOM ini biasanya berarti elemennya TIDAK DITEMUKAN: cek selector (# untuk id, . untuk class) dan ejaannya, serta pastikan <script> diletakkan di bawah elemen (sebelum </body>).';
+      return 'Mencoba ' + (m[1] === 'read' ? 'membaca' : 'mengubah') + ' "' + m[2] + '" dari nilai null. Di DOM ini bisa berarti elemennya TIDAK DITEMUKAN (cek selector & posisi <script>); di localStorage ini biasanya berarti data dengan key tersebut belum tersimpan (periksa !== null lebih dulu).';
     }],
     [/^Cannot (read|set) properties of undefined \((?:reading|setting) '([^']+)'\)/, function (m) {
       return 'Mencoba ' + (m[1] === 'read' ? 'membaca' : 'mengubah') + ' property "' + m[2] + '" dari nilai undefined. Sering terjadi karena index array di luar jangkauan (misal data[5] padahal hanya ada 3 elemen), nama property salah ketik, atau variabelnya belum diberi nilai.';
@@ -151,6 +160,9 @@
     }],
     [/^Unexpected strict mode reserved word|^Unexpected reserved word/, function () {
       return 'Ada kata kunci JavaScript yang dipakai sebagai nama. Ganti dengan nama lain.';
+    }],
+    [/is not valid JSON|Unexpected end of JSON input|Unexpected token .* in JSON|Expected property name/i, function () {
+      return 'Teks yang diberikan ke JSON.parse() bukan format JSON yang valid. Pastikan data disimpan dengan JSON.stringify(), dan periksa !== null sebelum memanggil JSON.parse().';
     }],
     [/^Invalid regular expression/, function () {
       return 'Tanda / dibaca sebagai awal pola teks. Cek operator pembagian atau komentar (//) kamu.';

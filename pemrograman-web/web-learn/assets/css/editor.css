@@ -363,6 +363,83 @@ pre.snippet {
   background-size: 14px 14px;
 }
 .playground .editor-console { border-top: 2px solid var(--ink, #1a1a1a); }
+.pg-storage {
+  border-top: 2px solid var(--ink, #1a1a1a);
+  background: #f5f4ef;
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+.pg-storage-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 14px;
+  background: #eceae4;
+  border-bottom: 1.5px solid #cfccc4;
+  font-size: .7rem;
+}
+.pg-storage-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+.pg-storage-count {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 1px 7px;
+  border-radius: 50px;
+  background: #fff;
+  border: 1px solid #cfccc4;
+  color: #555;
+}
+.pg-storage-clear {
+  margin-left: auto;
+  font: 600 .7rem 'Outfit', system-ui, sans-serif;
+  padding: 3px 10px;
+  border-radius: 50px;
+  border: 1.5px solid #1a1a1a;
+  background: #fff;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+.pg-storage-clear:hover { background: #1a1a1a; color: #fff; }
+.pg-storage-body { max-height: 150px; overflow: auto; }
+.pg-storage-empty {
+  padding: 8px 14px;
+  font-size: .78rem;
+  font-style: italic;
+  color: #777;
+}
+.pg-storage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  font-size: .75rem;
+}
+.pg-storage-table th {
+  text-align: left;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #666;
+  padding: 5px 14px;
+  background: #eceae4;
+  border-bottom: 1px solid #d6d3cb;
+}
+.pg-storage-table td {
+  padding: 5px 14px;
+  border-top: 1px dashed #d6d3cb;
+  color: #1a1a1a;
+  vertical-align: top;
+  word-break: break-word;
+}
+.pg-storage-table td:first-child { font-weight: 700; width: 34%; }
 @media (max-width: 600px) {
   .pg-bar { padding-left: 8px; }
   .pg-bar .editor-dots { display: none; }

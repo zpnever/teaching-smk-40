@@ -151,19 +151,25 @@
       }
     };
 
-    /* localStorage tiruan (origin sandbox tidak punya storage) */
-    var data = CFG.storage || {};
-    function simpanStorage() { kirim({ t: 'storage', data: data }); }
-    var storage = {
-      getItem: function (k) { k = String(k); return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
-      setItem: function (k, v) { data[String(k)] = String(v); simpanStorage(); },
-      removeItem: function (k) { delete data[String(k)]; simpanStorage(); },
-      clear: function () { data = {}; simpanStorage(); },
-      key: function (i) { return Object.keys(data)[i] || null; }
-    };
-    Object.defineProperty(storage, 'length', { get: function () { return Object.keys(data).length; } });
-    ['localStorage', 'sessionStorage'].forEach(function (n) {
-      try { Object.defineProperty(window, n, { value: n === 'localStorage' ? storage : Object.create(storage), configurable: true }); } catch (e) { /* abaikan */ }
+    /* localStorage & sessionStorage tiruan (origin sandbox tidak punya storage) */
+    var data = Object.assign({}, CFG.storage || {});
+    var sessionData = {};
+    function simpanStorage() { kirim({ t: 'storage', data: Object.assign({}, data) }); }
+    function buatStorage(store, lapor) {
+      var s = {
+        getItem: function (k) { k = String(k); return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
+        setItem: function (k, v) { store[String(k)] = String(v); if (lapor) simpanStorage(); },
+        removeItem: function (k) { delete store[String(k)]; if (lapor) simpanStorage(); },
+        clear: function () { Object.keys(store).forEach(function (k) { delete store[k]; }); if (lapor) simpanStorage(); },
+        key: function (i) { var ks = Object.keys(store); return i >= 0 && i < ks.length ? ks[i] : null; }
+      };
+      Object.defineProperty(s, 'length', { get: function () { return Object.keys(store).length; } });
+      return s;
+    }
+    var storage = buatStorage(data, true);
+    var session = buatStorage(sessionData, false);
+    [['localStorage', storage], ['sessionStorage', session]].forEach(function (p) {
+      try { Object.defineProperty(window, p[0], { value: p[1], configurable: true }); } catch (e) { /* abaikan */ }
     });
 
     /* Tautan & form: jangan pindah halaman */
@@ -255,7 +261,7 @@
       function jalan() {
         var k = 0;
         function lanjut() {
-          if (k >= antre.length) { kirim({ t: 'done' }); return; }
+          if (k >= antre.length) { kirim({ t: 'done', storage: Object.assign({}, data) }); return; }
           var item = antre[k++];
           tangkap = [];
           errBaru = null;
@@ -437,8 +443,11 @@
     var cfg = { token: token, batasLoop: BATAS_LOOP, storage: opsi.storage || bacaStorage(opsi.simpanId) };
     var src = susun(js, opsi, cfg);
 
+    var storageSnapshot = Object.assign({}, cfg.storage || {});
+    if (opsi.onStorage) opsi.onStorage(Object.assign({}, storageSnapshot));
+
     return new Promise(function (resolve) {
-      var hasil = { logs: [], cek: [], error: null, timeout: false, ms: 0, selesai: false };
+      var hasil = { logs: [], cek: [], error: null, timeout: false, ms: 0, selesai: false, storage: Object.assign({}, storageSnapshot) };
       var t0 = Date.now();
       var beres = false, timer;
       var frame = document.createElement('iframe');
@@ -460,8 +469,10 @@
         beres = true;
         clearTimeout(timer);
         hasil.ms = Date.now() - t0;
+        hasil.storage = Object.assign({}, storageSnapshot);
         hasil.frame = hidup ? frame : null;
         hasil.hentikan = hentikan;
+        if (opsi.onStorage) opsi.onStorage(Object.assign({}, storageSnapshot));
         if (!hidup) hentikan();
         resolve(hasil);
       }
@@ -486,10 +497,13 @@
           } else if (m.t === 'cek') {
             hasil.cek.push(m);
           } else if (m.t === 'storage') {
-            tulisStorage(opsi.simpanId, m.data);
+            storageSnapshot = Object.assign({}, m.data || {});
+            tulisStorage(opsi.simpanId, storageSnapshot);
+            if (opsi.onStorage) opsi.onStorage(Object.assign({}, storageSnapshot));
           } else if (m.t === 'reload') {
             if (opsi.onReload) opsi.onReload();
           } else if (m.t === 'done') {
+            if (m.storage) storageSnapshot = Object.assign({}, m.storage);
             hasil.selesai = true;
             selesai();
           }
@@ -512,6 +526,9 @@
   root.DomRunner = {
     run: run,
     preset: preset,
+    bacaStorage: bacaStorage,
+    tulisStorage: tulisStorage,
+    hapusStorage: function (id) { tulisStorage(id, {}); },
     lindungiLoop: lindungiLoop,
     susun: susun,
     BATAS_LOOP: BATAS_LOOP

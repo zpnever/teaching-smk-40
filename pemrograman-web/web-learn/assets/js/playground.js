@@ -171,6 +171,59 @@
     btnMuat.addEventListener('click', function () { api.jalankan(); });
     preview.querySelector('.pg-preview-bar').appendChild(btnMuat);
 
+    var tampilStorage = !!opsi.storagePanel;
+    var storagePanelEl = null, storageBodyEl = null, storageCountEl = null;
+    function renderStorage(data) {
+      if (!storagePanelEl) return;
+      var keys = Object.keys(data || {});
+      storageCountEl.textContent = keys.length ? keys.length + ' key' : 'kosong';
+      storageBodyEl.innerHTML = '';
+      if (!keys.length) {
+        var kosongEl = document.createElement('div');
+        kosongEl.className = 'pg-storage-empty';
+        kosongEl.textContent = '(kosong — belum ada data di localStorage)';
+        storageBodyEl.appendChild(kosongEl);
+        return;
+      }
+      var tabel = document.createElement('table');
+      tabel.className = 'pg-storage-table';
+      var thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th scope="col">Key</th><th scope="col">Value (string)</th></tr>';
+      tabel.appendChild(thead);
+      var tbody = document.createElement('tbody');
+      keys.forEach(function (k) {
+        var tr = document.createElement('tr');
+        var tdK = document.createElement('td');
+        var tdV = document.createElement('td');
+        tdK.textContent = k;
+        tdV.textContent = data[k];
+        tr.appendChild(tdK);
+        tr.appendChild(tdV);
+        tbody.appendChild(tr);
+      });
+      tabel.appendChild(tbody);
+      storageBodyEl.appendChild(tabel);
+    }
+    if (tampilStorage) {
+      storagePanelEl = document.createElement('div');
+      storagePanelEl.className = 'pg-storage';
+      storagePanelEl.innerHTML =
+        '<div class="pg-storage-bar">' +
+        '<span class="pg-storage-title">Local Storage <span class="pg-storage-count"></span></span>' +
+        '<button type="button" class="pg-storage-clear" title="Hapus semua data localStorage pada contoh ini">Hapus Storage</button>' +
+        '</div>' +
+        '<div class="pg-storage-body" aria-live="polite"></div>';
+      host.appendChild(storagePanelEl);
+      storageCountEl = storagePanelEl.querySelector('.pg-storage-count');
+      storageBodyEl = storagePanelEl.querySelector('.pg-storage-body');
+      storagePanelEl.querySelector('.pg-storage-clear').addEventListener('click', function () {
+        if (window.DomRunner && window.DomRunner.hapusStorage) window.DomRunner.hapusStorage(simpanId);
+        renderStorage({});
+        api.jalankan('localStorage dikosongkan.');
+      });
+      renderStorage(window.DomRunner && window.DomRunner.bacaStorage ? window.DomRunner.bacaStorage(simpanId) : {});
+    }
+
     var konsol = E.buatConsole(host, { kosong: 'Belum ada output di Console. Halaman sudah tampil di Preview — coba klik/ketik di sana.' });
 
     /* Tombol */
@@ -222,6 +275,7 @@
         onLog: function (level, teks) { if (ke === urut) konsol.pesan(level, teks); },
         onError: function (e) { if (ke === urut) konsol.error(e); },
         onClear: function () { if (ke === urut) konsol.tampilkan({ logs: [], ms: 0 }); },
+        onStorage: function (d) { if (ke === urut) renderStorage(d); },
         onReload: function () {
           if (ke !== urut) return;
           setTimeout(function () { api.jalankan('Halaman dimuat ulang karena form dikirim tanpa e.preventDefault().'); }, 900);
@@ -276,6 +330,7 @@
       tinggi: parseInt(el.getAttribute('data-tinggi'), 10) || 0,
       label: el.getAttribute('data-label') || '',
       simpanId: el.getAttribute('data-id') || '',
+      storagePanel: el.hasAttribute('data-storage') || presetNama === 'storage',
       autorun: !el.hasAttribute('data-manual')
     });
     el.__pg = pg;

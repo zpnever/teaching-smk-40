@@ -73,6 +73,7 @@
 
     var dom = soal.mode === 'dom';
     var halaman = dom ? halamanSoal(soal) : null;
+    var tampilStorage = !!(soal.storagePanel || soal.preset === 'storage' || soal.preset === 'todoStorage' || soal.preset === 'belanja');
     var pilihan = dom ? [] : pilihanInput(soal);
     var ed = dom ? window.Playground.create(el.querySelector('.challenge-editor'), {
       html: halaman.html,
@@ -82,7 +83,8 @@
       input: window.Checker.inputKeKode(soal.input),
       tinggi: soal.tinggi || 0,
       simpanKe: kunci,
-      simpanId: 'soal-' + kunci
+      simpanId: 'soal-' + kunci,
+      storagePanel: tampilStorage
     }) : window.Editor.create(el.querySelector('.challenge-editor'), {
       value: soal.starter || '',
       file: soal.file || 'script.js',
@@ -94,7 +96,7 @@
     function runFn(k, o) {
       if (!dom) return window.JSRunner.run(k, o);
       var f = ed.getFiles();
-      return window.DomRunner.run(k, { html: f.html, css: f.css, input: o.input, harness: o.harness });
+      return window.DomRunner.run(k, { html: f.html, css: f.css, input: o.input, harness: o.harness, storage: o.storage });
     }
 
     var pill = el.querySelector('.status-pill');
@@ -185,7 +187,7 @@
       extra.appendChild(box);
       var wadah = document.createElement('div');
       box.appendChild(wadah);
-      if (dom) window.Playground.create(wadah, { html: halaman.html, css: halaman.css, js: soal.solusi, edit: [], input: ed.getInput(), label: 'Contoh solusi — jalankan & coba di Preview', simpanId: 'solusi-' + kunci });
+      if (dom) window.Playground.create(wadah, { html: halaman.html, css: halaman.css, js: soal.solusi, edit: [], input: ed.getInput(), label: 'Contoh solusi — jalankan & coba di Preview', simpanId: 'solusi-' + kunci, storagePanel: tampilStorage });
       else window.Editor.create(wadah, { value: soal.solusi, file: 'solusi.js', readOnly: true, input: ed.getInput() });
       btnSolusi.hidden = true;
     });

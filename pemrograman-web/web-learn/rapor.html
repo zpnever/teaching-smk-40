@@ -1,20 +1,42 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rapor Belajar — Coret.js</title>
-  <meta name="description" content="Rapor belajar JavaScript: nilai kuis dan tantangan koding per pertemuan, siap dicetak atau di-screenshot.">
+  <meta name="description"
+    content="Rapor belajar JavaScript: nilai kuis dan tantangan koding per pertemuan, siap dicetak atau di-screenshot.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    .wrap { max-width: 920px; margin: 0 auto; padding: 0 1.5rem 5rem; }
-    .hero--kecil { min-height: auto; padding: 4.2rem 2rem 4.4rem; margin-bottom: 1rem; }
-    .hero--kecil h1 { font-size: clamp(2rem, 5vw, 3rem); }
-    .identitas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .hero--kecil {
+      min-height: auto;
+      padding: 4.2rem 2rem 4.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero--kecil h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .identitas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     .rapor-kartu {
       position: relative;
       background: var(--bg-card);
@@ -25,6 +47,7 @@
       margin-top: 2rem;
       overflow: hidden;
     }
+
     .rapor-kartu::after {
       content: '';
       position: absolute;
@@ -33,58 +56,232 @@
       border-radius: 14px;
       pointer-events: none;
     }
-    .rapor-top { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
-    .rapor-top h2 { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
-    .rapor-top small { font-size: .68rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ink-lighter); }
-    .rapor-top .callout-mascot { width: 78px; height: 78px; margin: -6px 0 0 auto; }
-    .rapor-id { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 1.2rem 0 1.4rem; }
-    .rapor-id div { border: 2px solid var(--ink); border-radius: var(--radius-sm); padding: 8px 12px; min-width: 0; }
-    .rapor-id span { display: block; font-size: .64rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-lighter); }
-    .rapor-id b { font-size: 1rem; word-break: break-word; }
-    .nilai-besar { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.4rem; flex-wrap: wrap; }
-    .nilai-besar .skor-angka { width: 120px; height: 120px; }
-    .nilai-besar p { flex: 1 1 240px; color: var(--ink-light); font-size: .9rem; }
-    .paraf { display: flex; justify-content: flex-end; gap: 2rem; margin-top: 2rem; font-size: .8rem; color: var(--ink-light); }
-    .paraf div { text-align: center; min-width: 160px; }
-    .paraf div::before { content: ''; display: block; height: 46px; border-bottom: 2px dashed var(--ink); margin-bottom: 6px; }
-    .tabel td.angka, .tabel th.angka { text-align: center; }
-    .status-mini { font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 50px; border: 1.5px solid var(--ink); white-space: nowrap; }
-    .status-mini.ok { background: var(--ink); color: var(--bg); }
-    .status-mini.belum { border-style: dashed; color: var(--ink-lighter); border-color: var(--ink-lighter); }
-    .catatan { font-size: .82rem; color: var(--ink-light); margin-top: 1rem; }
-    .catatan li { margin-left: 1.1rem; }
-    @media (max-width: 640px) {
-      .identitas, .rapor-id { grid-template-columns: 1fr; }
-      .rapor-kartu { padding: 1.5rem 1.1rem; }
-      .paraf { justify-content: center; }
+
+    .rapor-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
+
+    .rapor-top h2 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .rapor-top small {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--ink-lighter);
+    }
+
+    .rapor-top .callout-mascot {
+      width: 78px;
+      height: 78px;
+      margin: -6px 0 0 auto;
+    }
+
+    .rapor-id {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 1.2rem 0 1.4rem;
+    }
+
+    .rapor-id div {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      min-width: 0;
+    }
+
+    .rapor-id span {
+      display: block;
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-lighter);
+    }
+
+    .rapor-id b {
+      font-size: 1rem;
+      word-break: break-word;
+    }
+
+    .nilai-besar {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: 1.4rem;
+      flex-wrap: wrap;
+    }
+
+    .nilai-besar .skor-angka {
+      width: 120px;
+      height: 120px;
+    }
+
+    .nilai-besar p {
+      flex: 1 1 240px;
+      color: var(--ink-light);
+      font-size: .9rem;
+    }
+
+    .paraf {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2rem;
+      margin-top: 2rem;
+      font-size: .8rem;
+      color: var(--ink-light);
+    }
+
+    .paraf div {
+      text-align: center;
+      min-width: 160px;
+    }
+
+    .paraf div::before {
+      content: '';
+      display: block;
+      height: 46px;
+      border-bottom: 2px dashed var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .tabel td.angka,
+    .tabel th.angka {
+      text-align: center;
+    }
+
+    .status-mini {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 50px;
+      border: 1.5px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    .status-mini.ok {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .status-mini.belum {
+      border-style: dashed;
+      color: var(--ink-lighter);
+      border-color: var(--ink-lighter);
+    }
+
+    .catatan {
+      font-size: .82rem;
+      color: var(--ink-light);
+      margin-top: 1rem;
+    }
+
+    .catatan li {
+      margin-left: 1.1rem;
+    }
+
+    @media (max-width: 640px) {
+
+      .identitas,
+      .rapor-id {
+        grid-template-columns: 1fr;
+      }
+
+      .rapor-kartu {
+        padding: 1.5rem 1.1rem;
+      }
+
+      .paraf {
+        justify-content: center;
+      }
+    }
+
     @media print {
-      @page { margin: 14mm; }
-      body * { visibility: hidden; }
-      .rapor-kartu, .rapor-kartu * { visibility: visible; }
-      .rapor-kartu { position: absolute; left: 0; top: 0; width: 100%; margin: 0; box-shadow: none; }
-      .tabel th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .status-mini.ok, .skor-angka { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page {
+        margin: 14mm;
+      }
+
+      body * {
+        visibility: hidden;
+      }
+
+      .rapor-kartu,
+      .rapor-kartu * {
+        visibility: visible;
+      }
+
+      .rapor-kartu {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+      }
+
+      .tabel th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .status-mini.ok,
+      .skor-angka {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
     }
   </style>
 </head>
+
 <body>
-  <noscript><div style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka halaman ini di Chrome/Edge/Firefox biasa.</div></noscript>
+  <noscript>
+    <div
+      style="position:sticky;top:0;z-index:9999;background:#1a1a1a;color:#fff;padding:12px 18px;font:15px/1.5 system-ui,sans-serif;text-align:center">
+      JavaScript tidak aktif di browser/penampil ini, jadi daftar isi, editor kode, dan kuis tidak bisa berjalan. Buka
+      halaman ini di Chrome/Edge/Firefox biasa.</div>
+  </noscript>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar JavaScript</small></a>
+      <a class="brand" href="index.html"><span class="brand-mark">{ }</span>Coret.js <small>belajar
+          JavaScript</small></a>
       <nav class="topnav" aria-label="Materi">
-        <a href="materi/15-dasar-javascript.html">#15 Dasar</a>
-        <a href="materi/16-operator.html">#16 Operator</a>
-        <a href="materi/17-percabangan.html">#17 Percabangan</a>
-        <a href="materi/18-perulangan.html">#18 Perulangan</a>
-        <a href="materi/19-function.html">#19 Function</a>
-        <a href="materi/20-array-object.html">#20 Array &amp; Object</a>
-        <a href="materi/21-dom.html">#21 DOM</a>
-        <a href="materi/22-event.html">#22 Event</a>
-        <a href="materi/tantangan-akhir.html">Tantangan Akhir</a>
-        <a href="rapor.html" aria-current="page">Rapor</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-trigger" aria-expanded="false" aria-controls="nav-materi-list"
+            popovertarget="nav-materi-list">
+            <span>Materi JavaScript</span>
+            <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <ul id="nav-materi-list" class="nav-menu" popover="auto">
+            <li><a href="materi/15-dasar-javascript.html" data-nav="15"><span class="nav-no">#15</span> Dasar
+                JavaScript</a></li>
+            <li><a href="materi/16-operator.html" data-nav="16"><span class="nav-no">#16</span> Operator</a></li>
+            <li><a href="materi/17-percabangan.html" data-nav="17"><span class="nav-no">#17</span> Percabangan</a></li>
+            <li><a href="materi/18-perulangan.html" data-nav="18"><span class="nav-no">#18</span> Perulangan</a></li>
+            <li><a href="materi/19-function.html" data-nav="19"><span class="nav-no">#19</span> Function</a></li>
+            <li><a href="materi/20-array-object.html" data-nav="20"><span class="nav-no">#20</span> Array &amp;
+                Object</a></li>
+            <li><a href="materi/21-dom.html" data-nav="21"><span class="nav-no">#21</span> DOM</a></li>
+            <li><a href="materi/22-event.html" data-nav="22"><span class="nav-no">#22</span> Event</a></li>
+            <li><a href="materi/23-localstorage.html" data-nav="23"><span class="nav-no">#23</span> localStorage</a>
+            </li>
+          </ul>
+        </div>
+        <a href="materi/tantangan-akhir.html" data-nav="akhir">Tantangan Akhir</a>
+        <a href="rapor.html" data-nav="rapor" aria-current="page">Rapor</a>
       </nav>
     </div>
   </header>
@@ -92,21 +289,26 @@
   <section class="hero hero--kecil">
     <span class="hero-badge">Kartu Hasil</span>
     <h1>Rapor <span class="highlight">Belajar</span> JavaScript</h1>
-    <p class="hero-subtitle">Isi nama dan kelasmu, cek nilainya, lalu cetak / simpan PDF atau screenshot kartu di bawah untuk dikumpulkan ke guru.</p>
+    <p class="hero-subtitle">Isi nama dan kelasmu, cek nilainya, lalu cetak / simpan PDF atau screenshot kartu di bawah
+      untuk dikumpulkan ke guru.</p>
   </section>
 
   <main class="wrap">
     <div class="block no-print">
-      <div class="block-head"><span class="block-kind">Identitas</span><h3>Data siswa</h3></div>
+      <div class="block-head"><span class="block-kind">Identitas</span>
+        <h3>Data siswa</h3>
+      </div>
       <div class="block-body">
         <div class="identitas">
-          <label class="field">Nama lengkap<input class="input" data-profil="nama" autocomplete="name" placeholder="Nama kamu"></label>
+          <label class="field">Nama lengkap<input class="input" data-profil="nama" autocomplete="name"
+              placeholder="Nama kamu"></label>
           <label class="field">Kelas<input class="input" data-profil="kelas" placeholder="XI RPL 1"></label>
         </div>
         <div class="block-actions">
           <button type="button" class="btn btn--sm" data-cetak>Cetak / Simpan PDF</button>
           <a class="btn btn--sm btn--ghost" href="index.html">← Kembali ke Peta Belajar</a>
-          <button type="button" class="btn btn--sm btn--ghost" data-reset style="margin-left:auto">Reset progres</button>
+          <button type="button" class="btn btn--sm btn--ghost" data-reset style="margin-left:auto">Reset
+            progres</button>
         </div>
       </div>
     </div>
@@ -126,7 +328,15 @@
       </div>
       <div class="table-wrap">
         <table class="tabel">
-          <thead><tr><th>Materi</th><th class="angka">Kuis</th><th class="angka">Tantangan</th><th class="angka">Nilai</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Materi</th>
+              <th class="angka">Kuis</th>
+              <th class="angka">Tantangan</th>
+              <th class="angka">Nilai</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody data-baris></tbody>
         </table>
       </div>
@@ -137,9 +347,12 @@
       <ul class="catatan">
         <li>Nilai per materi = 50% nilai kuis terbaik + 50% tantangan koding yang lulus.</li>
         <li>Tantangan yang diselesaikan setelah membuka "Lihat Solusi" tidak dihitung.</li>
-        <li>Rata-rata dihitung dari 9 pos; pos yang belum dikerjakan bernilai 0.</li>
+        <li>Rata-rata dihitung dari 10 pos; pos yang belum dikerjakan bernilai 0.</li>
       </ul>
-      <div class="paraf"><div>Paraf siswa</div><div>Paraf guru</div></div>
+      <div class="paraf">
+        <div>Paraf siswa</div>
+        <div>Paraf guru</div>
+      </div>
     </section>
   </main>
 
@@ -150,6 +363,7 @@
 
   <script src="assets/js/progress.js"></script>
   <script src="assets/js/illustrations.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src="assets/data/bank-15.js"></script>
   <script src="assets/data/bank-16.js"></script>
   <script src="assets/data/bank-17.js"></script>
@@ -158,6 +372,7 @@
   <script src="assets/data/bank-20.js"></script>
   <script src="assets/data/bank-21.js"></script>
   <script src="assets/data/bank-22.js"></script>
+  <script src="assets/data/bank-23.js"></script>
   <script src="assets/data/bank-akhir.js"></script>
   <script>
     (function () {
@@ -171,6 +386,7 @@
         { id: '20', nama: '#20 Array & Object', url: 'materi/20-array-object.html' },
         { id: '21', nama: '#21 DOM', url: 'materi/21-dom.html' },
         { id: '22', nama: '#22 Event', url: 'materi/22-event.html' },
+        { id: '23', nama: '#23 localStorage', url: 'materi/23-localstorage.html' },
         { id: 'akhir', nama: 'Tantangan Akhir', url: 'materi/tantangan-akhir.html' }
       ];
       var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -199,7 +415,7 @@
         var pesan, mood;
         if (!adaNilai) { pesan = 'Belum ada nilai. Mulai dari pertemuan 15, ya!'; mood = 'mikir'; }
         else if (adaNilai < DAFTAR.length) { pesan = adaNilai + ' dari ' + DAFTAR.length + ' pos sudah dinilai. Selesaikan sisanya untuk menaikkan rata-rata.'; mood = 'senang'; }
-        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu sudah menguasai dasar JavaScript sampai DOM & Event.'; mood = 'bangga'; }
+        else if (rata >= 85) { pesan = 'Luar biasa! Semua pos selesai dengan nilai tinggi. Kamu sudah menguasai dasar JavaScript sampai DOM, Event & localStorage.'; mood = 'bangga'; }
         else { pesan = 'Semua pos sudah dikerjakan. Ulangi kuis atau tantangan yang belum maksimal untuk menaikkan nilai.'; mood = 'senang'; }
         document.querySelector('[data-out="pesan"]').textContent = pesan;
         document.querySelector('[data-mascot-rapor]').innerHTML = Illus.maskot(mood);
@@ -234,4 +450,5 @@
     })();
   </script>
 </body>
+
 </html>
