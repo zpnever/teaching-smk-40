@@ -19,11 +19,6 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
 input,
 select {
     padding: 6px;
@@ -31,15 +26,4 @@ select {
 
 ul {
     margin: 8px 0 0;
-}
-
-#gambarAnjing {
-    display: block;
-    margin-top: 8px;
-    border-radius: 8px;
-    max-width: 100%;
-}
-
-#gambarAnjing:not([src]) {
-    display: none;
 }

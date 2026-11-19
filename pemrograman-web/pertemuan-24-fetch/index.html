@@ -10,38 +10,43 @@
 
 <body>
     <h1>Belajar Fetch API</h1>
-    <p>Buka Console dan tab Network (F12). Pastikan internet aktif.</p>
+    <p>Buka Console (F12). Pastikan internet aktif.</p>
 
     <section>
-        <h3>Satu Postingan (B1)</h3>
+        <h3>1. Satu Postingan (B1)</h3>
         <button id="btnPost">Ambil Post #1</button>
         <h4 id="judulPost">-</h4>
         <p id="isiPost"></p>
     </section>
 
     <section>
-        <h3>Profil Pengguna (B2)</h3>
+        <h3>2. Profil Pengguna (B2)</h3>
         <button id="btnUser">Ambil Pengguna #1</button>
         <p id="profilUser">-</p>
     </section>
 
     <section>
-        <h3>Daftar Postingan (B3, B6)</h3>
-        <button id="btnDaftarPost">Tampilkan 5 Post</button>
-        <span id="statusDaftar"></span>
-        <p>Jumlah data: <span id="jumlahPost">0</span></p>
+        <h3>3. Tiga Postingan (B3)</h3>
+        <button id="btnTigaPost">Tampilkan 3 Post</button>
         <ul id="daftarPost"></ul>
     </section>
 
     <section>
-        <h3>Cari Post (B4, B5)</h3>
+        <h3>4. Cari Post (B4, B5)</h3>
         <input id="inputIdPost" type="number" placeholder="ID post (1-100)">
         <button id="btnCariPost">Cari</button>
         <p id="hasilCari"></p>
     </section>
 
     <section>
-        <h3>Filter Penulis (B7)</h3>
+        <h3>5. Cek Tugas (B6)</h3>
+        <input id="inputIdTodo" type="number" placeholder="ID tugas (1-200)">
+        <button id="btnTodo">Cek</button>
+        <p id="hasilTodo"></p>
+    </section>
+
+    <section>
+        <h3>6. Filter Penulis (B7 ⭐)</h3>
         <select id="pilihPenulis">
             <option value="">-- pilih penulis --</option>
             <option value="1">Penulis 1</option>
@@ -53,7 +58,7 @@
     </section>
 
     <section>
-        <h3>Kirim Post Baru (B8)</h3>
+        <h3>7. Kirim Post Baru (B8 ⭐)</h3>
         <form id="formPost" novalidate>
             <input id="inputJudul" type="text" placeholder="Judul">
             <input id="inputIsi" type="text" placeholder="Isi">
@@ -63,28 +68,9 @@
     </section>
 
     <section>
-        <h3>Anjing Acak (B9)</h3>
-        <button id="btnAnjing">Tampilkan Anjing</button>
-        <p id="pesanAnjing"></p>
-        <img id="gambarAnjing" alt="Anjing acak" width="250">
-    </section>
-
-    <section>
-        <h3>Cache dengan localStorage (B10)</h3>
+        <h3>8. Simpan di Browser (B9 ⭐)</h3>
         <button id="btnCache">Ambil Pengguna #2</button>
         <p id="hasilCache"></p>
-    </section>
-
-    <section>
-        <h3>Dua Permintaan Berurutan (B11)</h3>
-        <button id="btnPenulis">Post #1 dan Penulisnya</button>
-        <p id="hasilPenulis"></p>
-    </section>
-
-    <section>
-        <h3>Hapus Post (B12)</h3>
-        <button id="btnHapus">Hapus Post #1</button>
-        <p id="hasilHapus"></p>
     </section>
 
     <script src="script.js"></script>
